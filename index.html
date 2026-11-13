@@ -20,7 +20,8 @@
         }
     </script>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Ikon & Font -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -30,29 +31,35 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); }
+        
+        /* Gaya Menu Sidebar ODOJ */
+        .nav-item { transition: all 0.2s; border-radius: 0.75rem; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #64748b; }
+        .dark .nav-item { color: #94a3b8; }
+        .nav-item:hover { background: rgba(16, 185, 129, 0.05); color: #059669; }
+        .nav-item.active { background: #fff; color: #059669; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .dark .nav-item.active { background: #1e293b; color: #34d399; border-color: #334155; }
+
         .mutabaah-checkbox svg { transition: all 0.2s ease-in-out; transform: scale(0); opacity: 0; }
         .mutabaah-item.checked .mutabaah-checkbox { background: #10b981; border-color: #10b981; }
         .mutabaah-item.checked .mutabaah-checkbox svg { transform: scale(1); opacity: 1; }
-        .progress-ring-circle { transition: stroke-dashoffset 0.5s ease-in-out; transform-origin: 50% 50%; }
+        
         .toast { animation: slideDown 0.3s ease-out; }
         @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased h-screen flex overflow-hidden transition-colors duration-300 w-full max-w-full">
 
     <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- LOGIN SCREEN -->
+    <!-- ================= LAYAR LOGIN ================= -->
     <div id="authScreen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800">
             <div class="text-center mb-6">
                 <div class="bg-brand-600 text-white p-3 rounded-2xl inline-flex items-center justify-center w-14 h-14 mb-4 shadow-lg shadow-brand-500/30">
-                    <i class="fa-solid fa-book-open text-2xl"></i>
+                    <i data-lucide="book-open" class="w-7 h-7"></i>
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">Mutaba'ah Yaumiyah</h1>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">UPA Apps</h1>
                 <p class="text-xs text-slate-500 mt-1">Silakan login untuk melanjutkan</p>
             </div>
             <input type="email" id="loginEmail" placeholder="Email" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3 focus:outline-none focus:border-brand-500">
@@ -63,76 +70,119 @@
         </div>
     </div>
 
-    <!-- SIDEBAR -->
+    <!-- ================= SIDEBAR (DESKTOP) ================= -->
     <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
         <div class="flex-1 min-h-0 flex flex-col">
             <div class="p-6 flex items-center space-x-3">
                 <div class="bg-brand-600 text-white p-2.5 rounded-2xl shadow-lg shadow-brand-500/30 flex items-center justify-center w-11 h-11">
-                    <i class="fa-solid fa-book-open text-xl"></i>
+                    <i data-lucide="book-open" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">Mutaba'ah</h1>
-                    <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest mt-0.5">UPA Apps</p>
+                    <h1 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">UPA Apps</h1>
+                    <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest mt-0.5">3216M010</p>
                 </div>
             </div>
             
-            <nav class="px-3 mt-4 space-y-1 overflow-y-auto flex-1 no-scrollbar">
-                <button onclick="switchTab('amalan')" id="menu-desktop-amalan" class="w-full py-3 px-4 rounded-xl transition flex items-center gap-3 bg-white dark:bg-slate-800 text-brand-700 dark:text-brand-300 shadow-sm border border-slate-200 dark:border-slate-700 font-bold text-sm">
-                    <i class="fa-solid fa-list-check text-brand-500"></i> Amalan Harian
+            <nav class="px-3 mt-4 space-y-1 overflow-y-auto flex-1">
+                <button onclick="switchTab('tilawah')" id="menu-desktop-tilawah" class="nav-item w-full active">
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i> Tilawah
                 </button>
-                <button onclick="switchTab('halaqoh')" id="menu-desktop-halaqoh" class="w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm">
-                    <i class="fa-solid fa-users"></i> Halaqoh Saya
+                <button onclick="switchTab('mutabaah')" id="menu-desktop-mutabaah" class="nav-item w-full">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Mutabaah
                 </button>
-                <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm">
-                    <i class="fa-solid fa-chart-simple"></i> Rekap & Grafik
+                <button onclick="switchTab('halaqoh')" id="menu-desktop-halaqoh" class="nav-item w-full">
+                    <i data-lucide="users" class="w-5 h-5"></i> Halaqoh
+                </button>
+                <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="nav-item w-full">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Rekap & Grafik
+                </button>
+                <button onclick="switchTab('stats')" id="menu-desktop-stats" class="nav-item w-full">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i> Statistik
                 </button>
             </nav>
         </div>
         
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2">
-            <a href="https://upa-finance.vercel.app/" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold text-xs transition hover:bg-amber-200 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800 mb-2">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Keuangan
+            <a href="https://upa-finance.vercel.app/" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold text-xs transition hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800 mb-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Keuangan
             </a>
             <div class="text-xs text-slate-500 text-center mb-2">Halo, <span id="sidebarUserName" class="font-bold text-brand-600">...</span></div>
-            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-rose-600 dark:text-rose-400 font-semibold text-xs transition hover:bg-rose-100 dark:hover:bg-rose-900/40">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700 mb-2">
+                <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                <i data-lucide="sun" class="w-4 h-4 hidden dark:inline"></i>
+                <span class="dark:hidden">Mode Gelap</span>
+                <span class="hidden dark:inline">Mode Terang</span>
+            </button>
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 font-semibold text-xs transition hover:bg-rose-100 dark:hover:bg-rose-900/40">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
             </button>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full no-scrollbar" id="mainScroll">
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full" id="mainScroll">
         
+        <!-- Header Mobile -->
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md flex items-center justify-center w-9 h-9">
-                    <i class="fa-solid fa-book-open text-sm"></i>
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">Mutaba'ah</h1>
-                    <p class="text-[9px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">UPA Apps</p>
+                    <h1 class="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">UPA Apps</h1>
+                    <p class="text-[9px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">3216M010</p>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="handleLogout()" class="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
-                    <i class="fa-solid fa-right-from-bracket text-xs"></i>
-                </button>
                 <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
-                    <i class="fa-solid fa-moon dark:hidden text-xs"></i>
-                    <i class="fa-solid fa-sun hidden dark:inline text-xs"></i>
+                    <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:inline"></i>
+                </button>
+                <button onclick="handleLogout()" class="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
-        <main class="p-4 md:p-8 space-y-6 max-w-5xl mx-auto w-full pb-24 md:pb-8">
+        <main class="p-4 md:p-8 space-y-6 max-w-6xl mx-auto w-full pb-24 md:pb-8">
             
-            <!-- VIEW: AMALAN -->
-            <div id="view-amalan" class="flex flex-col gap-6 animate-fade-in">
+            <!-- ================= VIEW: TILAWAH ================= -->
+            <div id="view-tilawah" class="flex flex-col gap-6 animate-fade-in">
                 <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div class="relative z-10 w-full md:w-auto">
                         <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
-                            <i class="fa-solid fa-calendar-day"></i> <span id="amalanDateLabel">Hari Ini</span>
+                            <i data-lucide="calendar" class="w-4 h-4"></i> <span id="tilawahDateLabel">Hari Ini</span>
+                        </div>
+                        <h2 class="text-3xl font-extrabold" id="tilawahUserNameDisplay">Memuat...</h2>
+                        <p class="text-sm text-brand-100 mt-2">Catat progres tilawah harianmu.</p>
+                    </div>
+                    <div class="relative z-10 w-full md:w-auto">
+                        <div class="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-4 w-full md:w-64">
+                            <label class="text-[10px] text-brand-100 font-bold uppercase block mb-2">Pilih Status Tilawah</label>
+                            <select id="tilawahStatusSelect" class="w-full bg-white/20 border border-white/30 text-white font-bold rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-white cursor-pointer" onchange="saveTilawahStatus()">
+                                <option value="kholas" class="text-slate-800">Kholas 1 Juz</option>
+                                <option value="progress" class="text-slate-800">In Progress</option>
+                                <option value="kurang" class="text-slate-800">Kurang 1 Juz</option>
+                                <option value="tidak-laporan" class="text-slate-800">Tidak Laporan</option>
+                                <option value="tidak-tilawah" class="text-slate-800">Tidak Tilawah</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8 text-center">
+                    <p class="text-slate-500 mb-4">Fitur kalender & grafik Tilawah sedang dalam pengembangan.</p>
+                </div>
+            </div>
+
+            <!-- ================= VIEW: MUTABAAH ================= -->
+            <div id="view-mutabaah" class="hidden flex flex-col gap-6 animate-fade-in">
+                <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <div class="relative z-10 w-full md:w-auto">
+                        <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4"></i> <span id="amalanDateLabel">Hari Ini</span>
                         </div>
                         <h2 class="text-3xl font-extrabold" id="userNameDisplay">Memuat...</h2>
                         <p class="text-sm text-brand-100 mt-2">Terus jaga konsistensi ibadahmu!</p>
@@ -164,12 +214,12 @@
                     <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
                         <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
                             <div class="flex items-center gap-2">
-                                <button onclick="changeDate(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button onclick="changeDate(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
                                 <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-sm">
-                                    <i class="fa-regular fa-calendar text-slate-400"></i>
+                                    <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
                                     <input type="date" id="datePicker" onchange="onDateChange()" class="bg-transparent text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
                                 </div>
-                                <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-right"></i></button>
+                                <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                             </div>
                         </div>
                         <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left">12 Amalan</div>
@@ -180,28 +230,24 @@
                 </div>
             </div>
 
-            <!-- VIEW: HALAQOH (GRUP) -->
+            <!-- ================= VIEW: HALAQOH ================= -->
             <div id="view-halaqoh" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
-                    
-                    <!-- Jika belum punya grup -->
                     <div id="noGroupState" class="text-center py-10">
                         <div class="bg-slate-100 dark:bg-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                            <i class="fa-solid fa-users-slash text-3xl"></i>
+                            <i data-lucide="users" class="w-8 h-8"></i>
                         </div>
                         <h2 class="text-xl font-extrabold text-slate-800 dark:text-white mb-2">Belum Ada Grup</h2>
                         <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">Anda belum tergabung dalam Halaqoh manapun. Buat grup baru sebagai Admin, atau minta Admin Anda untuk menambahkan Anda.</p>
                         <button onclick="openCreateGroupModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-sm">
-                            <i class="fa-solid fa-plus mr-2"></i> Buat Grup Baru
+                            <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i> Buat Grup Baru
                         </button>
                     </div>
-
-                    <!-- Jika sudah punya grup -->
                     <div id="groupDetailState" class="hidden">
                         <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
                             <div class="flex items-center gap-4">
                                 <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
-                                    <i class="fa-solid fa-users"></i>
+                                    <i data-lucide="users" class="w-6 h-6"></i>
                                 </div>
                                 <div>
                                     <h2 class="text-xl font-extrabold text-slate-900 dark:text-white" id="groupNameDisplay">Nama Grup</h2>
@@ -209,26 +255,54 @@
                                 </div>
                             </div>
                             <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
-                                <i class="fa-solid fa-user-plus mr-2"></i> Tambah Anggota
+                                <i data-lucide="user-plus" class="w-4 h-4 inline mr-1"></i> Tambah Anggota
                             </button>
                         </div>
-
                         <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
-                        <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <!-- Diisi via JS -->
-                        </div>
+                        <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW: REKAP -->
+            <!-- ================= VIEW: REKAP ================= -->
             <div id="view-rekap" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Rekapitulasi Mutaba'ah</h2>
                     <div class="text-center text-slate-400 py-10">Fitur rekap akan diimplementasikan di tahap selanjutnya.</div>
                 </div>
             </div>
+
+            <!-- ================= VIEW: STATISTIK ================= -->
+            <div id="view-stats" class="hidden space-y-6 animate-fade-in">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
+                    <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Statistik & Insight</h2>
+                    <div class="text-center text-slate-400 py-10">Fitur statistik akan diimplementasikan di tahap selanjutnya.</div>
+                </div>
+            </div>
+
         </main>
+    </div>
+
+    <!-- ================= BOTTOM NAV (MOBILE) ================= -->
+    <div class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/20 dark:border-slate-800/50 z-40 pb-safe">
+        <div class="flex justify-around items-center h-16">
+            <button onclick="switchTab('tilawah')" id="menu-mobile-tilawah" class="flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200">
+                <i data-lucide="layout-grid" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold">Tilawah</span>
+            </button>
+            <button onclick="switchTab('mutabaah')" id="menu-mobile-mutabaah" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
+                <i data-lucide="check-circle" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold">Mutabaah</span>
+            </button>
+            <button onclick="switchTab('halaqoh')" id="menu-mobile-halaqoh" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
+                <i data-lucide="users" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold">Halaqoh</span>
+            </button>
+            <button onclick="switchTab('rekap')" id="menu-mobile-rekap" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
+                <i data-lucide="bar-chart-3" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold">Rekap</span>
+            </button>
+        </div>
     </div>
 
     <!-- MODAL BUAT GRUP -->
@@ -236,7 +310,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
             <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Buat Grup Halaqoh</h3>
             <p class="text-xs text-slate-500 mb-4">Anda akan menjadi Admin di grup ini.</p>
-            <input type="text" id="newGroupName" placeholder="Nama Halaqoh (Cth: Halaqoh Ust. Gugum)" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
+            <input type="text" id="newGroupName" placeholder="Nama Halaqoh" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
             <div class="flex gap-2">
                 <button onclick="closeCreateGroupModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
                 <button onclick="handleCreateGroup()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Buat</button>
@@ -244,44 +318,18 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH ANGGOTA (Sementara UI saja) -->
-    <div id="addMemberModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
-            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Tambah Anggota</h3>
-            <input type="text" id="newMemberName" placeholder="Nama Lengkap" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3">
-            <input type="email" id="newMemberEmail" placeholder="Email Anggota" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3">
-            <input type="password" id="newMemberPassword" placeholder="Password Sementara" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4">
-            <div class="flex gap-2">
-                <button onclick="closeAddMemberModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
-                <button onclick="alert('Fitur ini akan diimplementasikan di tahap selanjutnya!')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAV (MOBILE) -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/20 dark:border-slate-800/50 z-40 pb-safe">
-        <div class="flex justify-around items-center h-16">
-            <button onclick="switchTab('amalan')" id="menu-mobile-amalan" class="flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200">
-                <i class="fa-solid fa-list-check text-lg mb-1"></i>
-                <span class="text-[10px] font-bold">Amalan</span>
-            </button>
-            <button onclick="switchTab('halaqoh')" id="menu-mobile-halaqoh" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
-                <i class="fa-solid fa-users text-lg mb-1"></i>
-                <span class="text-[10px] font-bold">Halaqoh</span>
-            </button>
-            <button onclick="switchTab('rekap')" id="menu-mobile-rekap" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
-                <i class="fa-solid fa-chart-simple text-lg mb-1"></i>
-                <span class="text-[10px] font-bold">Rekap</span>
-            </button>
-        </div>
-    </div>
-
     <script>
+        // ==========================================
+        // 1. KONFIGURASI SUPABASE
+        // ==========================================
         const SUPABASE_URL = 'https://nvfdctzpdibztejwrgyr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52ZmRjdHpwZGlienRlandyZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MzU1NDMsImV4cCI6MjExMDExMTU0M30.A91GHmt6Z4T-LVf69pHLB7_Vpsj3rnFSImOuI4xWVcU';
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ==========================================
+        // 2. STATE & VARIABEL GLOBAL
+        // ==========================================
         const DEFAULT_AMALAN = [
             "Qiyamullail", "Shalat Witir", "Tilawah Al-Qur'an 1 Juz", "Baca Terjemah Al-Qur'an", 
             "Mendo'akan Palestina", "Mendo'akan Qiyadah & Jamaah PKS", "Istighfar 100x", 
@@ -290,21 +338,25 @@
 
         let currentUser = null;
         let currentProfile = null;
+        let currentGroup = null;
         let currentDate = new Date();
-        let currentData = {};
-        let currentGroup = null; // Menyimpan data grup aktif
+        let currentData = {}; // Data mutabaah
 
+        // ==========================================
+        // 3. AUTHENTICATION
+        // ==========================================
         async function checkAuth() {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            
             if (session) {
                 currentUser = session.user;
                 await fetchProfile();
                 document.getElementById('authScreen').classList.add('hidden');
-                renderAmalan();
+                renderTilawah(); // Default view
+                renderMutabaah();
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
             }
+            lucide.createIcons();
         }
 
         async function handleLogin() {
@@ -332,16 +384,14 @@
             if(!fullName) return;
 
             const { error } = await supabaseClient.auth.signUp({ 
-                email, 
-                password,
-                options: { data: { full_name: fullName } }
+                email, password, options: { data: { full_name: fullName } }
             });
 
             if (error) {
                 errEl.textContent = error.message;
                 errEl.classList.remove('hidden');
             } else {
-                alert('Registrasi berhasil! Silakan login menggunakan email dan password Anda.');
+                alert('Registrasi berhasil! Silakan login.');
             }
         }
 
@@ -354,28 +404,36 @@
         }
 
         async function fetchProfile() {
-            // Ambil profil user beserta data grupnya
             const { data, error } = await supabaseClient
-                .from('profiles')
-                .select(`
-                    *,
-                    groups:group_id (
-                        id,
-                        name,
-                        admin_id
-                    )
-                `)
-                .eq('id', currentUser.id)
-                .single();
+                .from('profiles').select(`*, groups:group_id (id, name, admin_id)`)
+                .eq('id', currentUser.id).single();
 
             if (data) {
                 currentProfile = data;
-                currentGroup = data.groups; // Bisa null jika belum punya grup
+                currentGroup = data.groups;
                 document.getElementById('sidebarUserName').textContent = data.full_name;
                 document.getElementById('userNameDisplay').textContent = data.full_name;
+                document.getElementById('tilawahUserNameDisplay').textContent = data.full_name;
             }
         }
 
+        // ==========================================
+        // 4. LOGIKA TILAWAH (UI SAJA)
+        // ==========================================
+        function renderTilawah() {
+            const days = ['Ahad','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+            const today = new Date();
+            document.getElementById('tilawahDateLabel').textContent = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+        }
+
+        function saveTilawahStatus() {
+            showToast('Status Tilawah disimpan (Simulasi)', 'success');
+        }
+
+        // ==========================================
+        // 5. LOGIKA MUTABAAH (SUPABASE)
+        // ==========================================
         function formatDateKey(dateObj) {
             return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
         }
@@ -383,24 +441,17 @@
         async function fetchMutabaahData() {
             const dateKey = formatDateKey(currentDate);
             const { data, error } = await supabaseClient
-                .from('mutabaah')
-                .select('amalan_data')
-                .eq('user_id', currentUser.id)
-                .eq('date', dateKey)
-                .maybeSingle(); 
+                .from('mutabaah').select('amalan_data')
+                .eq('user_id', currentUser.id).eq('date', dateKey).maybeSingle(); 
 
             currentData = (data && data.amalan_data) ? data.amalan_data : {};
         }
 
         async function saveMutabaahData() {
             const dateKey = formatDateKey(currentDate);
-            
             const { error } = await supabaseClient
-                .from('mutabaah')
-                .upsert({ 
-                    user_id: currentUser.id, 
-                    date: dateKey, 
-                    amalan_data: currentData 
+                .from('mutabaah').upsert({ 
+                    user_id: currentUser.id, date: dateKey, amalan_data: currentData 
                 }, { onConflict: 'user_id, date' });
 
             if (error) {
@@ -409,9 +460,10 @@
             }
         }
 
-        async function renderAmalan() {
+        async function renderMutabaah() {
             if (!currentUser) return;
             await fetchMutabaahData();
+            
             const dateKey = formatDateKey(currentDate);
             document.getElementById('datePicker').value = dateKey;
             const isToday = dateKey === formatDateKey(new Date());
@@ -446,64 +498,47 @@
             if (currentData[amalanName]) delete currentData[amalanName];
             else currentData[amalanName] = true;
             await saveMutabaahData();
-            renderAmalan();
+            renderMutabaah();
         }
 
         function changeDate(offset) {
             currentDate.setDate(currentDate.getDate() + offset);
-            renderAmalan();
+            renderMutabaah();
         }
 
         function onDateChange() {
             const val = document.getElementById('datePicker').value;
-            if (val) {
-                currentDate = new Date(val);
-                renderAmalan();
-            }
+            if (val) { currentDate = new Date(val); renderMutabaah(); }
         }
 
         // ==========================================
-        // LOGIKA HALAQOH (GRUP)
+        // 6. LOGIKA HALAQOH
         // ==========================================
         async function renderHalaqoh() {
             if (!currentProfile) return;
-
             if (!currentGroup) {
                 document.getElementById('noGroupState').classList.remove('hidden');
                 document.getElementById('groupDetailState').classList.add('hidden');
             } else {
                 document.getElementById('noGroupState').classList.add('hidden');
                 document.getElementById('groupDetailState').classList.remove('hidden');
-                
                 document.getElementById('groupNameDisplay').textContent = currentGroup.name;
                 
-                // Cek apakah user ini Admin
                 const isAdmin = currentGroup.admin_id === currentUser.id;
                 document.getElementById('groupRoleDisplay').textContent = isAdmin ? 'Admin' : 'Anggota';
-                
                 const btnAdd = document.getElementById('btnAddMember');
                 if (isAdmin) btnAdd.classList.remove('hidden');
                 else btnAdd.classList.add('hidden');
 
-                // Ambil daftar anggota grup
-                const { data: members, error } = await supabaseClient
-                    .from('profiles')
-                    .select('*')
-                    .eq('group_id', currentGroup.id);
-
+                const { data: members } = await supabaseClient.from('profiles').select('*').eq('group_id', currentGroup.id);
                 if (members) {
-                    const list = document.getElementById('memberList');
-                    list.innerHTML = members.map(m => `
+                    document.getElementById('memberList').innerHTML = members.map(m => `
                         <div class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
-                                    ${m.full_name.charAt(0).toUpperCase()}
-                                </div>
+                                <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">${m.full_name.charAt(0).toUpperCase()}</div>
                                 <div>
                                     <div class="font-bold text-sm text-slate-800 dark:text-slate-200">${m.full_name}</div>
-                                    <div class="text-[10px] ${m.admin_id === currentGroup.admin_id ? 'text-brand-600 font-bold' : 'text-slate-500'}">
-                                        ${m.admin_id === currentGroup.admin_id ? 'Admin' : 'Anggota'}
-                                    </div>
+                                    <div class="text-[10px] ${m.admin_id === currentGroup.admin_id ? 'text-brand-600 font-bold' : 'text-slate-500'}">${m.admin_id === currentGroup.admin_id ? 'Admin' : 'Anggota'}</div>
                                 </div>
                             </div>
                         </div>
@@ -526,70 +561,54 @@
             const name = document.getElementById('newGroupName').value;
             if (!name) return;
 
-            // 1. Buat Grup Baru
             const { data: newGroup, error: groupError } = await supabaseClient
-                .from('groups')
-                .insert([{ name: name, admin_id: currentUser.id }])
-                .select()
-                .single();
+                .from('groups').insert([{ name: name, admin_id: currentUser.id }]).select().single();
 
-            if (groupError) {
-                showToast('Gagal membuat grup: ' + groupError.message, 'error');
-                return;
-            }
+            if (groupError) { showToast('Gagal membuat grup', 'error'); return; }
 
-            // 2. Update Profil User agar masuk ke grup tersebut
             const { error: profileError } = await supabaseClient
-                .from('profiles')
-                .update({ group_id: newGroup.id })
-                .eq('id', currentUser.id);
+                .from('profiles').update({ group_id: newGroup.id }).eq('id', currentUser.id);
 
-            if (profileError) {
-                showToast('Gagal update profil: ' + profileError.message, 'error');
-            } else {
+            if (profileError) { showToast('Gagal update profil', 'error'); } 
+            else {
                 showToast('Grup berhasil dibuat!', 'success');
                 closeCreateGroupModal();
-                await fetchProfile(); // Refresh data profil & grup
+                await fetchProfile();
                 renderHalaqoh();
             }
         }
 
-        function openAddMemberModal() {
-            document.getElementById('addMemberModal').classList.remove('hidden');
-            document.getElementById('addMemberModal').classList.add('flex');
-        }
-
-        function closeAddMemberModal() {
-            document.getElementById('addMemberModal').classList.add('hidden');
-            document.getElementById('addMemberModal').classList.remove('flex');
-        }
-
         // ==========================================
-        // UTILITIES & NAVIGATION
+        // 7. NAVIGATION & UTILITIES
         // ==========================================
         function switchTab(tab) {
-            const views = ['amalan', 'halaqoh', 'rekap'];
-            const dMenus = ['menu-desktop-amalan', 'menu-desktop-halaqoh', 'menu-desktop-rekap'];
-            const mMenus = ['menu-mobile-amalan', 'menu-mobile-halaqoh', 'menu-mobile-rekap'];
-
-            const activeDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 bg-white dark:bg-slate-800 text-brand-700 dark:text-brand-300 shadow-sm border border-slate-200 dark:border-slate-700 font-bold text-sm";
-            const inactiveDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm";
-            const activeMobile = "flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200";
-            const inactiveMobile = "flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200";
+            const views = ['tilawah', 'mutabaah', 'halaqoh', 'rekap', 'stats'];
+            const dMenus = ['menu-desktop-tilawah', 'menu-desktop-mutabaah', 'menu-desktop-halaqoh', 'menu-desktop-rekap', 'menu-desktop-stats'];
+            const mMenus = ['menu-mobile-tilawah', 'menu-mobile-mutabaah', 'menu-mobile-halaqoh', 'menu-mobile-rekap'];
 
             views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
             document.getElementById('view-' + tab).classList.remove('hidden');
 
             dMenus.forEach((id, i) => {
                 const el = document.getElementById(id);
-                el.className = (views[i] === tab) ? activeDesktop : inactiveDesktop;
-            });
-            mMenus.forEach((id, i) => {
-                const el = document.getElementById(id);
-                el.className = (views[i] === tab) ? activeMobile : inactiveMobile;
+                if (views[i] === tab) el.classList.add('active');
+                else el.classList.remove('active');
             });
 
+            if (mMenus) {
+                mMenus.forEach((id, i) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    if (views[i] === tab) {
+                        el.className = "flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200";
+                    } else {
+                        el.className = "flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200";
+                    }
+                });
+            }
+
             if (tab === 'halaqoh') renderHalaqoh();
+            if (tab === 'mutabaah') renderMutabaah();
         }
 
         function showToast(msg, type = 'info') {
@@ -600,7 +619,7 @@
                 type === 'error' ? 'bg-rose-50 text-rose-800 border-rose-500' :
                 'bg-blue-50 text-blue-800 border-blue-500'
             }`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${msg}`;
+            toast.innerHTML = `${msg}`;
             container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
