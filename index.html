@@ -23,7 +23,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -46,7 +45,7 @@
 
     <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- ================= LAYAR LOGIN ================= -->
+    <!-- LOGIN SCREEN -->
     <div id="authScreen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800">
             <div class="text-center mb-6">
@@ -64,7 +63,7 @@
         </div>
     </div>
 
-    <!-- ================= SIDEBAR ================= -->
+    <!-- SIDEBAR -->
     <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
         <div class="flex-1 min-h-0 flex flex-col">
             <div class="p-6 flex items-center space-x-3">
@@ -80,6 +79,9 @@
             <nav class="px-3 mt-4 space-y-1 overflow-y-auto flex-1 no-scrollbar">
                 <button onclick="switchTab('amalan')" id="menu-desktop-amalan" class="w-full py-3 px-4 rounded-xl transition flex items-center gap-3 bg-white dark:bg-slate-800 text-brand-700 dark:text-brand-300 shadow-sm border border-slate-200 dark:border-slate-700 font-bold text-sm">
                     <i class="fa-solid fa-list-check text-brand-500"></i> Amalan Harian
+                </button>
+                <button onclick="switchTab('halaqoh')" id="menu-desktop-halaqoh" class="w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm">
+                    <i class="fa-solid fa-users"></i> Halaqoh Saya
                 </button>
                 <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm">
                     <i class="fa-solid fa-chart-simple"></i> Rekap & Grafik
@@ -98,7 +100,7 @@
         </div>
     </aside>
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full no-scrollbar" id="mainScroll">
         
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
@@ -124,14 +126,10 @@
 
         <main class="p-4 md:p-8 space-y-6 max-w-5xl mx-auto w-full pb-24 md:pb-8">
             
-            <!-- KONTEN AMALAN (FULL WIDTH LAYOUT) -->
+            <!-- VIEW: AMALAN -->
             <div id="view-amalan" class="flex flex-col gap-6 animate-fade-in">
-                
-                <!-- 1. Kartu Progress (Full Width di atas) -->
                 <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                    
-                    <!-- Kiri: Info User & Tanggal -->
                     <div class="relative z-10 w-full md:w-auto">
                         <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
                             <i class="fa-solid fa-calendar-day"></i> <span id="amalanDateLabel">Hari Ini</span>
@@ -139,8 +137,6 @@
                         <h2 class="text-3xl font-extrabold" id="userNameDisplay">Memuat...</h2>
                         <p class="text-sm text-brand-100 mt-2">Terus jaga konsistensi ibadahmu!</p>
                     </div>
-
-                    <!-- Kanan: Ring & Statistik -->
                     <div class="relative z-10 flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
                         <div class="flex gap-3">
                             <div class="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center w-24">
@@ -152,7 +148,6 @@
                                 <div class="text-2xl font-black" id="statPending">0</div>
                             </div>
                         </div>
-
                         <div class="relative w-20 h-20 md:w-24 md:h-24 shrink-0">
                             <svg class="w-full h-full transform -rotate-90">
                                 <circle cx="50%" cy="50%" r="40%" stroke="rgba(255,255,255,0.2)" stroke-width="6" fill="none"/>
@@ -165,7 +160,6 @@
                     </div>
                 </div>
 
-                <!-- 2. Kotak Daftar Amalan (Full Width di bawah) -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
                     <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
                         <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
@@ -180,15 +174,54 @@
                         </div>
                         <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left">12 Amalan</div>
                     </div>
-                    
-                    <!-- Grid Amalan -->
                     <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="text-center text-slate-400 py-10 col-span-2">Memuat amalan...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- KONTEN REKAP -->
+            <!-- VIEW: HALAQOH (GRUP) -->
+            <div id="view-halaqoh" class="hidden space-y-6 animate-fade-in">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
+                    
+                    <!-- Jika belum punya grup -->
+                    <div id="noGroupState" class="text-center py-10">
+                        <div class="bg-slate-100 dark:bg-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                            <i class="fa-solid fa-users-slash text-3xl"></i>
+                        </div>
+                        <h2 class="text-xl font-extrabold text-slate-800 dark:text-white mb-2">Belum Ada Grup</h2>
+                        <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">Anda belum tergabung dalam Halaqoh manapun. Buat grup baru sebagai Admin, atau minta Admin Anda untuk menambahkan Anda.</p>
+                        <button onclick="openCreateGroupModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-sm">
+                            <i class="fa-solid fa-plus mr-2"></i> Buat Grup Baru
+                        </button>
+                    </div>
+
+                    <!-- Jika sudah punya grup -->
+                    <div id="groupDetailState" class="hidden">
+                        <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-extrabold text-slate-900 dark:text-white" id="groupNameDisplay">Nama Grup</h2>
+                                    <p class="text-xs text-slate-500 mt-1">Role Anda: <span id="groupRoleDisplay" class="font-bold text-brand-600">Anggota</span></p>
+                                </div>
+                            </div>
+                            <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
+                                <i class="fa-solid fa-user-plus mr-2"></i> Tambah Anggota
+                            </button>
+                        </div>
+
+                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
+                        <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <!-- Diisi via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: REKAP -->
             <div id="view-rekap" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Rekapitulasi Mutaba'ah</h2>
@@ -198,12 +231,43 @@
         </main>
     </div>
 
+    <!-- MODAL BUAT GRUP -->
+    <div id="createGroupModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Buat Grup Halaqoh</h3>
+            <p class="text-xs text-slate-500 mb-4">Anda akan menjadi Admin di grup ini.</p>
+            <input type="text" id="newGroupName" placeholder="Nama Halaqoh (Cth: Halaqoh Ust. Gugum)" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
+            <div class="flex gap-2">
+                <button onclick="closeCreateGroupModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
+                <button onclick="handleCreateGroup()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Buat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH ANGGOTA (Sementara UI saja) -->
+    <div id="addMemberModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Tambah Anggota</h3>
+            <input type="text" id="newMemberName" placeholder="Nama Lengkap" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3">
+            <input type="email" id="newMemberEmail" placeholder="Email Anggota" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3">
+            <input type="password" id="newMemberPassword" placeholder="Password Sementara" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4">
+            <div class="flex gap-2">
+                <button onclick="closeAddMemberModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
+                <button onclick="alert('Fitur ini akan diimplementasikan di tahap selanjutnya!')" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- BOTTOM NAV (MOBILE) -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/20 dark:border-slate-800/50 z-40 pb-safe">
         <div class="flex justify-around items-center h-16">
             <button onclick="switchTab('amalan')" id="menu-mobile-amalan" class="flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200">
                 <i class="fa-solid fa-list-check text-lg mb-1"></i>
                 <span class="text-[10px] font-bold">Amalan</span>
+            </button>
+            <button onclick="switchTab('halaqoh')" id="menu-mobile-halaqoh" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
+                <i class="fa-solid fa-users text-lg mb-1"></i>
+                <span class="text-[10px] font-bold">Halaqoh</span>
             </button>
             <button onclick="switchTab('rekap')" id="menu-mobile-rekap" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
                 <i class="fa-solid fa-chart-simple text-lg mb-1"></i>
@@ -213,17 +277,11 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. KONFIGURASI SUPABASE
-        // ==========================================
         const SUPABASE_URL = 'https://nvfdctzpdibztejwrgyr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52ZmRjdHpwZGlienRlandyZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MzU1NDMsImV4cCI6MjExMDExMTU0M30.A91GHmt6Z4T-LVf69pHLB7_Vpsj3rnFSImOuI4xWVcU';
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ==========================================
-        // 2. STATE & VARIABEL GLOBAL
-        // ==========================================
         const DEFAULT_AMALAN = [
             "Qiyamullail", "Shalat Witir", "Tilawah Al-Qur'an 1 Juz", "Baca Terjemah Al-Qur'an", 
             "Mendo'akan Palestina", "Mendo'akan Qiyadah & Jamaah PKS", "Istighfar 100x", 
@@ -234,10 +292,8 @@
         let currentProfile = null;
         let currentDate = new Date();
         let currentData = {};
+        let currentGroup = null; // Menyimpan data grup aktif
 
-        // ==========================================
-        // 3. AUTHENTICATION (LOGIN/REGISTER)
-        // ==========================================
         async function checkAuth() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             
@@ -293,26 +349,33 @@
             await supabaseClient.auth.signOut();
             currentUser = null;
             currentProfile = null;
+            currentGroup = null;
             document.getElementById('authScreen').classList.remove('hidden');
         }
 
         async function fetchProfile() {
+            // Ambil profil user beserta data grupnya
             const { data, error } = await supabaseClient
                 .from('profiles')
-                .select('*')
+                .select(`
+                    *,
+                    groups:group_id (
+                        id,
+                        name,
+                        admin_id
+                    )
+                `)
                 .eq('id', currentUser.id)
                 .single();
 
             if (data) {
                 currentProfile = data;
+                currentGroup = data.groups; // Bisa null jika belum punya grup
                 document.getElementById('sidebarUserName').textContent = data.full_name;
                 document.getElementById('userNameDisplay').textContent = data.full_name;
             }
         }
 
-        // ==========================================
-        // 4. DATA MUTABAAH (AMBIL & SIMPAN)
-        // ==========================================
         function formatDateKey(dateObj) {
             return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
         }
@@ -324,7 +387,7 @@
                 .select('amalan_data')
                 .eq('user_id', currentUser.id)
                 .eq('date', dateKey)
-                .maybeSingle(); // Menggunakan maybeSingle agar tidak error jika data kosong
+                .maybeSingle(); 
 
             currentData = (data && data.amalan_data) ? data.amalan_data : {};
         }
@@ -346,17 +409,11 @@
             }
         }
 
-        // ==========================================
-        // 5. RENDER UI
-        // ==========================================
         async function renderAmalan() {
             if (!currentUser) return;
-
             await fetchMutabaahData();
-
             const dateKey = formatDateKey(currentDate);
             document.getElementById('datePicker').value = dateKey;
-            
             const isToday = dateKey === formatDateKey(new Date());
             document.getElementById('amalanDateLabel').textContent = isToday ? "Hari Ini" : "Edit Riwayat";
             
@@ -366,7 +423,6 @@
             list.innerHTML = DEFAULT_AMALAN.map((text) => {
                 const isDone = currentData[text] === true;
                 if (isDone) doneCount++;
-
                 return `
                 <div class="mutabaah-item ${isDone ? 'checked' : ''} flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer transition hover:border-brand-500" onclick="toggleAmalan(\`${text}\`)">
                     <span class="text-[13px] font-semibold text-slate-700 dark:text-slate-300 pr-2 ${isDone ? 'line-through opacity-50' : ''}">${text}</span>
@@ -378,30 +434,17 @@
 
             const total = DEFAULT_AMALAN.length;
             const percent = Math.round((doneCount / total) * 100);
-
             document.getElementById('mainProgressText').textContent = percent + '%';
             document.getElementById('statDone').textContent = doneCount;
             document.getElementById('statPending').textContent = total - doneCount;
-
             const ring = document.getElementById('mainProgressRing');
-            // Karena kita menggunakan 50% / 40% di SVG, kita perlu menghitung ulang kelilingnya
-            const radius = 40; // 40% dari 100
-            const circumference = 2 * Math.PI * radius; 
-            // Catatan: Karena menggunakan persentase, ukuran pastinya akan menyesuaikan container
-            // Kita gunakan trik CSS stroke-dasharray dengan nilai fix (misal 213.6 sebelumnya untuk r=34)
-            // Karena kita ganti ukurannya, kita gunakan nilai statis yang aman untuk lingkaran SVG tersebut
             ring.style.strokeDashoffset = 213.6 - (percent / 100) * 213.6;
         }
 
         async function toggleAmalan(amalanName) {
             if (navigator.vibrate) navigator.vibrate(50);
-            
-            if (currentData[amalanName]) {
-                delete currentData[amalanName];
-            } else {
-                currentData[amalanName] = true;
-            }
-            
+            if (currentData[amalanName]) delete currentData[amalanName];
+            else currentData[amalanName] = true;
             await saveMutabaahData();
             renderAmalan();
         }
@@ -420,40 +463,142 @@
         }
 
         // ==========================================
-        // 6. UTILITIES & NAVIGATION
+        // LOGIKA HALAQOH (GRUP)
+        // ==========================================
+        async function renderHalaqoh() {
+            if (!currentProfile) return;
+
+            if (!currentGroup) {
+                document.getElementById('noGroupState').classList.remove('hidden');
+                document.getElementById('groupDetailState').classList.add('hidden');
+            } else {
+                document.getElementById('noGroupState').classList.add('hidden');
+                document.getElementById('groupDetailState').classList.remove('hidden');
+                
+                document.getElementById('groupNameDisplay').textContent = currentGroup.name;
+                
+                // Cek apakah user ini Admin
+                const isAdmin = currentGroup.admin_id === currentUser.id;
+                document.getElementById('groupRoleDisplay').textContent = isAdmin ? 'Admin' : 'Anggota';
+                
+                const btnAdd = document.getElementById('btnAddMember');
+                if (isAdmin) btnAdd.classList.remove('hidden');
+                else btnAdd.classList.add('hidden');
+
+                // Ambil daftar anggota grup
+                const { data: members, error } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('group_id', currentGroup.id);
+
+                if (members) {
+                    const list = document.getElementById('memberList');
+                    list.innerHTML = members.map(m => `
+                        <div class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                                    ${m.full_name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800 dark:text-slate-200">${m.full_name}</div>
+                                    <div class="text-[10px] ${m.admin_id === currentGroup.admin_id ? 'text-brand-600 font-bold' : 'text-slate-500'}">
+                                        ${m.admin_id === currentGroup.admin_id ? 'Admin' : 'Anggota'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function openCreateGroupModal() {
+            document.getElementById('createGroupModal').classList.remove('hidden');
+            document.getElementById('createGroupModal').classList.add('flex');
+        }
+
+        function closeCreateGroupModal() {
+            document.getElementById('createGroupModal').classList.add('hidden');
+            document.getElementById('createGroupModal').classList.remove('flex');
+        }
+
+        async function handleCreateGroup() {
+            const name = document.getElementById('newGroupName').value;
+            if (!name) return;
+
+            // 1. Buat Grup Baru
+            const { data: newGroup, error: groupError } = await supabaseClient
+                .from('groups')
+                .insert([{ name: name, admin_id: currentUser.id }])
+                .select()
+                .single();
+
+            if (groupError) {
+                showToast('Gagal membuat grup: ' + groupError.message, 'error');
+                return;
+            }
+
+            // 2. Update Profil User agar masuk ke grup tersebut
+            const { error: profileError } = await supabaseClient
+                .from('profiles')
+                .update({ group_id: newGroup.id })
+                .eq('id', currentUser.id);
+
+            if (profileError) {
+                showToast('Gagal update profil: ' + profileError.message, 'error');
+            } else {
+                showToast('Grup berhasil dibuat!', 'success');
+                closeCreateGroupModal();
+                await fetchProfile(); // Refresh data profil & grup
+                renderHalaqoh();
+            }
+        }
+
+        function openAddMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('hidden');
+            document.getElementById('addMemberModal').classList.add('flex');
+        }
+
+        function closeAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('hidden');
+            document.getElementById('addMemberModal').classList.remove('flex');
+        }
+
+        // ==========================================
+        // UTILITIES & NAVIGATION
         // ==========================================
         function switchTab(tab) {
-            const viewAmalan = document.getElementById('view-amalan');
-            const viewRekap = document.getElementById('view-rekap');
-            const dAmalan = document.getElementById('menu-desktop-amalan');
-            const dRekap = document.getElementById('menu-desktop-rekap');
-            const mAmalan = document.getElementById('menu-mobile-amalan');
-            const mRekap = document.getElementById('menu-mobile-rekap');
+            const views = ['amalan', 'halaqoh', 'rekap'];
+            const dMenus = ['menu-desktop-amalan', 'menu-desktop-halaqoh', 'menu-desktop-rekap'];
+            const mMenus = ['menu-mobile-amalan', 'menu-mobile-halaqoh', 'menu-mobile-rekap'];
 
             const activeDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 bg-white dark:bg-slate-800 text-brand-700 dark:text-brand-300 shadow-sm border border-slate-200 dark:border-slate-700 font-bold text-sm";
             const inactiveDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm";
             const activeMobile = "flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200";
             const inactiveMobile = "flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200";
 
-            if (tab === 'amalan') {
-                viewAmalan.classList.remove('hidden');
-                viewRekap.classList.add('hidden');
-                dAmalan.className = activeDesktop; dRekap.className = inactiveDesktop;
-                mAmalan.className = activeMobile; mRekap.className = inactiveMobile;
-            } else {
-                viewAmalan.classList.add('hidden');
-                viewRekap.classList.remove('hidden');
-                dRekap.className = activeDesktop; dAmalan.className = inactiveDesktop;
-                mRekap.className = activeMobile; mAmalan.className = inactiveMobile;
-            }
+            views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
+            document.getElementById('view-' + tab).classList.remove('hidden');
+
+            dMenus.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.className = (views[i] === tab) ? activeDesktop : inactiveDesktop;
+            });
+            mMenus.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.className = (views[i] === tab) ? activeMobile : inactiveMobile;
+            });
+
+            if (tab === 'halaqoh') renderHalaqoh();
         }
 
         function showToast(msg, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast pointer-events-auto min-w-[250px] p-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-bold border-l-4 ${
-                type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-500 dark:bg-emerald-900/90 dark:text-emerald-100' : 
-                'bg-blue-50 text-blue-800 border-blue-500 dark:bg-blue-900/90 dark:text-blue-100'
+                type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-500' : 
+                type === 'error' ? 'bg-rose-50 text-rose-800 border-rose-500' :
+                'bg-blue-50 text-blue-800 border-blue-500'
             }`;
             toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${msg}`;
             container.appendChild(toast);
@@ -465,9 +610,6 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
-        // ==========================================
-        // 7. INISIALISASI
-        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('theme') === 'dark') {
                 document.documentElement.classList.add('dark');
