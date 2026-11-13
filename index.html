@@ -206,11 +206,12 @@
 
     <script>
         // ==========================================
-        // 1. KONFIGURASI SUPABASE (GANTI DENGAN MILIK ANDA)
+        // 1. KONFIGURASI SUPABASE
         // ==========================================
         const SUPABASE_URL = 'https://nvfdctzpdibztejwrgyr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52ZmRjdHpwZGlienRlandyZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MzU1NDMsImV4cCI6MjExMDExMTU0M30.A91GHmt6Z4T-LVf69pHLB7_Vpsj3rnFSImOuI4xWVcU';
 
+        // Gunakan nama variabel supabaseClient agar tidak bentrok dengan library CDN
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ==========================================
@@ -264,7 +265,6 @@
             const errEl = document.getElementById('authError');
             errEl.classList.add('hidden');
 
-            // Catatan: Kita perlu mengirim 'full_name' ke metadata user agar trigger SQL bisa membaca
             const fullName = prompt("Masukkan Nama Lengkap Anda:"); 
             if(!fullName) return;
 
@@ -278,7 +278,7 @@
                 errEl.textContent = error.message;
                 errEl.classList.remove('hidden');
             } else {
-                alert('Registrasi berhasil! Silakan cek email Anda untuk verifikasi (jika diaktifkan), atau langsung login.');
+                alert('Registrasi berhasil! Silakan login menggunakan email dan password Anda.');
             }
         }
 
@@ -290,7 +290,8 @@
         }
 
         async function fetchProfile() {
-            const { data, error } = await supabase
+            // PERBAIKAN: Menggunakan supabaseClient
+            const { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
                 .eq('id', currentUser.id)
@@ -300,6 +301,8 @@
                 currentProfile = data;
                 document.getElementById('sidebarUserName').textContent = data.full_name;
                 document.getElementById('userNameDisplay').textContent = data.full_name;
+            } else {
+                console.error("Gagal mengambil profil:", error);
             }
         }
 
@@ -312,7 +315,8 @@
 
         async function fetchMutabaahData() {
             const dateKey = formatDateKey(currentDate);
-            const { data, error } = await supabase
+            // PERBAIKAN: Menggunakan supabaseClient
+            const { data, error } = await supabaseClient
                 .from('mutabaah')
                 .select('amalan_data')
                 .eq('user_id', currentUser.id)
@@ -326,7 +330,8 @@
         async function saveMutabaahData() {
             const dateKey = formatDateKey(currentDate);
             
-            const { error } = await supabase
+            // PERBAIKAN: Menggunakan supabaseClient
+            const { error } = await supabaseClient
                 .from('mutabaah')
                 .upsert({ 
                     user_id: currentUser.id, 
