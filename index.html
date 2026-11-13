@@ -211,7 +211,7 @@
         const SUPABASE_URL = 'https://nvfdctzpdibztejwrgyr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52ZmRjdHpwZGlienRlandyZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MzU1NDMsImV4cCI6MjExMDExMTU0M30.A91GHmt6Z4T-LVf69pHLB7_Vpsj3rnFSImOuI4xWVcU';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ==========================================
         // 2. STATE & VARIABEL GLOBAL
@@ -231,7 +231,7 @@
         // 3. AUTHENTICATION (LOGIN/REGISTER)
         // ==========================================
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             
             if (session) {
                 currentUser = session.user;
@@ -249,7 +249,7 @@
             const errEl = document.getElementById('authError');
             errEl.classList.add('hidden');
 
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) {
                 errEl.textContent = error.message;
                 errEl.classList.remove('hidden');
@@ -268,7 +268,7 @@
             const fullName = prompt("Masukkan Nama Lengkap Anda:"); 
             if(!fullName) return;
 
-            const { error } = await supabase.auth.signUp({ 
+            const { error } = await supabaseClient.auth.signUp({ 
                 email, 
                 password,
                 options: { data: { full_name: fullName } }
@@ -283,7 +283,7 @@
         }
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             currentUser = null;
             currentProfile = null;
             document.getElementById('authScreen').classList.remove('hidden');
