@@ -112,7 +112,6 @@
                 <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="nav-item w-full">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Rekap & Grafik
                 </button>
-                <!-- Menu Statistik Dihapus -->
             </nav>
         </div>
         
@@ -121,6 +120,11 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Keuangan
             </a>
             <div class="text-xs text-slate-500 text-center mb-2">Halo, <span id="sidebarUserName" class="font-bold text-brand-600">...</span></div>
+            
+            <button onclick="openChangePasswordModal()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700 mb-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> Ganti Password
+            </button>
+            
             <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700 mb-2">
                 <svg class="w-4 h-4 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 <svg class="w-4 h-4 hidden dark:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -202,7 +206,6 @@
                     </div>
                 </div>
 
-                <!-- Kalender -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-5 md:p-8 w-full">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-base md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -238,7 +241,6 @@
             <!-- VIEW: MUTABAAH -->
             <div id="view-mutabaah" class="hidden flex flex-col gap-6 animate-fade-in">
                 
-                <!-- Info Target Aktif (Hanya muncul jika Admin memilih anggota) -->
                 <div id="viewAsBanner" class="hidden bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-3 flex items-center justify-between">
                     <div class="flex items-center gap-2 text-amber-800 dark:text-amber-300 text-sm font-bold">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -439,6 +441,22 @@
         </div>
     </div>
 
+    <!-- MODAL GANTI PASSWORD -->
+    <div id="changePasswordModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Ganti Password</h3>
+            <p class="text-xs text-slate-500 mb-4">Masukkan password baru Anda (minimal 6 karakter).</p>
+            
+            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Password Baru</label>
+            <input type="password" id="newPasswordInput" placeholder="Password baru" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
+            
+            <div class="flex gap-2">
+                <button onclick="closeChangePasswordModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
+                <button onclick="handleChangePassword()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- BOTTOM SHEET TILAWAH -->
     <div id="sheetOverlay" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm z-[90] hidden transition-opacity" onclick="closeTilawahSheet()"></div>
     <div id="tilawahSheet" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl z-[100] p-6 transition-transform duration-300 translate-y-full max-h-[85vh] overflow-y-auto border-t border-slate-200 dark:border-slate-800">
@@ -451,8 +469,7 @@
         </div>
         <div id="sheetOptions" class="grid grid-cols-1 gap-2 pb-6"></div>
     </div>
-
-    <script>
+        <script>
         // ==========================================
         // 1. KONFIGURASI SUPABASE
         // ==========================================
@@ -491,7 +508,6 @@
         let currentProfile = null;
         let currentGroup = null;
         
-        // State untuk "View As" (Melihat sebagai anggota lain)
         let targetUserId = null; 
         let targetUserName = null;
         
@@ -502,7 +518,6 @@
         let allMutabaahData = []; 
         let activeEditDate = null;
 
-        // Chart Instances
         let chartBarInstance = null;
         let chartDonutInstance = null;
 
@@ -513,7 +528,7 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 currentUser = session.user;
-                targetUserId = currentUser.id; // Default adalah diri sendiri
+                targetUserId = currentUser.id; 
                 await fetchProfile();
                 document.getElementById('authScreen').classList.add('hidden');
                 renderTilawah(); 
@@ -624,7 +639,7 @@
             const firstDay = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() - 5, 1);
             const { data, error } = await supabaseClient
                 .from('mutabaah').select('date, amalan_data')
-                .eq('user_id', targetUserId) // Gunakan targetUserId
+                .eq('user_id', targetUserId) 
                 .gte('date', formatDateKey(firstDay));
             
             if (!error) {
@@ -975,8 +990,6 @@
             targetUserId = id;
             targetUserName = name;
             updateUIBasedOnTarget();
-            
-            // Pindah ke tab Mutabaah
             switchTab('mutabaah');
             showToast(`Beralih ke data: ${name}`, 'success');
         }
@@ -1172,10 +1185,41 @@
         }
 
         // ==========================================
-        // 9. NAVIGATION & UTILITIES
+        // 9. GANTI PASSWORD
+        // ==========================================
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.remove('hidden');
+            document.getElementById('changePasswordModal').classList.add('flex');
+            document.getElementById('newPasswordInput').value = '';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('hidden');
+            document.getElementById('changePasswordModal').classList.remove('flex');
+        }
+
+        async function handleChangePassword() {
+            const newPassword = document.getElementById('newPasswordInput').value;
+            if (newPassword.length < 6) {
+                showToast('Password minimal 6 karakter', 'warning');
+                return;
+            }
+
+            const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+
+            if (error) {
+                showToast('Gagal mengganti password: ' + error.message, 'error');
+            } else {
+                showToast('Password berhasil diperbarui!', 'success');
+                closeChangePasswordModal();
+            }
+        }
+
+        // ==========================================
+        // 10. NAVIGATION & UTILITIES
         // ==========================================
         function switchTab(tab) {
-            const views = ['tilawah', 'mutabaah', 'halaqoh', 'rekap']; // Hapus stats
+            const views = ['tilawah', 'mutabaah', 'halaqoh', 'rekap'];
             const dMenus = ['menu-desktop-tilawah', 'menu-desktop-mutabaah', 'menu-desktop-halaqoh', 'menu-desktop-rekap'];
             const mMenus = ['menu-mobile-tilawah', 'menu-mobile-mutabaah', 'menu-mobile-halaqoh', 'menu-mobile-rekap'];
 
@@ -1260,6 +1304,9 @@
         window.renderRekap = renderRekap;
         window.selectMember = selectMember;
         window.clearTarget = clearTarget;
+        window.openChangePasswordModal = openChangePasswordModal;
+        window.closeChangePasswordModal = closeChangePasswordModal;
+        window.handleChangePassword = handleChangePassword;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('theme') === 'dark') {
