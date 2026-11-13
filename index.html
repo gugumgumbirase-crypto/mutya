@@ -1102,6 +1102,18 @@
         }
 
         async function handleDeleteGroup() {
+            if (!confirm('⚠️ Yakin ingin menghapus grup ini PERMANEN? Semua anggota akan dikeluarkan dan data grup akan hilang.')) return;
+
+            const { error } = await supabaseClient.rpc('delete_group_permanently', { target_group_id: currentGroup.id });
+            
+            if (error) {
+                showToast('Gagal menghapus grup: ' + error.message, 'error');
+            } else {
+                showToast('Grup berhasil dihapus permanen', 'success');
+                await fetchProfile();
+                renderHalaqoh();
+            }
+        }
             if (!confirm('Yakin ingin menghapus grup ini? Semua anggota akan dikeluarkan.')) return;
 
             const { error } = await supabaseClient.rpc('delete_group', { target_group_id: currentGroup.id });
@@ -1155,6 +1167,17 @@
         }
 
         async function handleRemoveMember(memberId) {
+            if (!confirm('⚠️ Yakin ingin menghapus anggota ini PERMANEN? Akun dan seluruh riwayat amalannya akan hilang.')) return;
+
+            const { error } = await supabaseClient.rpc('delete_member_permanently', { target_user_id: memberId });
+
+            if (error) {
+                showToast('Gagal menghapus anggota: ' + error.message, 'error');
+            } else {
+                showToast('Anggota dan datanya berhasil dihapus permanen', 'success');
+                renderHalaqoh();
+            }
+        }
             if (!confirm('Yakin ingin mengeluarkan anggota ini dari grup?')) return;
 
             const { error } = await supabaseClient
