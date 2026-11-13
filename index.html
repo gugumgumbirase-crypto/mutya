@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Mutaba'ah Yaumiyah — Multi Profil</title>
+    <title>Mutaba'ah Yaumiyah — UPA Apps</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         html { scroll-behavior: smooth; }
@@ -44,7 +46,25 @@
 
     <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- SIDEBAR (DESKTOP) -->
+    <!-- ================= LAYAR LOGIN ================= -->
+    <div id="authScreen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800">
+            <div class="text-center mb-6">
+                <div class="bg-brand-600 text-white p-3 rounded-2xl inline-flex items-center justify-center w-14 h-14 mb-4 shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid fa-book-open text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">Mutaba'ah Yaumiyah</h1>
+                <p class="text-xs text-slate-500 mt-1">Silakan login untuk melanjutkan</p>
+            </div>
+            <input type="email" id="loginEmail" placeholder="Email" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3 focus:outline-none focus:border-brand-500">
+            <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
+            <button onclick="handleLogin()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm mb-3">Masuk</button>
+            <button onclick="handleRegister()" class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl transition">Daftar Baru</button>
+            <div id="authError" class="text-rose-500 text-xs mt-3 text-center hidden"></div>
+        </div>
+    </div>
+
+    <!-- ================= SIDEBAR ================= -->
     <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
         <div class="flex-1 min-h-0 flex flex-col">
             <div class="p-6 flex items-center space-x-3">
@@ -52,8 +72,8 @@
                     <i class="fa-solid fa-book-open text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">Mutaba'ah Yaumiyah</h1>
-                    <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest mt-0.5">Multi Profil</p>
+                    <h1 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">Mutaba'ah</h1>
+                    <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest mt-0.5">UPA Apps</p>
                 </div>
             </div>
             
@@ -68,23 +88,17 @@
         </div>
         
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2">
-            <!-- TOMBOL GANTI PROFIL -->
-            <button onclick="openProfileModal()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-bold text-xs transition hover:bg-brand-100 dark:hover:bg-brand-900/50 border border-brand-200 dark:border-brand-800 mb-2">
-                <i class="fa-solid fa-users"></i> Ganti Profil
-            </button>
-            <button onclick="exportData()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700">
-                <i class="fa-solid fa-download"></i> Export Data
-            </button>
-            <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700">
-                <i class="fa-solid fa-moon dark:hidden"></i>
-                <i class="fa-solid fa-sun hidden dark:inline"></i>
-                <span class="dark:hidden">Mode Gelap</span>
-                <span class="hidden dark:inline">Mode Terang</span>
+            <a href="https://upa-finance.vercel.app/" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold text-xs transition hover:bg-amber-200 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800 mb-2">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Keuangan
+            </a>
+            <div class="text-xs text-slate-500 text-center mb-2">Halo, <span id="sidebarUserName" class="font-bold text-brand-600">...</span></div>
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-rose-600 dark:text-rose-400 font-semibold text-xs transition hover:bg-rose-100 dark:hover:bg-rose-900/40">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
             </button>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- ================= MAIN CONTENT ================= -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full no-scrollbar" id="mainScroll">
         
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
@@ -93,13 +107,13 @@
                     <i class="fa-solid fa-book-open text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">Mutaba'ah Yaumiyah</h1>
-                    <p class="text-[9px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">Multi Profil</p>
+                    <h1 class="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">Mutaba'ah</h1>
+                    <p class="text-[9px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">UPA Apps</p>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="openProfileModal()" class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/50 flex items-center justify-center text-brand-600 dark:text-brand-400">
-                    <i class="fa-solid fa-users text-xs"></i>
+                <button onclick="handleLogout()" class="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                    <i class="fa-solid fa-right-from-bracket text-xs"></i>
                 </button>
                 <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
                     <i class="fa-solid fa-moon dark:hidden text-xs"></i>
@@ -109,8 +123,7 @@
         </header>
 
         <main class="p-4 md:p-8 space-y-6 max-w-6xl mx-auto w-full pb-24 md:pb-8">
-            
-            <!-- VIEW AMALAN -->
+            <!-- KONTEN AMALAN -->
             <div id="view-amalan" class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
                 <div class="lg:col-span-4 space-y-6">
                     <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
@@ -120,7 +133,7 @@
                                 <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
                                     <i class="fa-solid fa-calendar-day"></i> <span id="amalanDateLabel">Hari Ini</span>
                                 </div>
-                                <h2 class="text-2xl font-extrabold mt-1" id="userNameDisplay">Hamba Allah</h2>
+                                <h2 class="text-2xl font-extrabold mt-1" id="userNameDisplay">Memuat...</h2>
                             </div>
                             <div class="relative w-20 h-20 shrink-0">
                                 <svg class="w-20 h-20 transform -rotate-90">
@@ -143,16 +156,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Kotak Info Profil Aktif -->
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 text-center">
-                        <div class="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-full flex items-center justify-center mx-auto mb-3 text-brand-600 dark:text-brand-400 text-2xl">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white" id="profileNameDisplay">Hamba Allah</h3>
-                        <p class="text-xs text-slate-500 mt-1 mb-4">Profil Aktif</p>
-                        <button onclick="openProfileModal()" class="w-full py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 transition">Ganti Profil</button>
-                    </div>
                 </div>
 
                 <div class="lg:col-span-8">
@@ -167,47 +170,21 @@
                                     </div>
                                     <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-right"></i></button>
                                 </div>
-                                <button onclick="goToToday()" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline ml-2 block md:hidden">Hari Ini</button>
                             </div>
-                            <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left" id="infoAmalan">12 Amalan</div>
+                            <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left">12 Amalan</div>
                         </div>
-                        
-                        <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                        <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="text-center text-slate-400 py-10 col-span-2">Memuat amalan...</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW REKAP -->
+            <!-- KONTEN REKAP -->
             <div id="view-rekap" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
-                    <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-                        <div>
-                            <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Rekapitulasi Mutaba'ah</h2>
-                            <p class="text-xs text-slate-500 mt-1">Data untuk: <span id="rekapProfileName" class="font-bold text-brand-600"></span></p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm text-xs font-bold">
-                            <span class="text-slate-400 uppercase">Dari</span>
-                            <input type="date" id="rekapStart" onchange="renderRekap()" class="bg-transparent focus:outline-none cursor-pointer">
-                            <span class="text-slate-400 uppercase">S/d</span>
-                            <input type="date" id="rekapEnd" onchange="renderRekap()" class="bg-transparent focus:outline-none cursor-pointer">
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
-                        <table class="w-full text-left border-collapse min-w-[600px]">
-                            <thead class="bg-brand-600 text-white text-[11px] uppercase tracking-wider font-extrabold text-center">
-                                <tr>
-                                    <th class="px-4 py-3 border-r border-brand-500/50 sticky left-0 bg-brand-600 z-10 w-[40%] text-left">Nama Amalan</th>
-                                    <th class="px-4 py-3 border-r border-brand-500/50">Total Selesai</th>
-                                    <th class="px-4 py-3">Persentase</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-rekap" class="divide-y divide-slate-200 dark:divide-slate-800 text-center text-sm font-medium bg-white dark:bg-slate-900"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
-                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-6">Grafik Konsistensi</h3>
-                    <div class="relative h-72 w-full"><canvas id="chartRekap"></canvas></div>
+                    <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Rekapitulasi Mutaba'ah</h2>
+                    <div class="text-center text-slate-400 py-10">Fitur rekap akan diimplementasikan di tahap selanjutnya.</div>
                 </div>
             </div>
         </main>
@@ -227,192 +204,161 @@
         </div>
     </div>
 
-    <!-- MODAL GANTI PROFIL -->
-    <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800 animate-fade-in">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Pilih Profil</h3>
-                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <p class="text-xs text-slate-500 mb-4">Pilih profil di bawah ini. Data antar profil tidak akan bercampur.</p>
-            
-            <div class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1" id="profileList">
-                <!-- Diisi via JS -->
-            </div>
-
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
-                <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Buat Profil Baru</label>
-                <div class="flex gap-2">
-                    <input type="text" id="newProfileName" placeholder="Nama Teman..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm">
-                    <button onclick="createProfile()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 rounded-xl transition shadow-sm"><i class="fa-solid fa-plus"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // ==========================================
-        // 1. KONFIGURASI & STATE (MULTI PROFIL)
+        // 1. KONFIGURASI SUPABASE (GANTI DENGAN MILIK ANDA)
         // ==========================================
-        const STORAGE_KEY = 'mutabaah_v7_multi';
-        
+        const SUPABASE_URL = 'https://nvfdctzpdibztejwrgyr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52ZmRjdHpwZGlienRlandyZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MzU1NDMsImV4cCI6MjExMDExMTU0M30.A91GHmt6Z4T-LVf69pHLB7_Vpsj3rnFSImOuI4xWVcU';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ==========================================
+        // 2. STATE & VARIABEL GLOBAL
+        // ==========================================
         const DEFAULT_AMALAN = [
-            "Qiyamullail", 
-            "Shalat Witir", 
-            "Tilawah Al-Qur'an 1 Juz", 
-            "Baca Terjemah Al-Qur'an", 
-            "Mendo'akan Palestina", 
-            "Mendo'akan Qiyadah & Jamaah PKS", 
-            "Istighfar 100x", 
-            "Shalawat 100x", 
-            "Infaq", 
-            "Shalat Dhuha", 
-            "Shalat 5 Waktu Berjamaah di Masjid",
-            "Olahraga Minimal 30 Menit" // <-- Amalan Baru
+            "Qiyamullail", "Shalat Witir", "Tilawah Al-Qur'an 1 Juz", "Baca Terjemah Al-Qur'an", 
+            "Mendo'akan Palestina", "Mendo'akan Qiyadah & Jamaah PKS", "Istighfar 100x", 
+            "Shalawat 100x", "Infaq", "Shalat Dhuha", "Shalat 5 Waktu Berjamaah", "Olahraga 30 Menit"
         ];
 
-        // Struktur State Multi Profil
-        let state = {
-            activeProfile: 'Profil 1',
-            profiles: {
-                'Profil 1': {
-                    name: 'Hamba Allah',
-                    dailyData: {}
-                }
-            }
-        };
-
-        let currentDate = new Date(); 
-        let chartInstance = null;
+        let currentUser = null;
+        let currentProfile = null;
+        let currentDate = new Date();
+        let currentData = {}; // Data amalan dari Supabase untuk tanggal aktif
 
         // ==========================================
-        // 2. UTILITIES & STORAGE
+        // 3. AUTHENTICATION (LOGIN/REGISTER)
+        // ==========================================
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                currentUser = session.user;
+                await fetchProfile();
+                document.getElementById('authScreen').classList.add('hidden');
+                renderAmalan();
+            } else {
+                document.getElementById('authScreen').classList.remove('hidden');
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errEl = document.getElementById('authError');
+            errEl.classList.add('hidden');
+
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+            } else {
+                checkAuth();
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errEl = document.getElementById('authError');
+            errEl.classList.add('hidden');
+
+            // Catatan: Kita perlu mengirim 'full_name' ke metadata user agar trigger SQL bisa membaca
+            const fullName = prompt("Masukkan Nama Lengkap Anda:"); 
+            if(!fullName) return;
+
+            const { error } = await supabase.auth.signUp({ 
+                email, 
+                password,
+                options: { data: { full_name: fullName } }
+            });
+
+            if (error) {
+                errEl.textContent = error.message;
+                errEl.classList.remove('hidden');
+            } else {
+                alert('Registrasi berhasil! Silakan cek email Anda untuk verifikasi (jika diaktifkan), atau langsung login.');
+            }
+        }
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            currentProfile = null;
+            document.getElementById('authScreen').classList.remove('hidden');
+        }
+
+        async function fetchProfile() {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (data) {
+                currentProfile = data;
+                document.getElementById('sidebarUserName').textContent = data.full_name;
+                document.getElementById('userNameDisplay').textContent = data.full_name;
+            }
+        }
+
+        // ==========================================
+        // 4. DATA MUTABAAH (AMBIL & SIMPAN)
         // ==========================================
         function formatDateKey(dateObj) {
             return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
         }
 
-        function loadState() {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) {
-                state = { ...state, ...JSON.parse(raw) };
-            }
+        async function fetchMutabaahData() {
+            const dateKey = formatDateKey(currentDate);
+            const { data, error } = await supabase
+                .from('mutabaah')
+                .select('amalan_data')
+                .eq('user_id', currentUser.id)
+                .eq('date', dateKey)
+                .single();
+
+            // Jika error (data belum ada), reset ke kosong
+            currentData = (data && data.amalan_data) ? data.amalan_data : {};
+        }
+
+        async function saveMutabaahData() {
+            const dateKey = formatDateKey(currentDate);
             
-            // Pastikan profil aktif valid
-            if (!state.profiles[state.activeProfile]) {
-                state.activeProfile = Object.keys(state.profiles)[0];
+            const { error } = await supabase
+                .from('mutabaah')
+                .upsert({ 
+                    user_id: currentUser.id, 
+                    date: dateKey, 
+                    amalan_data: currentData 
+                }, { onConflict: 'user_id, date' });
+
+            if (error) {
+                console.error(error);
+                showToast('Gagal menyimpan data ke server', 'error');
             }
-
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-            saveState();
-        }
-
-        function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        }
-
-        function getActiveData() {
-            return state.profiles[state.activeProfile];
-        }
-
-        function showToast(msg, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast pointer-events-auto min-w-[250px] p-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-bold border-l-4 ${
-                type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-500 dark:bg-emerald-900/90 dark:text-emerald-100' : 
-                'bg-blue-50 text-blue-800 border-blue-500 dark:bg-blue-900/90 dark:text-blue-100'
-            }`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${msg}`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         // ==========================================
-        // 3. MODAL PROFIL (SIMULASI MULTI-AKUN)
+        // 5. RENDER UI
         // ==========================================
-        function openProfileModal() {
-            const modal = document.getElementById('profileModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            renderProfileList();
-        }
+        async function renderAmalan() {
+            if (!currentUser) return;
 
-        function closeProfileModal() {
-            const modal = document.getElementById('profileModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+            await fetchMutabaahData();
 
-        function renderProfileList() {
-            const list = document.getElementById('profileList');
-            list.innerHTML = Object.keys(state.profiles).map(key => {
-                const isActive = key === state.activeProfile;
-                return `
-                    <div onclick="switchProfile('${key}')" class="cursor-pointer p-3 rounded-xl border flex items-center justify-between transition ${isActive ? 'bg-brand-50 border-brand-500 dark:bg-brand-900/30' : 'bg-slate-50 border-slate-200 dark:bg-slate-800 dark:border-slate-700 hover:border-brand-400'}">
-                        <div>
-                            <div class="font-bold text-sm ${isActive ? 'text-brand-700 dark:text-brand-300' : 'text-slate-700 dark:text-slate-300'}">${state.profiles[key].name}</div>
-                            <div class="text-[10px] text-slate-500">${key}</div>
-                        </div>
-                        ${isActive ? '<i class="fa-solid fa-circle-check text-brand-500"></i>' : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function switchProfile(key) {
-            state.activeProfile = key;
-            saveState();
-            closeProfileModal();
-            renderAmalan();
-            showToast(`Beralih ke ${state.profiles[key].name}`, 'success');
-        }
-
-        function createProfile() {
-            const input = document.getElementById('newProfileName');
-            const name = input.value.trim();
-            if (!name) return;
-
-            // Buat key unik
-            const key = 'user_' + Date.now();
-            
-            state.profiles[key] = {
-                name: name,
-                dailyData: {}
-            };
-            
-            state.activeProfile = key;
-            saveState();
-            input.value = '';
-            closeProfileModal();
-            renderAmalan();
-            showToast(`Profil ${name} berhasil dibuat`, 'success');
-        }
-
-        // ==========================================
-        // 4. RENDER UI (AMALAN HARIAN)
-        // ==========================================
-        function renderAmalan() {
-            const profile = getActiveData();
             const dateKey = formatDateKey(currentDate);
             document.getElementById('datePicker').value = dateKey;
             
             const isToday = dateKey === formatDateKey(new Date());
             document.getElementById('amalanDateLabel').textContent = isToday ? "Hari Ini" : "Edit Riwayat";
-            document.getElementById('userNameDisplay').textContent = profile.name;
-            document.getElementById('profileNameDisplay').textContent = profile.name;
-            document.getElementById('infoAmalan').textContent = `${DEFAULT_AMALAN.length} Amalan`;
-
-            if (!profile.dailyData[dateKey]) profile.dailyData[dateKey] = {};
-
+            
             const list = document.getElementById('mutabaahList');
             let doneCount = 0;
 
-            list.innerHTML = DEFAULT_AMALAN.map((text, i) => {
-                const isDone = profile.dailyData[dateKey][text] === true;
+            list.innerHTML = DEFAULT_AMALAN.map((text) => {
+                const isDone = currentData[text] === true;
                 if (isDone) doneCount++;
 
                 return `
@@ -436,30 +382,20 @@
             ring.style.strokeDashoffset = circumference - (percent / 100) * circumference;
         }
 
-        // ==========================================
-        // 5. ACTIONS
-        // ==========================================
-        function toggleAmalan(amalanName) {
+        async function toggleAmalan(amalanName) {
             if (navigator.vibrate) navigator.vibrate(50);
-            const profile = getActiveData();
-            const dateKey = formatDateKey(currentDate);
             
-            if (!profile.dailyData[dateKey]) profile.dailyData[dateKey] = {};
-            
-            if (profile.dailyData[dateKey][amalanName]) {
-                delete profile.dailyData[dateKey][amalanName];
+            if (currentData[amalanName]) {
+                delete currentData[amalanName];
             } else {
-                profile.dailyData[dateKey][amalanName] = true;
+                currentData[amalanName] = true;
             }
             
-            saveState();
+            // Simpan ke server secara background
+            await saveMutabaahData();
+            
+            // Update UI secara instan
             renderAmalan();
-            
-            const doneCount = Object.keys(profile.dailyData[dateKey]).length;
-            if (doneCount === DEFAULT_AMALAN.length) {
-                showToast('Masya Allah! Semua amalan selesai! 🎉', 'success');
-                fireConfetti();
-            }
         }
 
         function changeDate(offset) {
@@ -475,200 +411,60 @@
             }
         }
 
-        function goToToday() {
-            currentDate = new Date();
-            renderAmalan();
-        }
-
-        function exportData() {
-            const dataStr = JSON.stringify(state.profiles[state.activeProfile], null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `mutabaah-${getActiveData().name.replace(/\s+/g, '-')}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Data profil berhasil di-export', 'success');
-        }
-
         // ==========================================
-        // 6. REKAP & GRAFIK
+        // 6. UTILITIES & NAVIGATION
         // ==========================================
         function switchTab(tab) {
             const viewAmalan = document.getElementById('view-amalan');
             const viewRekap = document.getElementById('view-rekap');
-            
             const dAmalan = document.getElementById('menu-desktop-amalan');
             const dRekap = document.getElementById('menu-desktop-rekap');
             const mAmalan = document.getElementById('menu-mobile-amalan');
             const mRekap = document.getElementById('menu-mobile-rekap');
 
-            const activeClassDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 bg-white dark:bg-slate-800 text-brand-700 dark:text-brand-300 shadow-sm border border-slate-200 dark:border-slate-700 font-bold text-sm";
-            const inactiveClassDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm";
-            const activeClassMobile = "flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200";
-            const inactiveClassMobile = "flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200";
+            const activeDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 bg-white dark:bg-slate-800 text-brand-700 dark:text-brand-300 shadow-sm border border-slate-200 dark:border-slate-700 font-bold text-sm";
+            const inactiveDesktop = "w-full py-3 px-4 rounded-xl transition flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 font-semibold text-sm";
+            const activeMobile = "flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200";
+            const inactiveMobile = "flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200";
 
             if (tab === 'amalan') {
                 viewAmalan.classList.remove('hidden');
                 viewRekap.classList.add('hidden');
-                dAmalan.className = activeClassDesktop; dRekap.className = inactiveClassDesktop;
-                mAmalan.className = activeClassMobile; mRekap.className = inactiveClassMobile;
+                dAmalan.className = activeDesktop; dRekap.className = inactiveDesktop;
+                mAmalan.className = activeMobile; mRekap.className = inactiveMobile;
             } else {
                 viewAmalan.classList.add('hidden');
                 viewRekap.classList.remove('hidden');
-                dRekap.className = activeClassDesktop; dAmalan.className = inactiveClassDesktop;
-                mRekap.className = activeClassMobile; mAmalan.className = inactiveClassMobile;
-                
-                document.getElementById('rekapProfileName').textContent = getActiveData().name;
-                
-                const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-                if(!document.getElementById('rekapStart').value) {
-                    document.getElementById('rekapStart').value = formatDateKey(firstDay);
-                    document.getElementById('rekapEnd').value = formatDateKey(new Date());
-                }
-                renderRekap();
+                dRekap.className = activeDesktop; dAmalan.className = inactiveDesktop;
+                mRekap.className = activeMobile; mAmalan.className = inactiveMobile;
             }
         }
 
-        function renderRekap() {
-            const startStr = document.getElementById('rekapStart').value;
-            const endStr = document.getElementById('rekapEnd').value;
-            if (!startStr || !endStr) return;
-
-            const profile = getActiveData();
-            const start = new Date(startStr);
-            const end = new Date(endStr);
-            
-            let amalanCounts = {};
-            DEFAULT_AMALAN.forEach(a => amalanCounts[a] = 0);
-            let totalDays = 0;
-
-            let loopDate = new Date(start);
-            while (loopDate <= end) {
-                const key = formatDateKey(loopDate);
-                const dayData = profile.dailyData[key];
-                
-                if (dayData) {
-                    DEFAULT_AMALAN.forEach(amalan => {
-                        if (dayData[amalan] === true) amalanCounts[amalan]++;
-                    });
-                }
-                totalDays++;
-                loopDate.setDate(loopDate.getDate() + 1);
-            }
-
-            const tbody = document.getElementById('tbody-rekap');
-            tbody.innerHTML = DEFAULT_AMALAN.map(amalan => {
-                const count = amalanCounts[amalan];
-                const percent = totalDays > 0 ? Math.round((count / totalDays) * 100) : 0;
-                let barColor = percent > 70 ? 'bg-brand-500' : percent > 40 ? 'bg-amber-400' : 'bg-slate-200 dark:bg-slate-700';
-
-                return `
-                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                        <td class="px-4 py-3 text-left font-bold text-slate-700 dark:text-slate-300 sticky left-0 bg-white dark:bg-slate-900">${amalan}</td>
-                        <td class="px-4 py-3 font-extrabold text-brand-600 dark:text-brand-400">${count} <span class="text-xs font-normal text-slate-400">/ ${totalDays} hr</span></td>
-                        <td class="px-4 py-3">
-                            <div class="flex items-center gap-2">
-                                <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div class="${barColor} h-full rounded-full" style="width: ${percent}%"></div>
-                                </div>
-                                <span class="text-xs font-bold w-8 text-right">${percent}%</span>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            renderChart(amalanCounts, totalDays);
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast pointer-events-auto min-w-[250px] p-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-bold border-l-4 ${
+                type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-500 dark:bg-emerald-900/90 dark:text-emerald-100' : 
+                'bg-blue-50 text-blue-800 border-blue-500 dark:bg-blue-900/90 dark:text-blue-100'
+            }`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        function renderChart(counts, totalDays) {
-            const ctx = document.getElementById('chartRekap').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            const labels = DEFAULT_AMALAN.map(a => a.length > 20 ? a.substring(0, 18) + '...' : a);
-            const dataValues = DEFAULT_AMALAN.map(a => counts[a]);
-
-            const barLabelPlugin = {
-                id: 'barLabelPlugin',
-                afterDatasetsDraw(chart) {
-                    const { ctx } = chart;
-                    ctx.save();
-                    chart.data.datasets.forEach((dataset, i) => {
-                        const meta = chart.getDatasetMeta(i);
-                        if (meta.hidden) return;
-                        meta.data.forEach((bar, index) => {
-                            const value = dataset.data[index];
-                            if (value > 0) {
-                                ctx.fillStyle = '#64748b';
-                                ctx.font = 'bold 10px Plus Jakarta Sans';
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'bottom';
-                                ctx.fillText(value, bar.x, bar.y - 4);
-                            }
-                        });
-                    });
-                    ctx.restore();
-                }
-            };
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total Selesai',
-                        data: dataValues,
-                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                        borderColor: '#059669',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        barPercentage: 0.6
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, suggestedMax: totalDays, ticks: { precision: 0, stepSize: Math.ceil(totalDays / 5) || 1, color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b' }, grid: { color: document.documentElement.classList.contains('dark') ? '#334155' : '#e2e8f0' } },
-                        x: { ticks: { color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b', font: { size: 9 }, maxRotation: 45, minRotation: 45 }, grid: { display: false } }
-                    }
-                },
-                plugins: [barLabelPlugin]
-            });
-        }
-
-        // ==========================================
-        // 7. FUNGSI LAINNYA
-        // ==========================================
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            if (!document.getElementById('view-rekap').classList.contains('hidden')) renderRekap();
-        }
-
-        function fireConfetti() {
-            const colors = ['#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
-            for (let i = 0; i < 40; i++) {
-                const c = document.createElement('div');
-                c.style.position = 'fixed'; c.style.left = Math.random() * 100 + 'vw'; c.style.top = '-10px';
-                c.style.width = '10px'; c.style.height = '10px';
-                c.style.background = colors[Math.floor(Math.random() * colors.length)];
-                c.style.zIndex = '9999'; c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0'; c.style.pointerEvents = 'none';
-                document.body.appendChild(c);
-                const duration = 2000 + Math.random() * 2000;
-                c.animate([{ transform: `translateY(0) rotate(0deg)`, opacity: 1 }, { transform: `translateY(100vh) rotate(${720}deg)`, opacity: 0 }], { duration, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' });
-                setTimeout(() => c.remove(), duration);
-            }
         }
 
         // ==========================================
-        // 8. INISIALISASI
+        // 7. INISIALISASI
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            renderAmalan();
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            checkAuth();
         });
     </script>
 </body>
