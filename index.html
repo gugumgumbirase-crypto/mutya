@@ -65,7 +65,7 @@
     <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- Main Wrapper -->
-    <div class="max-w-6xl mx-auto px-4 md:px-8 py-6 space-y-6">
+    <div class="max-w-5xl mx-auto px-4 md:px-8 py-6 space-y-6">
         
         <!-- Header -->
         <header class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
@@ -85,101 +85,80 @@
             </button>
         </header>
 
-        <!-- Dashboard Grid (Bento Style) -->
-        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 animate-fade-in">
+        <!-- Dashboard Grid -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
             
-            <!-- Card 1: Progress Utama (Span 2) -->
-            <div class="lg:col-span-2 bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                <div class="relative z-10 flex items-start justify-between">
-                    <div>
-                        <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
-                            <i class="fa-solid fa-fire text-amber-300"></i> Semangat Hari Ini
+            <!-- Kolom Kiri: Progress & Pengaturan -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Card Progress -->
+                <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <div class="relative z-10 flex items-start justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
+                                <i class="fa-solid fa-fire text-amber-300"></i> Semangat
+                            </div>
+                            <h2 class="text-2xl font-extrabold mt-2">Assalamu'alaikum,</h2>
+                            <p class="text-brand-200 font-medium mt-1" id="userNameDisplay">Hamba Allah</p>
                         </div>
-                        <h2 class="text-3xl font-extrabold">Assalamu'alaikum,</h2>
-                        <p class="text-brand-200 font-medium mt-1" id="userNameDisplay">Hamba Allah</p>
+                        
+                        <!-- Progress Ring -->
+                        <div class="relative w-20 h-20 shrink-0">
+                            <svg class="w-20 h-20 transform -rotate-90">
+                                <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,0.2)" stroke-width="6" fill="none"/>
+                                <circle id="mainProgressRing" cx="40" cy="40" r="34" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" class="progress-ring-circle" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="mainProgressText" class="text-sm font-extrabold text-white">0%</span>
+                            </div>
+                        </div>
                     </div>
                     
-                    <!-- Progress Ring -->
-                    <div class="relative w-20 h-20 shrink-0">
-                        <svg class="w-20 h-20 transform -rotate-90">
-                            <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,0.2)" stroke-width="6" fill="none"/>
-                            <circle id="mainProgressRing" cx="40" cy="40" r="34" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" class="progress-ring-circle" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
-                        </svg>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span id="mainProgressText" class="text-sm font-extrabold text-white">0%</span>
+                    <div class="relative z-10 mt-6 flex gap-3">
+                        <div class="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center">
+                            <div class="text-xs text-brand-100 font-semibold mb-1">Selesai</div>
+                            <div class="text-xl font-black" id="statDone">0</div>
+                        </div>
+                        <div class="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center">
+                            <div class="text-xs text-brand-100 font-semibold mb-1">Tertunda</div>
+                            <div class="text-xl font-black" id="statPending">0</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="relative z-10 mt-6 flex gap-4">
-                    <div class="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center">
-                        <div class="text-xs text-brand-100 font-semibold mb-1">Selesai</div>
-                        <div class="text-xl font-black" id="statDone">0</div>
-                    </div>
-                    <div class="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center">
-                        <div class="text-xs text-brand-100 font-semibold mb-1">Tertunda</div>
-                        <div class="text-xl font-black" id="statPending">0</div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Card 2: Jadwal Sholat -->
-            <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 flex flex-col justify-between">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-mosque text-brand-500"></i> Jadwal Sholat
-                    </h3>
-                    <span id="cityLabel" class="text-[10px] font-bold bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 px-2 py-1 rounded-md border border-brand-200 dark:border-brand-800">Jakarta</span>
-                </div>
-                <div id="prayerTimesList" class="grid grid-cols-5 gap-2">
-                    <!-- Diisi via JS -->
-                    <div class="text-center text-xs text-slate-400 col-span-5 py-4">Memuat jadwal...</div>
-                </div>
-            </div>
-
-            <!-- Card 3: Daftar Amalan (Span 3 di desktop, Full di mobile) -->
-            <div class="lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">Amalan Hari Ini</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Centang amalan yang sudah kamu lakukan.</p>
-                    </div>
-                    <button onclick="completeAll()" class="text-xs font-bold bg-brand-50 text-brand-600 hover:bg-brand-100 px-3 py-2 rounded-xl transition border border-brand-200 shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-check-double"></i> <span class="hidden md:inline">Centang Semua</span>
-                    </button>
-                </div>
-                
-                <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <!-- Diisi via JS -->
-                </div>
-            </div>
-
-            <!-- Card 4: Pengaturan & Statistik Samping -->
-            <div class="lg:col-span-1 space-y-4 md:space-y-6">
                 <!-- Card Pengaturan -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4">Pengaturan</h3>
                     
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Nama Panggilan</label>
-                    <div class="flex gap-2 mb-4">
+                    <div class="flex gap-2 mb-6">
                         <input type="text" id="inputName" placeholder="Hamba Allah" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:border-brand-500 text-sm font-bold">
-                        <button onclick="saveName()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 rounded-xl transition shadow-sm"><i class="fa-solid fa-save"></i></button>
+                        <button onclick="saveName()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 rounded-xl transition shadow-sm"><i class="fa-solid fa-check"></i></button>
                     </div>
 
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kota (Jadwal Sholat)</label>
-                    <select id="inputCity" onchange="changeCity()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:outline-none focus:border-brand-500 text-sm font-bold mb-4">
-                        <option value="Jakarta">Jakarta</option>
-                        <option value="Bandung">Bandung</option>
-                        <option value="Surabaya">Surabaya</option>
-                        <option value="Yogyakarta">Yogyakarta</option>
-                        <option value="Medan">Medan</option>
-                        <option value="Makassar">Makassar</option>
-                    </select>
-                    
                     <button onclick="resetData()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 font-bold text-xs transition hover:bg-rose-100 dark:hover:bg-rose-900/40">
                         <i class="fa-solid fa-trash"></i> Reset Data Hari Ini
                     </button>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Daftar Amalan (Full Height) -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8 h-full">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">Amalan Hari Ini</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">15 Amalan Mutaba'ah Yaumiyah</p>
+                        </div>
+                        <button onclick="completeAll()" class="text-xs font-bold bg-brand-50 text-brand-600 hover:bg-brand-100 px-4 py-2.5 rounded-xl transition border border-brand-200 shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check-double"></i> Centang Semua
+                        </button>
+                    </div>
+                    
+                    <!-- Tempat List Amalan -->
+                    <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Diisi via JS -->
+                    </div>
                 </div>
             </div>
 
@@ -190,7 +169,7 @@
         // ==========================================
         // 1. DATA & STATE
         // ==========================================
-        const STORAGE_KEY = 'mutabaah_v2_data';
+        const STORAGE_KEY = 'mutabaah_v3_data';
         
         // 15 Amalan dari Web ODOJ
         const DEFAULT_AMALAN = [
@@ -213,11 +192,10 @@
 
         let state = {
             name: 'Hamba Allah',
-            city: 'Jakarta',
             theme: 'light',
             lastDate: '',
             amalan: [],
-            history: {} // Untuk menyimpan rekap harian
+            history: {}
         };
 
         // ==========================================
@@ -235,8 +213,8 @@
             }
             
             const today = getTodayKey();
-            // Reset amalan jika beda hari
-            if (state.lastDate !== today || state.amalan.length === 0) {
+            // Reset amalan jika beda hari atau data kosong
+            if (state.lastDate !== today || !state.amalan || state.amalan.length === 0) {
                 state.amalan = DEFAULT_AMALAN.map(text => ({ text, done: false }));
                 state.lastDate = today;
             }
@@ -267,22 +245,22 @@
             document.getElementById('currentDate').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
             document.getElementById('userNameDisplay').textContent = state.name;
             document.getElementById('inputName').value = state.name;
-            document.getElementById('inputCity').value = state.city;
-            document.getElementById('cityLabel').textContent = state.city;
         }
 
         function renderMutabaah() {
             const list = document.getElementById('mutabaahList');
+            
+            // Render List
             list.innerHTML = state.amalan.map((a, i) => `
                 <div class="mutabaah-item ${a.done ? 'checked' : ''} flex items-center justify-between p-3 md:p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer transition hover:border-brand-500 dark:hover:border-brand-500" onclick="toggleAmalan(${i})">
-                    <span class="text-xs md:text-sm font-semibold text-slate-700 dark:text-slate-300 pr-2 ${a.done ? 'line-through opacity-50' : ''}">${a.text}</span>
+                    <span class="text-[13px] md:text-sm font-semibold text-slate-700 dark:text-slate-300 pr-2 ${a.done ? 'line-through opacity-50' : ''}">${a.text}</span>
                     <div class="mutabaah-checkbox w-6 h-6 rounded-md border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center shrink-0 transition-colors">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
                     </div>
                 </div>
             `).join('');
             
-            // Update Progress
+            // Update Progress Angka
             const total = state.amalan.length;
             const done = state.amalan.filter(a => a.done).length;
             const percent = total ? Math.round((done / total) * 100) : 0;
@@ -291,11 +269,13 @@
             document.getElementById('statDone').textContent = done;
             document.getElementById('statPending').textContent = total - done;
 
+            // Update Progress Ring
             const ring = document.getElementById('mainProgressRing');
             const circumference = 2 * Math.PI * 34;
             ring.style.strokeDashoffset = circumference - (percent / 100) * circumference;
 
             // Simpan riwayat
+            if(!state.history) state.history = {};
             state.history[state.lastDate] = { done, total };
             saveState();
         }
@@ -337,14 +317,6 @@
             }
         }
 
-        function changeCity() {
-            state.city = document.getElementById('inputCity').value;
-            saveState();
-            renderHeader();
-            fetchPrayerTimes(state.city);
-            showToast('Memuat jadwal sholat ' + state.city, 'info');
-        }
-
         function resetData() {
             if (confirm('Reset semua centang amalan hari ini?')) {
                 state.amalan = DEFAULT_AMALAN.map(text => ({ text, done: false }));
@@ -362,59 +334,7 @@
         }
 
         // ==========================================
-        // 5. API JADWAL SHOLAT
-        // ==========================================
-        async function fetchPrayerTimes(city) {
-            const cities = {
-                Jakarta: { lat: -6.2088, lng: 106.8456 },
-                Bandung: { lat: -6.9175, lng: 107.6191 },
-                Surabaya: { lat: -7.2575, lng: 112.7521 },
-                Yogyakarta: { lat: -7.7971, lng: 110.3707 },
-                Medan: { lat: 3.5952, lng: 98.6722 },
-                Makassar: { lat: -5.1477, lng: 119.4327 },
-            };
-            const coords = cities[city] || cities.Jakarta;
-            const d = new Date();
-            const dateStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
-
-            try {
-                const res = await fetch(`https://api.aladhan.com/v1/timings/${dateStr}?latitude=${coords.lat}&longitude=${coords.lng}&method=11`);
-                const json = await res.json();
-                if (json.code === 200) {
-                    const t = json.data.timings;
-                    const times = [
-                        { name: 'Subuh', time: t.Fajr.slice(0,5) },
-                        { name: 'Dzuhur', time: t.Dhuhr.slice(0,5) },
-                        { name: 'Ashar', time: t.Asr.slice(0,5) },
-                        { name: 'Maghrib', time: t.Maghrib.slice(0,5) },
-                        { name: 'Isya', time: t.Isha.slice(0,5) },
-                    ];
-
-                    // Tentukan sholat aktif
-                    const now = new Date();
-                    const currentMins = now.getHours() * 60 + now.getMinutes();
-                    let activeIndex = -1;
-                    for (let i = times.length - 1; i >= 0; i--) {
-                        const [h, m] = times[i].time.split(':').map(Number);
-                        if (currentMins >= (h * 60 + m)) { activeIndex = i; break; }
-                    }
-                    if (activeIndex === -1) activeIndex = 4; // Sebelum subuh = Isya
-
-                    document.getElementById('prayerTimesList').innerHTML = times.map((t, i) => `
-                        <div class="text-center p-2 rounded-xl border ${i === activeIndex ? 'bg-brand-600 text-white border-brand-500 shadow-md transform scale-105' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'} transition-all duration-300">
-                            <div class="text-[10px] font-bold ${i === activeIndex ? 'text-brand-100' : 'text-slate-500 dark:text-slate-400'} mb-1 uppercase tracking-wider">${t.name}</div>
-                            <div class="text-xs md:text-sm font-extrabold ${i === activeIndex ? 'text-white' : 'text-slate-800 dark:text-slate-200'}">${t.time}</div>
-                        </div>
-                    `).join('');
-                }
-            } catch (e) {
-                console.error(e);
-                document.getElementById('prayerTimesList').innerHTML = `<div class="text-center text-xs text-rose-500 col-span-5">Gagal memuat jadwal sholat. Periksa koneksi internet.</div>`;
-            }
-        }
-
-        // ==========================================
-        // 6. UTILITIES (Toast & Confetti)
+        // 5. UTILITIES (Toast & Confetti)
         // ==========================================
         function showToast(msg, type = 'info') {
             const container = document.getElementById('toastContainer');
@@ -452,13 +372,12 @@
         }
 
         // ==========================================
-        // 7. INISIALISASI
+        // 6. INISIALISASI
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             loadState();
             renderHeader();
-            renderMutabaah();
-            fetchPrayerTimes(state.city);
+            renderMutabaah(); // Render amalan langsung tanpa nunggu API
         });
     </script>
 </body>
