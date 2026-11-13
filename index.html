@@ -20,7 +20,6 @@
         }
     </script>
     
-    <!-- Tambahkan Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -61,7 +60,6 @@
         .calendar-cell .status-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
         .calendar-cell .status-icon svg { width: 12px; height: 12px; stroke-width: 2.5; }
 
-        /* Table Styles */
         .table-rekap { border-radius: 0.75rem !important; overflow: hidden !important; border-collapse: separate !important; border-spacing: 0; border: 1px solid #e2e8f0; width: 100%; }
         .dark .table-rekap { border-color: #334155; }
     </style>
@@ -114,9 +112,7 @@
                 <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="nav-item w-full">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Rekap & Grafik
                 </button>
-                <button onclick="switchTab('stats')" id="menu-desktop-stats" class="nav-item w-full">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Statistik
-                </button>
+                <!-- Menu Statistik Dihapus -->
             </nav>
         </div>
         
@@ -241,6 +237,16 @@
 
             <!-- VIEW: MUTABAAH -->
             <div id="view-mutabaah" class="hidden flex flex-col gap-6 animate-fade-in">
+                
+                <!-- Info Target Aktif (Hanya muncul jika Admin memilih anggota) -->
+                <div id="viewAsBanner" class="hidden bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-amber-800 dark:text-amber-300 text-sm font-bold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Sedang mengedit data: <span id="targetNameDisplay" class="underline"></span>
+                    </div>
+                    <button onclick="clearTarget()" class="text-xs bg-white dark:bg-slate-800 px-3 py-1 rounded-lg font-bold text-slate-600 dark:text-slate-300 shadow-sm">Kembali ke Diri Sendiri</button>
+                </div>
+
                 <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div class="relative z-10 w-full md:w-auto">
@@ -317,6 +323,9 @@
                                     <p class="text-xs text-slate-500 mt-1">Role Anda: <span id="groupRoleDisplay" class="font-bold text-brand-600">Anggota</span></p>
                                 </div>
                             </div>
+                            <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg> Tambah Anggota
+                            </button>
                         </div>
                         <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
                         <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
@@ -326,13 +335,11 @@
 
             <!-- VIEW: REKAP & GRAFIK -->
             <div id="view-rekap" class="hidden space-y-6 animate-fade-in">
-                
-                <!-- Filter Tanggal -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div>
                             <h2 class="text-lg font-extrabold text-slate-900 dark:text-white">Rekapitulasi Mutaba'ah</h2>
-                            <p class="text-xs text-slate-500 mt-1">Pilih rentang tanggal untuk melihat data.</p>
+                            <p class="text-xs text-slate-500 mt-1">Data untuk: <span id="rekapTargetName" class="font-bold text-brand-600"></span></p>
                         </div>
                         <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm text-xs font-bold">
                             <span class="text-slate-400 uppercase">Dari</span>
@@ -343,7 +350,6 @@
                     </div>
                 </div>
 
-                <!-- Tabel Rekap -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
                         <table class="w-full text-left border-collapse min-w-[600px]">
@@ -361,7 +367,6 @@
                     </div>
                 </div>
 
-                <!-- Grafik -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                         <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4">Grafik Konsistensi</h3>
@@ -370,17 +375,6 @@
                     <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                         <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mb-4">Total Amalan Terselesaikan</h3>
                         <div class="relative h-72 w-full flex items-center justify-center"><canvas id="chartDonut"></canvas></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: STATISTIK -->
-            <div id="view-stats" class="hidden space-y-6 animate-fade-in">
-                <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20">
-                    <h2 class="text-xl font-extrabold mb-2">Leaderboard Halaqoh</h2>
-                    <p class="text-sm text-brand-100">Peringkat berdasarkan total amalan terselesaikan bulan ini.</p>
-                    <div id="leaderboardContainer" class="mt-6 space-y-3">
-                        <div class="text-center text-brand-200">Memuat data anggota...</div>
                     </div>
                 </div>
             </div>
@@ -419,6 +413,28 @@
             <div class="flex gap-2">
                 <button onclick="closeCreateGroupModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
                 <button onclick="handleCreateGroup()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Buat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH ANGGOTA -->
+    <div id="addMemberModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Tambah Anggota Halaqoh</h3>
+            <p class="text-xs text-slate-500 mb-4">Akun akan dibuatkan otomatis dan langsung masuk ke grup ini.</p>
+            
+            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nama Lengkap</label>
+            <input type="text" id="newMemberName" placeholder="Nama Anggota" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3 focus:outline-none focus:border-brand-500">
+            
+            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Email</label>
+            <input type="email" id="newMemberEmail" placeholder="email@contoh.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3 focus:outline-none focus:border-brand-500">
+            
+            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Password Sementara</label>
+            <input type="text" id="newMemberPassword" value="123456" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
+
+            <div class="flex gap-2">
+                <button onclick="closeAddMemberModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
+                <button onclick="handleAddMember()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Tambah</button>
             </div>
         </div>
     </div>
@@ -474,6 +490,11 @@
         let currentUser = null;
         let currentProfile = null;
         let currentGroup = null;
+        
+        // State untuk "View As" (Melihat sebagai anggota lain)
+        let targetUserId = null; 
+        let targetUserName = null;
+        
         let currentDate = new Date();
         let currentData = {}; 
         
@@ -492,6 +513,7 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 currentUser = session.user;
+                targetUserId = currentUser.id; // Default adalah diri sendiri
                 await fetchProfile();
                 document.getElementById('authScreen').classList.add('hidden');
                 renderTilawah(); 
@@ -543,6 +565,7 @@
             currentUser = null;
             currentProfile = null;
             currentGroup = null;
+            targetUserId = null;
             document.getElementById('authScreen').classList.remove('hidden');
         }
 
@@ -553,8 +576,6 @@
             if (data) {
                 currentProfile = data;
                 document.getElementById('sidebarUserName').textContent = data.full_name || 'User';
-                document.getElementById('userNameDisplay').textContent = data.full_name || 'User';
-                document.getElementById('streakName').textContent = data.full_name || 'User';
                 
                 if (data.group_id) {
                     const { data: groupData } = await supabaseClient.from('groups').select('*').eq('id', data.group_id).maybeSingle();
@@ -563,9 +584,32 @@
             } else {
                 currentProfile = { full_name: currentUser.email.split('@')[0] };
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
-                document.getElementById('userNameDisplay').textContent = currentProfile.full_name;
-                document.getElementById('streakName').textContent = currentProfile.full_name;
             }
+            updateUIBasedOnTarget();
+        }
+
+        function updateUIBasedOnTarget() {
+            const nameDisplay = targetUserId === currentUser.id ? currentProfile.full_name : targetUserName;
+            
+            document.getElementById('userNameDisplay').textContent = nameDisplay;
+            document.getElementById('streakName').textContent = nameDisplay;
+            document.getElementById('rekapTargetName').textContent = nameDisplay;
+
+            const banner = document.getElementById('viewAsBanner');
+            if (targetUserId !== currentUser.id) {
+                banner.classList.remove('hidden');
+                document.getElementById('targetNameDisplay').textContent = targetUserName;
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        function clearTarget() {
+            targetUserId = currentUser.id;
+            updateUIBasedOnTarget();
+            renderTilawah();
+            renderMutabaah();
+            if (!document.getElementById('view-rekap').classList.contains('hidden')) renderRekap();
         }
 
         // ==========================================
@@ -576,11 +620,11 @@
         }
 
         async function fetchAllMutabaahForTilawah() {
-            if (!currentUser) return;
+            if (!targetUserId) return;
             const firstDay = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() - 5, 1);
             const { data, error } = await supabaseClient
                 .from('mutabaah').select('date, amalan_data')
-                .eq('user_id', currentUser.id)
+                .eq('user_id', targetUserId) // Gunakan targetUserId
                 .gte('date', formatDateKey(firstDay));
             
             if (!error) {
@@ -600,7 +644,7 @@
         }
 
         async function renderTilawah() {
-            if (!currentUser) return;
+            if (!currentUser || !targetUserId) return;
             await fetchAllMutabaahForTilawah();
 
             const now = new Date();
@@ -730,16 +774,12 @@
         }
 
         function openTilawahSheet(day) {
-            if (!currentProfile || !currentProfile.full_name) {
-                showToast('Sedang memuat data profil, harap tunggu sebentar...', 'warning');
-                return;
-            }
-
             activeEditDate = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth(), day);
             const daysIndo = ["Ahad","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
             const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             
-            document.getElementById('sheetTitle').textContent = `${daysIndo[activeEditDate.getDay()]}, ${day} ${months[activeEditDate.getMonth()]} — ${currentProfile.full_name}`;
+            const targetName = targetUserId === currentUser.id ? currentProfile.full_name : targetUserName;
+            document.getElementById('sheetTitle').textContent = `${daysIndo[activeEditDate.getDay()]}, ${day} ${months[activeEditDate.getMonth()]} — ${targetName}`;
             document.getElementById('sheetOverlay').classList.remove('hidden');
             document.getElementById('tilawahSheet').classList.remove('translate-y-full');
             document.body.style.overflow = 'hidden';
@@ -757,7 +797,7 @@
             const dateStr = formatDateKey(activeEditDate);
             
             const { data, error } = await supabaseClient.from('mutabaah').select('amalan_data')
-                .eq('user_id', currentUser.id).eq('date', dateStr).maybeSingle();
+                .eq('user_id', targetUserId).eq('date', dateStr).maybeSingle();
             
             if (error) {
                 showToast('Gagal memuat data dari server', 'error');
@@ -773,7 +813,7 @@
             if (statusId === 'progress') amalanData["Baca Terjemah Al-Qur'an"] = true;
 
             const { error: saveError } = await supabaseClient.from('mutabaah').upsert({ 
-                user_id: currentUser.id, date: dateStr, amalan_data: amalanData 
+                user_id: targetUserId, date: dateStr, amalan_data: amalanData 
             }, { onConflict: 'user_id, date' });
 
             if (saveError) {
@@ -794,7 +834,7 @@
             const dateStr = formatDateKey(activeEditDate);
             
             const { data, error } = await supabaseClient.from('mutabaah').select('amalan_data')
-                .eq('user_id', currentUser.id).eq('date', dateStr).maybeSingle();
+                .eq('user_id', targetUserId).eq('date', dateStr).maybeSingle();
             
             if (data && data.amalan_data) {
                 let amalanData = data.amalan_data;
@@ -802,7 +842,7 @@
                 delete amalanData["Baca Terjemah Al-Qur'an"];
                 
                 await supabaseClient.from('mutabaah').upsert({ 
-                    user_id: currentUser.id, date: dateStr, amalan_data: amalanData 
+                    user_id: targetUserId, date: dateStr, amalan_data: amalanData 
                 }, { onConflict: 'user_id, date' });
             }
 
@@ -818,7 +858,7 @@
             const dateKey = formatDateKey(currentDate);
             const { data, error } = await supabaseClient
                 .from('mutabaah').select('amalan_data')
-                .eq('user_id', currentUser.id).eq('date', dateKey).maybeSingle(); 
+                .eq('user_id', targetUserId).eq('date', dateKey).maybeSingle(); 
 
             currentData = (data && data.amalan_data) ? data.amalan_data : {};
         }
@@ -827,7 +867,7 @@
             const dateKey = formatDateKey(currentDate);
             const { error } = await supabaseClient
                 .from('mutabaah').upsert({ 
-                    user_id: currentUser.id, date: dateKey, amalan_data: currentData 
+                    user_id: targetUserId, date: dateKey, amalan_data: currentData 
                 }, { onConflict: 'user_id, date' });
 
             if (error) {
@@ -837,7 +877,7 @@
         }
 
         async function renderMutabaah() {
-            if (!currentUser) return;
+            if (!currentUser || !targetUserId) return;
             await fetchMutabaahData();
             
             const dateKey = formatDateKey(currentDate);
@@ -913,19 +953,32 @@
 
                 const { data: members } = await supabaseClient.from('profiles').select('*').eq('group_id', currentGroup.id);
                 if (members) {
-                    document.getElementById('memberList').innerHTML = members.map(m => `
-                        <div class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                    document.getElementById('memberList').innerHTML = members.map(m => {
+                        const isSelected = m.id === targetUserId;
+                        return `
+                        <div onclick="selectMember('${m.id}', '${m.full_name.replace(/'/g, "\\'")}')" class="cursor-pointer flex items-center justify-between p-3 rounded-xl border-2 transition ${isSelected ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:border-brand-300'}">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold">${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}</div>
+                                <div class="w-10 h-10 rounded-full ${isSelected ? 'bg-brand-600 text-white' : 'bg-brand-100 text-brand-600'} flex items-center justify-center font-bold">${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}</div>
                                 <div>
-                                    <div class="font-bold text-sm text-slate-800 dark:text-slate-200">${m.full_name || 'User'}</div>
+                                    <div class="font-bold text-sm text-slate-800 dark:text-slate-200">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</div>
                                     <div class="text-[10px] ${m.id === currentGroup.admin_id ? 'text-brand-600 font-bold' : 'text-slate-500'}">${m.id === currentGroup.admin_id ? 'Admin' : 'Anggota'}</div>
                                 </div>
                             </div>
+                            ${isSelected ? '<svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' : ''}
                         </div>
-                    `).join('');
+                    `}).join('');
                 }
             }
+        }
+
+        function selectMember(id, name) {
+            targetUserId = id;
+            targetUserName = name;
+            updateUIBasedOnTarget();
+            
+            // Pindah ke tab Mutabaah
+            switchTab('mutabaah');
+            showToast(`Beralih ke data: ${name}`, 'success');
         }
 
         function openCreateGroupModal() {
@@ -959,21 +1012,59 @@
             }
         }
 
+        function openAddMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('hidden');
+            document.getElementById('addMemberModal').classList.add('flex');
+            document.getElementById('newMemberName').value = '';
+            document.getElementById('newMemberEmail').value = '';
+            document.getElementById('newMemberPassword').value = '123456';
+        }
+
+        function closeAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('hidden');
+            document.getElementById('addMemberModal').classList.remove('flex');
+        }
+
+        async function handleAddMember() {
+            const name = document.getElementById('newMemberName').value;
+            const email = document.getElementById('newMemberEmail').value;
+            const password = document.getElementById('newMemberPassword').value;
+
+            if (!name || !email || !password) {
+                showToast('Semua kolom harus diisi', 'warning');
+                return;
+            }
+
+            const { error } = await supabaseClient.rpc('create_new_member', {
+                member_email: email,
+                member_password: password,
+                member_name: name,
+                target_group_id: currentGroup.id
+            });
+
+            if (error) {
+                showToast('Gagal menambah anggota: ' + error.message, 'error');
+            } else {
+                showToast('Anggota berhasil ditambahkan!', 'success');
+                closeAddMemberModal();
+                renderHalaqoh();
+            }
+        }
+
         // ==========================================
         // 8. LOGIKA REKAP & GRAFIK
         // ==========================================
         async function renderRekap() {
-            if (!currentUser) return;
+            if (!currentUser || !targetUserId) return;
 
             const startStr = document.getElementById('rekapStart').value;
             const endStr = document.getElementById('rekapEnd').value;
 
             if (!startStr || !endStr) return;
 
-            // Ambil semua data dalam rentang tanggal tersebut
             const { data, error } = await supabaseClient
                 .from('mutabaah').select('date, amalan_data')
-                .eq('user_id', currentUser.id)
+                .eq('user_id', targetUserId)
                 .gte('date', startStr)
                 .lte('date', endStr);
 
@@ -982,17 +1073,14 @@
                 return;
             }
 
-            // Proses Data
             let amalanCounts = {};
             DEFAULT_AMALAN.forEach(a => amalanCounts[a] = 0);
             
             let totalDays = 0;
-            // Hitung total hari dalam rentang (untuk persentase)
             let loopDate = new Date(startStr);
             let endDate = new Date(endStr);
             while (loopDate <= endDate) { totalDays++; loopDate.setDate(loopDate.getDate() + 1); }
 
-            // Hitung centang per amalan
             data.forEach(record => {
                 DEFAULT_AMALAN.forEach(amalan => {
                     if (record.amalan_data && record.amalan_data[amalan] === true) {
@@ -1001,7 +1089,6 @@
                 });
             });
 
-            // 1. Render Tabel
             const tbody = document.getElementById('tbody-rekap');
             tbody.innerHTML = DEFAULT_AMALAN.map(amalan => {
                 const count = amalanCounts[amalan];
@@ -1024,7 +1111,6 @@
                 `;
             }).join('');
 
-            // 2. Render Charts
             renderCharts(data, totalDays, amalanCounts);
         }
 
@@ -1035,7 +1121,6 @@
             if (chartBarInstance) chartBarInstance.destroy();
             if (chartDonutInstance) chartDonutInstance.destroy();
 
-            // Data untuk Chart Bar (Total Selesai per Amalan)
             const labels = DEFAULT_AMALAN.map(a => a.length > 20 ? a.substring(0, 18) + '...' : a);
             const values = DEFAULT_AMALAN.map(a => amalanCounts[a]);
 
@@ -1062,7 +1147,6 @@
                 }
             });
 
-            // Data untuk Chart Donut (Total keseluruhan amalan yang dicentang)
             const totalChecked = Object.values(amalanCounts).reduce((a, b) => a + b, 0);
             const totalPossible = DEFAULT_AMALAN.length * totalDays;
 
@@ -1088,69 +1172,11 @@
         }
 
         // ==========================================
-        // 9. LOGIKA STATISTIK & LEADERBOARD
-        // ==========================================
-        async function renderStats() {
-            if (!currentGroup) {
-                document.getElementById('leaderboardContainer').innerHTML = '<div class="text-center text-brand-200 py-4">Anda belum bergabung dengan Halaqoh manapun.</div>';
-                return;
-            }
-
-            const now = new Date();
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            const startStr = formatDateKey(firstDay);
-            const endStr = formatDateKey(now);
-
-            // Ambil semua anggota di grup ini
-            const { data: members } = await supabaseClient.from('profiles').select('id, full_name').eq('group_id', currentGroup.id);
-            if (!members || members.length === 0) return;
-
-            const memberIds = members.map(m => m.id);
-
-            // Ambil semua data mutabaah bulan ini untuk semua anggota grup
-            const { data: allData } = await supabaseClient
-                .from('mutabaah')
-                .select('user_id, amalan_data')
-                .in('user_id', memberIds)
-                .gte('date', startStr)
-                .lte('date', endStr);
-
-            const leaderboard = members.map(m => {
-                let totalChecked = 0;
-                const userRecords = allData.filter(d => d.user_id === m.id);
-                userRecords.forEach(r => {
-                    if (r.amalan_data) {
-                        totalChecked += Object.keys(r.amalan_data).length;
-                    }
-                });
-                return { name: m.full_name, score: totalChecked };
-            });
-
-            leaderboard.sort((a, b) => b.score - a.score);
-
-            const medals = ['🥇', '🥈', '🥉'];
-            document.getElementById('leaderboardContainer').innerHTML = leaderboard.map((item, index) => `
-                <div class="flex items-center justify-between p-4 rounded-2xl bg-white/10 border border-white/20">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 flex items-center justify-center rounded-full font-bold ${index < 3 ? 'bg-amber-400 text-amber-900' : 'bg-white/20 text-white'}">
-                            ${index < 3 ? medals[index] : index + 1}
-                        </div>
-                        <div class="font-bold text-sm">${item.name}</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-extrabold text-lg text-white">${item.score}</div>
-                        <div class="text-[10px] text-brand-200">Amalan</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ==========================================
-        // 10. NAVIGATION & UTILITIES
+        // 9. NAVIGATION & UTILITIES
         // ==========================================
         function switchTab(tab) {
-            const views = ['tilawah', 'mutabaah', 'halaqoh', 'rekap', 'stats'];
-            const dMenus = ['menu-desktop-tilawah', 'menu-desktop-mutabaah', 'menu-desktop-halaqoh', 'menu-desktop-rekap', 'menu-desktop-stats'];
+            const views = ['tilawah', 'mutabaah', 'halaqoh', 'rekap']; // Hapus stats
+            const dMenus = ['menu-desktop-tilawah', 'menu-desktop-mutabaah', 'menu-desktop-halaqoh', 'menu-desktop-rekap'];
             const mMenus = ['menu-mobile-tilawah', 'menu-mobile-mutabaah', 'menu-mobile-halaqoh', 'menu-mobile-rekap'];
 
             views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
@@ -1176,12 +1202,10 @@
                 });
             }
 
-            // Render sesuai tab yang aktif
             if (tab === 'halaqoh') renderHalaqoh();
             if (tab === 'mutabaah') renderMutabaah();
             if (tab === 'tilawah') renderTilawah();
             if (tab === 'rekap') {
-                // Set default filter tanggal jika belum ada
                 if (!document.getElementById('rekapStart').value) {
                     const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
                     document.getElementById('rekapStart').value = formatDateKey(firstDay);
@@ -1189,7 +1213,6 @@
                 }
                 renderRekap();
             }
-            if (tab === 'stats') renderStats();
         }
 
         function showToast(msg, type = 'info') {
@@ -1208,13 +1231,12 @@
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            // Re-render chart agar warna menyesuaikan
             if (!document.getElementById('view-rekap').classList.contains('hidden')) {
                 renderRekap();
             }
         }
 
-        // Expose to window so HTML onclick can access
+        // Expose to window
         window.handleLogin = handleLogin;
         window.handleRegister = handleRegister;
         window.handleLogout = handleLogout;
@@ -1223,6 +1245,9 @@
         window.openCreateGroupModal = openCreateGroupModal;
         window.closeCreateGroupModal = closeCreateGroupModal;
         window.handleCreateGroup = handleCreateGroup;
+        window.openAddMemberModal = openAddMemberModal;
+        window.closeAddMemberModal = closeAddMemberModal;
+        window.handleAddMember = handleAddMember;
         window.openTilawahSheet = openTilawahSheet;
         window.closeTilawahSheet = closeTilawahSheet;
         window.pickTilawahStatus = pickTilawahStatus;
@@ -1233,6 +1258,8 @@
         window.navigateTilawahPeriod = navigateTilawahPeriod;
         window.goToTodayTilawah = goToTodayTilawah;
         window.renderRekap = renderRekap;
+        window.selectMember = selectMember;
+        window.clearTarget = clearTarget;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('theme') === 'dark') {
