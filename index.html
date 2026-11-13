@@ -492,18 +492,22 @@
         }
 
         async function fetchProfile() {
+            // Sederhanakan query, jangan pakai relasi kompleks dulu
             const { data, error } = await supabaseClient
-                .from('profiles').select(`*, groups:group_id (id, name, admin_id)`)
-                .eq('id', currentUser.id).maybeSingle();
+                .from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
 
             if (data) {
                 currentProfile = data;
-                currentGroup = data.groups;
                 document.getElementById('sidebarUserName').textContent = data.full_name || 'User';
                 document.getElementById('userNameDisplay').textContent = data.full_name || 'User';
                 document.getElementById('streakName').textContent = data.full_name || 'User';
+                
+                // Fetch group terpisah untuk menghindari error 400
+                if (data.group_id) {
+                    const { data: groupData } = await supabaseClient.from('groups').select('*').eq('id', data.group_id).maybeSingle();
+                    currentGroup = groupData;
+                }
             } else {
-                // Jika profil belum ada (misal user baru), kita buat fallback
                 currentProfile = { full_name: currentUser.email.split('@')[0] };
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
                 document.getElementById('userNameDisplay').textContent = currentProfile.full_name;
@@ -526,7 +530,11 @@
                 .eq('user_id', currentUser.id)
                 .gte('date', formatDateKey(firstDay));
             
-            allMutabaahData = data || [];
+            if (!error) {
+                allMutabaahData = data || [];
+            } else {
+                console.error(error);
+            }
         }
 
         function getTilawahStatus(dateStr) {
