@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f766e" />
+  <title>Mutaba'ah Yaumiyah — Monitoring Ibadah Harian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loader" class="loader">
+    <div class="loader-content">
+      <div class="loader-logo">☪</div>
+      <h2>Mutaba'ah Yaumiyah</h2>
+      <p>Memuat aplikasi...</p>
+    </div>
+  </div>
+
+  <!-- App Shell -->
+  <div id="app" class="app hidden">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-mini">☪</div>
+        <div>
+          <h1>Mutaba'ah Yaumiyah</h1>
+          <p id="hijriDate" class="hijri-date">Memuat tanggal...</p>
+        </div>
+      </div>
+      <button id="themeToggle" class="icon-btn" title="Ganti Tema">🌙</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <!-- Dashboard View -->
+      <section id="view-dashboard" class="view active">
+        <!-- Greeting Card -->
+        <div class="greeting-card">
+          <div class="greeting-text">
+            <p class="salam">السلام عليكم</p>
+            <h2 id="userName">Hamba Allah</h2>
+            <p id="motivasi" class="motivasi">"Sebaik-baik amal adalah yang dilakukan terus-menerus."</p>
+          </div>
+          <div class="greeting-emoji">🌟</div>
+        </div>
+
+        <!-- Progress Ring -->
+        <div class="progress-section">
+          <div class="progress-ring-container">
+            <svg class="progress-ring" width="200" height="200">
+              <circle class="ring-bg" cx="100" cy="100" r="85" />
+              <circle id="ringProgress" class="ring-progress" cx="100" cy="100" r="85" />
+            </svg>
+            <div class="progress-center">
+              <span id="progressPercent" class="progress-percent">0%</span>
+              <span class="progress-label">Ibadah Hari Ini</span>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-icon">✅</span>
+              <span id="statDone" class="stat-value">0</span>
+              <span class="stat-label">Selesai</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">⏳</span>
+              <span id="statPending" class="stat-value">0</span>
+              <span class="stat-label">Tertunda</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">🔥</span>
+              <span id="statStreak" class="stat-value">0</span>
+              <span class="stat-label">Hari Streak</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prayer Times -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🕌 Jadwal Sholat</h3>
+            <span id="cityLabel" class="badge">Jakarta</span>
+          </div>
+          <div id="prayerTimes" class="prayer-grid">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Checklist Ibadah -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📋 Amalan Hari Ini</h3>
+            <button id="addAmalanBtn" class="btn-text">+ Tambah</button>
+          </div>
+          <div id="amalanList" class="amalan-list">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Chart 7 Hari -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📊 Statistik 7 Hari Terakhir</h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- History View -->
+      <section id="view-history" class="view">
+        <div class="card">
+          <div class="card-header">
+            <h3>📅 Riwayat Ibadah</h3>
+          </div>
+          <div id="historyList" class="history-list">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile View -->
+      <section id="view-profile" class="view">
+        <div class="card profile-card">
+          <div class="avatar">👤</div>
+          <h2 id="profileName">Hamba Allah</h2>
+          <p class="profile-sub">Bergabung sejak <span id="joinDate">-</span></p>
+          <button id="editNameBtn" class="btn-primary">✏️ Edit Nama</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>⚙️ Pengaturan</h3></div>
+          <div class="settings-list">
+            <div class="setting-item">
+              <span>🌙 Mode Gelap</span>
+              <label class="switch">
+                <input type="checkbox" id="darkModeSwitch" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <span>🔔 Pengingat Harian</span>
+              <label class="switch">
+                <input type="checkbox" id="reminderSwitch" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <span>📍 Kota</span>
+              <select id="citySelect" class="select">
+                <option value="Jakarta">Jakarta</option>
+                <option value="Bandung">Bandung</option>
+                <option value="Surabaya">Surabaya</option>
+                <option value="Yogyakarta">Yogyakarta</option>
+                <option value="Medan">Medan</option>
+                <option value="Makassar">Makassar</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>📤 Data</h3></div>
+          <button id="exportBtn" class="btn-secondary">⬇️ Export Data (JSON)</button>
+          <button id="resetBtn" class="btn-danger">🗑️ Reset Data</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Beranda</span>
+      </button>
+      <button class="nav-item" data-view="history">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">Riwayat</span>
+      </button>
+      <button class="nav-item" data-view="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal Add Amalan -->
+  <div id="modalAmalan" class="modal hidden">
+    <div class="modal-content">
+      <h3>Tambah Amalan</h3>
+      <input id="newAmalanInput" type="text" placeholder="Contoh: Baca Al-Qur'an 1 juz" class="input" />
+      <div class="modal-actions">
+        <button id="cancelAddAmalan" class="btn-secondary">Batal</button>
+        <button id="confirmAddAmalan" class="btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
