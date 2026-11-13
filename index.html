@@ -313,17 +313,15 @@
             return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
         }
 
-        async function fetchMutabaahData() {
+                async function fetchMutabaahData() {
             const dateKey = formatDateKey(currentDate);
-            // PERBAIKAN: Menggunakan supabaseClient
             const { data, error } = await supabaseClient
                 .from('mutabaah')
                 .select('amalan_data')
                 .eq('user_id', currentUser.id)
                 .eq('date', dateKey)
-                .single();
+                .maybeSingle(); // <--- UBAH KE INI
 
-            // Jika error (data belum ada), reset ke kosong
             currentData = (data && data.amalan_data) ? data.amalan_data : {};
         }
 
