@@ -13,11 +13,8 @@
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: { brand: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#34d399',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b',950:'#022c22' } },
-                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.3s ease-out' },
-                    keyframes: { 
-                        fadeIn: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-                        slideUp: { from: { transform: 'translateY(100%)' }, to: { transform: 'translateY(0)' } }
-                    }
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out' },
+                    keyframes: { fadeIn: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } } }
                 }
             }
         }
@@ -187,6 +184,7 @@
             
             <!-- ================= VIEW: TILAWAH ================= -->
             <div id="view-tilawah" class="flex flex-col gap-6 animate-fade-in">
+                <!-- KPI Bento Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="lg:col-span-2 bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
@@ -228,6 +226,7 @@
                     </div>
                 </div>
 
+                <!-- Kalender -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-5 md:p-8 w-full">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-base md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -270,6 +269,7 @@
                     </div>
                 </div>
 
+                <!-- Heatmap -->
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-5 md:p-8">
                     <div class="flex items-center justify-between mb-4">
                         <div>
@@ -438,7 +438,7 @@
 
     <!-- ================= BOTTOM SHEET TILAWAH ================= -->
     <div id="sheetOverlay" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm z-[90] hidden transition-opacity" onclick="closeTilawahSheet()"></div>
-    <div id="tilawahSheet" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl z-[100] p-6 transition-transform duration-300 translate-y-full max-h-[85vh] overflow-y-auto border-t border-slate-200 dark:border-slate-800 animate-slide-up">
+    <div id="tilawahSheet" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl z-[100] p-6 transition-transform duration-300 translate-y-full max-h-[85vh] overflow-y-auto border-t border-slate-200 dark:border-slate-800">
         <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-5"></div>
         <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
             <h3 id="sheetTitle" class="text-base font-extrabold text-slate-900 dark:text-white">Pilih Status</h3>
@@ -467,7 +467,7 @@
             "Shalawat 100x", "Infaq", "Shalat Dhuha", "Shalat 5 Waktu Berjamaah", "Olahraga 30 Menit"
         ];
 
-        // Status Tilawah
+        // Status Tilawah dengan warna dan ikon
         const STATUS = [
             { id: 'kholas', label: 'Kholas 1 Juz', icon: 'check-circle', color: '#059669', bg: '#ecfdf5' },
             { id: 'progress', label: 'In Progress', icon: 'clock', color: '#d97706', bg: '#fffbeb' },
@@ -733,7 +733,8 @@
         // ==========================================
         function buildSheetOptions() {
             const wrap = document.getElementById('sheetOptions');
-            wrap.innerHTML = STATUS.map(s => `
+            // Opsi Status
+            let html = STATUS.map(s => `
                 <button onclick="pickTilawahStatus('${s.id}')" class="w-full flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 active:scale-[0.98] transition text-left shadow-sm">
                     <span class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style="background:${s.bg}; color:${s.color}">
                         <i data-lucide="${s.icon}" class="w-6 h-6"></i>
@@ -741,12 +742,23 @@
                     <span class="font-bold text-sm text-slate-800 dark:text-slate-200">${s.label}</span>
                 </button>
             `).join('');
+
+            // Tambahkan Tombol Hapus
+            html += `
+                <button onclick="deleteTilawahStatus()" class="w-full flex items-center gap-4 p-4 rounded-2xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-[0.98] transition text-left mt-2 shadow-sm">
+                    <span class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400">
+                        <i data-lucide="trash-2" class="w-6 h-6"></i>
+                    </span>
+                    <span class="font-bold text-sm text-rose-700 dark:text-rose-400">Hapus Status</span>
+                </button>
+            `;
+
+            wrap.innerHTML = html;
             lucide.createIcons();
         }
 
         function openTilawahSheet(day) {
             activeEditDate = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth(), day);
-            const dateStr = formatDateKey(activeEditDate);
             const daysIndo = ["Ahad","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
             const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             
@@ -767,18 +779,18 @@
             if (!activeEditDate) return;
             const dateStr = formatDateKey(activeEditDate);
             
-            // Ambil data mutabaah untuk tanggal tersebut
             const { data } = await supabaseClient.from('mutabaah').select('amalan_data')
                 .eq('user_id', currentUser.id).eq('date', dateStr).maybeSingle();
             
             let amalanData = (data && data.amalan_data) ? data.amalan_data : {};
             
-            // Mapping Status ke Centang Amalan
-            if (statusId === 'kholas') amalanData["Tilawah Al-Qur'an 1 Juz"] = true;
-            else delete amalanData["Tilawah Al-Qur'an 1 Juz"];
+            // Reset Tilawah
+            delete amalanData["Tilawah Al-Qur'an 1 Juz"];
+            delete amalanData["Baca Terjemah Al-Qur'an"];
 
+            // Set sesuai pilihan
+            if (statusId === 'kholas') amalanData["Tilawah Al-Qur'an 1 Juz"] = true;
             if (statusId === 'progress') amalanData["Baca Terjemah Al-Qur'an"] = true;
-            else delete amalanData["Baca Terjemah Al-Qur'an"];
 
             // Simpan ke Supabase
             await supabaseClient.from('mutabaah').upsert({ 
@@ -786,8 +798,33 @@
             }, { onConflict: 'user_id, date' });
 
             closeTilawahSheet();
-            renderTilawah(); // Refresh kalender & statistik
+            renderTilawah();
+            if (!document.getElementById('view-mutabaah').classList.contains('hidden')) {
+                renderMutabaah();
+            }
             showToast('Status tilawah tersimpan', 'success');
+        }
+
+        async function deleteTilawahStatus() {
+            if (!activeEditDate) return;
+            const dateStr = formatDateKey(activeEditDate);
+            
+            const { data } = await supabaseClient.from('mutabaah').select('amalan_data')
+                .eq('user_id', currentUser.id).eq('date', dateStr).maybeSingle();
+            
+            if (data && data.amalan_data) {
+                let amalanData = data.amalan_data;
+                delete amalanData["Tilawah Al-Qur'an 1 Juz"];
+                delete amalanData["Baca Terjemah Al-Qur'an"];
+                
+                await supabaseClient.from('mutabaah').upsert({ 
+                    user_id: currentUser.id, date: dateStr, amalan_data: amalanData 
+                }, { onConflict: 'user_id, date' });
+            }
+
+            closeTilawahSheet();
+            renderTilawah();
+            showToast('Status dihapus', 'info');
         }
 
         // ==========================================
