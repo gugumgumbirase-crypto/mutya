@@ -20,7 +20,6 @@
         }
     </script>
     
-    <!-- Ikon & Font -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -32,7 +31,6 @@
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); }
         
-        /* Gaya Menu Sidebar ODOJ */
         .nav-item { transition: all 0.2s; border-radius: 0.75rem; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #64748b; }
         .dark .nav-item { color: #94a3b8; }
         .nav-item:hover { background: rgba(16, 185, 129, 0.05); color: #059669; }
@@ -46,6 +44,44 @@
         .toast { animation: slideDown 0.3s ease-out; }
         @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
+
+        /* Calendar Style */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
+        .calendar-header-cell { text-align: center; font-size: 11px; font-weight: 700; color: #64748b; padding: 4px 0; }
+        .dark .calendar-header-cell { color: #94a3b8; }
+        .calendar-cell {
+            aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-radius: 8px; cursor: default; transition: all 0.15s; position: relative; border: 2px solid transparent;
+            user-select: none;
+        }
+        .calendar-cell.today { border-color: #10b981; }
+        .calendar-cell.today::after { content: ''; position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: #10b981; }
+        .calendar-cell .day-num { font-size: 12px; font-weight: 700; color: #334155; line-height: 1; }
+        .dark .calendar-cell .day-num { color: #e2e8f0; }
+        .calendar-cell.other-month .day-num { color: #cbd5e1; }
+        .dark .calendar-cell.other-month .day-num { color: #475569; }
+        .calendar-cell .status-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        .calendar-cell .status-icon svg { width: 12px; height: 12px; stroke-width: 2.5; }
+
+        /* Heatmap */
+        .heatmap-cell { width: 12px; height: 12px; border-radius: 3px; transition: all 0.2s; }
+        .heatmap-cell:hover { transform: scale(1.5); z-index: 10; }
+        .heatmap-0 { background: #f1f5f9; }
+        .heatmap-1 { background: #d1fae5; }
+        .heatmap-2 { background: #6ee7b7; }
+        .heatmap-3 { background: #10b981; }
+        .heatmap-4 { background: #059669; }
+        .dark .heatmap-0 { background: #1e293b; }
+        .dark .heatmap-1 { background: #064e3b; }
+        .dark .heatmap-2 { background: #047857; }
+        .dark .heatmap-3 { background: #10b981; }
+        .dark .heatmap-4 { background: #34d399; }
+
+        .badge-achievement { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+        .badge-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #78350f; }
+        .badge-silver { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); color: #334155; }
+        .badge-bronze { background: linear-gradient(135deg, #fdba74, #fb923c); color: #7c2d12; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased h-screen flex overflow-hidden transition-colors duration-300 w-full max-w-full">
@@ -85,7 +121,7 @@
             
             <nav class="px-3 mt-4 space-y-1 overflow-y-auto flex-1">
                 <button onclick="switchTab('tilawah')" id="menu-desktop-tilawah" class="nav-item w-full active">
-                <i data-lucide="book-open" class="w-5 h-5"></i> Tilawah
+                    <i data-lucide="book-open" class="w-5 h-5"></i> Tilawah
                 </button>
                 <button onclick="switchTab('mutabaah')" id="menu-desktop-mutabaah" class="nav-item w-full">
                     <i data-lucide="check-circle" class="w-5 h-5"></i> Mutabaah
@@ -122,7 +158,6 @@
     <!-- ================= MAIN CONTENT ================= -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full" id="mainScroll">
         
-        <!-- Header Mobile -->
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md flex items-center justify-center w-9 h-9">
@@ -146,33 +181,121 @@
 
         <main class="p-4 md:p-8 space-y-6 max-w-6xl mx-auto w-full pb-24 md:pb-8">
             
-            <!-- ================= VIEW: TILAWAH ================= -->
+            <!-- ================= VIEW: TILAWAH (PERSIS ODOJ) ================= -->
             <div id="view-tilawah" class="flex flex-col gap-6 animate-fade-in">
-                <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                    <div class="relative z-10 w-full md:w-auto">
-                        <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
-                            <i data-lucide="calendar" class="w-4 h-4"></i> <span id="tilawahDateLabel">Hari Ini</span>
+                
+                <!-- Bento Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Card Streak -->
+                    <div class="lg:col-span-2 bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                        <div class="relative z-10 flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider">
+                                <i data-lucide="flame" class="w-4 h-4 text-amber-300"></i> Streak Kholas
+                            </div>
+                            <div id="badgeContainer"></div>
                         </div>
-                        <h2 class="text-3xl font-extrabold" id="tilawahUserNameDisplay">Memuat...</h2>
-                        <p class="text-sm text-brand-100 mt-2">Catat progres tilawah harianmu.</p>
+                        <div class="relative z-10 mt-4">
+                            <div class="flex items-baseline gap-2">
+                                <span id="streakCount" class="text-5xl font-extrabold">0</span>
+                                <span class="text-sm font-semibold text-brand-200">Hari Beruntun</span>
+                            </div>
+                            <p class="text-xs text-brand-100 mt-2">Terus jaga konsistensi tilawah, <span id="streakName" class="font-bold text-white"></span>!</p>
+                        </div>
                     </div>
-                    <div class="relative z-10 w-full md:w-auto">
-                        <div class="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-4 w-full md:w-64">
-                            <label class="text-[10px] text-brand-100 font-bold uppercase block mb-2">Pilih Status Tilawah</label>
-                            <select id="tilawahStatusSelect" class="w-full bg-white/20 border border-white/30 text-white font-bold rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-white cursor-pointer" onchange="saveTilawahStatus()">
-                                <option value="kholas" class="text-slate-800">Kholas 1 Juz</option>
-                                <option value="progress" class="text-slate-800">In Progress</option>
-                                <option value="kurang" class="text-slate-800">Kurang 1 Juz</option>
-                                <option value="tidak-laporan" class="text-slate-800">Tidak Laporan</option>
-                                <option value="tidak-tilawah" class="text-slate-800">Tidak Tilawah</option>
-                            </select>
+
+                    <!-- Card % Kholas -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">% Kholas</span>
+                            <i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i>
+                        </div>
+                        <div class="mt-4">
+                            <span id="kpiPersenKholas" class="text-4xl font-extrabold text-slate-900 dark:text-white">0%</span>
+                            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+                                <div id="kpiBarKholas" class="bg-brand-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Hari Terisi -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Hari Terisi</span>
+                            <i data-lucide="calendar-check" class="w-4 h-4 text-amber-500"></i>
+                        </div>
+                        <div class="mt-4">
+                            <span id="kpiHariTerisi" class="text-4xl font-extrabold text-slate-900 dark:text-white">0</span>
+                            <span class="text-sm text-slate-400 font-semibold">/ <span id="kpiTotalHari"></span> hari</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8 text-center">
-                    <p class="text-slate-500 mb-4">Fitur kalender & grafik Tilawah sedang dalam pengembangan.</p>
+                <!-- Kalender -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-5 md:p-8 w-full">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-base md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                            Laporan Tilawah<br><span id="calendarMonthYear" class="text-lg md:text-xl text-brand-600">November 2026</span>
+                        </h3>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button onclick="navigateTilawahPeriod(-1)" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+                                <i data-lucide="chevron-up" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="goToTodayTilawah()" class="p-2 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+                                <i data-lucide="calendar" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="navigateTilawahPeriod(1)" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+                                <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-header">
+                        <div class="calendar-header-cell">Ahad</div>
+                        <div class="calendar-header-cell">Sen</div>
+                        <div class="calendar-header-cell">Sel</div>
+                        <div class="calendar-header-cell">Rab</div>
+                        <div class="calendar-header-cell">Kam</div>
+                        <div class="calendar-header-cell">Jum</div>
+                        <div class="calendar-header-cell">Sab</div>
+                    </div>
+                    
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                    
+                    <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                        <div class="flex flex-wrap items-center gap-x-5 gap-y-3 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Status:</span>
+                            <span class="flex items-center gap-1.5"><span class="text-brand-600"><i data-lucide="check-circle" class="w-4 h-4"></i></span> Kholas</span>
+                            <span class="flex items-center gap-1.5"><span class="text-amber-500"><i data-lucide="clock" class="w-4 h-4"></i></span> Progress</span>
+                            <span class="flex items-center gap-1.5"><span class="text-pink-500"><i data-lucide="bookmark" class="w-4 h-4"></i></span> Tdk Lapor</span>
+                            <span class="flex items-center gap-1.5"><span class="text-slate-500"><i data-lucide="droplet" class="w-4 h-4"></i></span> Kurang</span>
+                            <span class="flex items-center gap-1.5"><span class="text-rose-500"><i data-lucide="x" class="w-4 h-4"></i></span> Tdk Tilawah</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Heatmap -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-5 md:p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Heatmap Konsistensi</h3>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Visualisasi intensitas tilawah 6 bulan terakhir</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <div id="heatmapContainer" class="flex gap-1 min-w-max"></div>
+                        <div class="flex items-center gap-2 mt-3 text-[10px] text-slate-500 dark:text-slate-400">
+                            <span>Kurang</span>
+                            <div class="flex gap-0.5">
+                                <div class="heatmap-cell heatmap-0"></div>
+                                <div class="heatmap-cell heatmap-1"></div>
+                                <div class="heatmap-cell heatmap-2"></div>
+                                <div class="heatmap-cell heatmap-3"></div>
+                                <div class="heatmap-cell heatmap-4"></div>
+                            </div>
+                            <span>Banyak</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -287,7 +410,7 @@
     <div class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/20 dark:border-slate-800/50 z-40 pb-safe">
         <div class="flex justify-around items-center h-16">
             <button onclick="switchTab('tilawah')" id="menu-mobile-tilawah" class="flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200">
-                <i data-lucide="layout-grid" class="w-5 h-5 mb-1"></i>
+                <i data-lucide="book-open" class="w-5 h-5 mb-1"></i>
                 <span class="text-[10px] font-bold">Tilawah</span>
             </button>
             <button onclick="switchTab('mutabaah')" id="menu-mobile-mutabaah" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
@@ -340,7 +463,11 @@
         let currentProfile = null;
         let currentGroup = null;
         let currentDate = new Date();
-        let currentData = {}; // Data mutabaah
+        let currentData = {}; // Data mutabaah untuk tanggal aktif
+        
+        // Variabel Khusus Tilawah
+        let tilawahDate = new Date(); 
+        let allMutabaahData = []; // Menyimpan semua data mutabaah user untuk kalender
 
         // ==========================================
         // 3. AUTHENTICATION
@@ -351,7 +478,7 @@
                 currentUser = session.user;
                 await fetchProfile();
                 document.getElementById('authScreen').classList.add('hidden');
-                renderTilawah(); // Default view
+                renderTilawah(); 
                 renderMutabaah();
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
@@ -413,22 +540,173 @@
                 currentGroup = data.groups;
                 document.getElementById('sidebarUserName').textContent = data.full_name;
                 document.getElementById('userNameDisplay').textContent = data.full_name;
-                document.getElementById('tilawahUserNameDisplay').textContent = data.full_name;
+                document.getElementById('streakName').textContent = data.full_name;
             }
         }
 
         // ==========================================
-        // 4. LOGIKA TILAWAH (UI SAJA)
+        // 4. LOGIKA TILAWAH (BENTO GRID & KALENDER)
         // ==========================================
-        function renderTilawah() {
-            const days = ['Ahad','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
-            const today = new Date();
-            document.getElementById('tilawahDateLabel').textContent = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+        async function fetchAllMutabaahForTilawah() {
+            // Ambil 6 bulan terakhir untuk heatmap dan kalender
+            const firstDay = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() - 5, 1);
+            const { data, error } = await supabaseClient
+                .from('mutabaah')
+                .select('date, amalan_data')
+                .eq('user_id', currentUser.id)
+                .gte('date', formatDateKey(firstDay));
+            
+            allMutabaahData = data || [];
         }
 
-        function saveTilawahStatus() {
-            showToast('Status Tilawah disimpan (Simulasi)', 'success');
+        function getTilawahStatus(dateStr) {
+            const record = allMutabaahData.find(d => d.date === dateStr);
+            if (!record || !record.amalan_data) return null;
+            // Kita anggap "Tilawah Kholas" jika amalan "Tilawah Al-Qur'an 1 Juz" dicentang
+            if (record.amalan_data["Tilawah Al-Qur'an 1 Juz"] === true) return 'kholas';
+            // Bisa ditambahkan logika lain di sini jika ada amalan "Baca Terjemah" dll
+            return 'progress'; 
+        }
+
+        async function renderTilawah() {
+            if (!currentUser) return;
+            await fetchAllMutabaahForTilawah();
+
+            const now = new Date();
+            const isCurrentMonth = tilawahDate.getMonth() === now.getMonth() && tilawahDate.getFullYear() === now.getFullYear();
+            const totalDaysInMonth = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() + 1, 0).getDate();
+            
+            const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            document.getElementById('calendarMonthYear').textContent = `${months[tilawahDate.getMonth()]} ${tilawahDate.getFullYear()}`;
+
+            // Kalkulasi Statistik Bulan Ini
+            let kholasCount = 0;
+            let filledCount = 0;
+            for (let day = 1; day <= totalDaysInMonth; day++) {
+                const d = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth(), day);
+                const dateStr = formatDateKey(d);
+                const status = getTilawahStatus(dateStr);
+                if (status === 'kholas') kholasCount++;
+                if (status !== null) filledCount++;
+            }
+
+            const percentKholas = Math.round((kholasCount / totalDaysInMonth) * 100);
+            document.getElementById('kpiPersenKholas').textContent = percentKholas + '%';
+            document.getElementById('kpiBarKholas').style.width = percentKholas + '%';
+            document.getElementById('kpiHariTerisi').textContent = filledCount;
+            document.getElementById('kpiTotalHari').textContent = totalDaysInMonth;
+
+            // Hitung Streak (Beruntun)
+            let streak = 0;
+            let checkDate = new Date(now);
+            // Cek mundur maksimal 30 hari
+            for(let i=0; i<30; i++) {
+                const dateStr = formatDateKey(checkDate);
+                const status = getTilawahStatus(dateStr);
+                if (status === 'kholas') {
+                    streak++;
+                } else if (i > 0) { // Jika hari ini belum isi, tapi kemarin isi, streak tetap jalan
+                    break;
+                }
+                checkDate.setDate(checkDate.getDate() - 1);
+            }
+            document.getElementById('streakCount').textContent = streak;
+            
+            // Render Badge
+            let badge = '';
+            if (streak >= 30) badge = '<span class="badge-achievement badge-gold">🏆 30+ Hari</span>';
+            else if (streak >= 14) badge = '<span class="badge-achievement badge-silver">🥈 14+ Hari</span>';
+            else if (streak >= 7) badge = '<span class="badge-achievement badge-bronze">🥉 7+ Hari</span>';
+            document.getElementById('badgeContainer').innerHTML = badge;
+
+            // Render Kalender
+            renderCalendarTilawah();
+
+            // Render Heatmap
+            renderHeatmapTilawah();
+        }
+
+        function renderCalendarTilawah() {
+            const grid = document.getElementById('calendarGrid');
+            const total = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() + 1, 0).getDate();
+            const firstDayIndex = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth(), 1).getDay();
+            const prevMonth = tilawahDate.getMonth() === 0 ? 11 : tilawahDate.getMonth() - 1;
+            const prevYear = tilawahDate.getMonth() === 0 ? tilawahDate.getFullYear() - 1 : tilawahDate.getFullYear();
+            const prevMonthTotal = new Date(prevYear, prevMonth + 1, 0).getDate();
+            const totalCells = 42;
+            let html = '';
+            
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
+                const d = prevMonthTotal - i;
+                html += `<div class="calendar-cell other-month"><span class="day-num">${d}</span></div>`;
+            }
+            
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === tilawahDate.getMonth() && today.getFullYear() === tilawahDate.getFullYear();
+            
+            for (let day = 1; day <= total; day++) {
+                const d = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth(), day);
+                const dateStr = formatDateKey(d);
+                const status = getTilawahStatus(dateStr);
+                const todayClass = (isCurrentMonth && today.getDate() === day) ? 'today' : '';
+                
+                let iconHtml = '';
+                if (status === 'kholas') iconHtml = `<span class="status-icon text-brand-600"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i></span>`;
+                else if (status === 'progress') iconHtml = `<span class="status-icon text-amber-500"><i data-lucide="clock" class="w-3.5 h-3.5"></i></span>`;
+
+                html += `
+                    <div class="calendar-cell ${todayClass}">
+                        <span class="day-num">${day}</span>
+                        ${iconHtml}
+                    </div>
+                `;
+            }
+            
+            const remainingCells = totalCells - (firstDayIndex + total);
+            for (let i = 1; i <= remainingCells; i++) {
+                html += `<div class="calendar-cell other-month"><span class="day-num">${i}</span></div>`;
+            }
+            grid.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderHeatmapTilawah() {
+            const container = document.getElementById('heatmapContainer');
+            if (!container) return;
+            const months = [];
+            for (let i = 5; i >= 0; i--) {
+                let m = tilawahDate.getMonth() - i;
+                let y = tilawahDate.getFullYear();
+                while (m < 0) { m += 12; y--; }
+                months.push({ m, y });
+            }
+            let html = '';
+            months.forEach(({m, y}) => {
+                const total = new Date(y, m + 1, 0).getDate();
+                const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+                let monthHtml = `<div class="flex flex-col gap-1"><div class="text-[9px] font-bold text-slate-500 dark:text-slate-400 text-center mb-1">${monthNames[m]}</div><div class="grid grid-cols-7 gap-0.5">`;
+                for (let d = 1; d <= total; d++) {
+                    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const status = getTilawahStatus(dateStr);
+                    let level = 0;
+                    if (status === 'kholas') level = 4;
+                    else if (status === 'progress') level = 2;
+                    monthHtml += `<div class="heatmap-cell heatmap-${level}" title="${d} ${monthNames[m]} ${y}"></div>`;
+                }
+                monthHtml += `</div></div>`;
+                html += monthHtml;
+            });
+            container.innerHTML = html;
+        }
+
+        function navigateTilawahPeriod(step) {
+            tilawahDate.setMonth(tilawahDate.getMonth() + step);
+            renderTilawah();
+        }
+
+        function goToTodayTilawah() {
+            tilawahDate = new Date();
+            renderTilawah();
         }
 
         // ==========================================
@@ -499,6 +777,10 @@
             else currentData[amalanName] = true;
             await saveMutabaahData();
             renderMutabaah();
+            // Refresh Tilawah jika sedang di view tilawah
+            if (!document.getElementById('view-tilawah').classList.contains('hidden')) {
+                renderTilawah();
+            }
         }
 
         function changeDate(offset) {
@@ -609,6 +891,7 @@
 
             if (tab === 'halaqoh') renderHalaqoh();
             if (tab === 'mutabaah') renderMutabaah();
+            if (tab === 'tilawah') renderTilawah();
         }
 
         function showToast(msg, type = 'info') {
