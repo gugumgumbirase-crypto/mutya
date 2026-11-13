@@ -305,7 +305,6 @@
             <div id="view-halaqoh" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
                     
-                    <!-- Dropdown Pilih Grup & Tombol Buat Grup Baru -->
                     <div class="flex flex-col md:flex-row items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
                         <div class="flex items-center gap-3 w-full md:w-auto">
                             <label class="text-sm font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">Grup Aktif:</label>
@@ -525,10 +524,8 @@
         let currentUser = null;
         let currentProfile = null;
         
-        // State Multi-Group
-        let userGroups = []; // Menyimpan semua grup user
-        let currentGroup = null; // Grup yang sedang aktif
-        let currentGroupMembers = []; // Anggota di grup aktif
+        let userGroups = []; 
+        let currentGroup = null; 
         
         let targetUserId = null; 
         let targetUserName = null;
@@ -618,7 +615,6 @@
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
             }
 
-            // Ambil semua grup user ini
             const { data: memberships } = await supabaseClient
                 .from('group_members')
                 .select(`
@@ -630,7 +626,7 @@
             if (memberships) {
                 userGroups = memberships.map(m => m.groups).filter(g => g !== null);
                 if (userGroups.length > 0) {
-                    currentGroup = userGroups[0]; // Set default ke grup pertama
+                    currentGroup = userGroups[0]; 
                 } else {
                     currentGroup = null;
                 }
@@ -982,12 +978,11 @@
         }
 
         // ==========================================
-        // 7. LOGIKA HALAQOH (MULTI GROUP)
+        // 7. LOGIKA HALAQOH
         // ==========================================
         async function renderHalaqoh() {
             if (!currentProfile) return;
 
-            // Isi Dropdown Grup
             const selector = document.getElementById('groupSelector');
             if (userGroups.length === 0) {
                 selector.innerHTML = `<option>Tidak ada grup</option>`;
@@ -1019,7 +1014,6 @@
                     }
                 }
 
-                // Ambil Anggota Grup dari tabel group_members
                 const { data: membersData } = await supabaseClient
                     .from('group_members')
                     .select(`
@@ -1029,7 +1023,7 @@
                     .eq('group_id', currentGroup.id);
 
                 if (membersData) {
-                    currentGroupMembers = membersData.map(m => m.profiles).filter(p => p !== null);
+                    const currentGroupMembers = membersData.map(m => m.profiles).filter(p => p !== null);
                     
                     document.getElementById('memberList').innerHTML = currentGroupMembers.map(m => {
                         const isSelected = m.id === targetUserId;
@@ -1081,13 +1075,11 @@
             const name = document.getElementById('newGroupName').value;
             if (!name) return;
 
-            // 1. Buat Grup
             const { data: newGroup, error: groupError } = await supabaseClient
                 .from('groups').insert([{ name: name, admin_id: currentUser.id }]).select().single();
 
             if (groupError) { showToast('Gagal membuat grup', 'error'); return; }
 
-            // 2. Masukkan Admin ke tabel group_members
             const { error: memberError } = await supabaseClient
                 .from('group_members').insert([{ group_id: newGroup.id, user_id: currentUser.id }]);
 
@@ -1095,25 +1087,13 @@
             else {
                 showToast('Grup berhasil dibuat!', 'success');
                 closeCreateGroupModal();
-                await fetchProfile(); // Refresh list grup
-                currentGroup = newGroup; // Set ke grup baru
+                await fetchProfile(); 
+                currentGroup = newGroup; 
                 renderHalaqoh();
             }
         }
 
         async function handleDeleteGroup() {
-            if (!confirm('⚠️ Yakin ingin menghapus grup ini PERMANEN? Semua anggota akan dikeluarkan dan data grup akan hilang.')) return;
-
-            const { error } = await supabaseClient.rpc('delete_group_permanently', { target_group_id: currentGroup.id });
-            
-            if (error) {
-                showToast('Gagal menghapus grup: ' + error.message, 'error');
-            } else {
-                showToast('Grup berhasil dihapus permanen', 'success');
-                await fetchProfile();
-                renderHalaqoh();
-            }
-        }
             if (!confirm('Yakin ingin menghapus grup ini? Semua anggota akan dikeluarkan.')) return;
 
             const { error } = await supabaseClient.rpc('delete_group', { target_group_id: currentGroup.id });
@@ -1167,17 +1147,6 @@
         }
 
         async function handleRemoveMember(memberId) {
-            if (!confirm('⚠️ Yakin ingin menghapus anggota ini PERMANEN? Akun dan seluruh riwayat amalannya akan hilang.')) return;
-
-            const { error } = await supabaseClient.rpc('delete_member_permanently', { target_user_id: memberId });
-
-            if (error) {
-                showToast('Gagal menghapus anggota: ' + error.message, 'error');
-            } else {
-                showToast('Anggota dan datanya berhasil dihapus permanen', 'success');
-                renderHalaqoh();
-            }
-        }
             if (!confirm('Yakin ingin mengeluarkan anggota ini dari grup?')) return;
 
             const { error } = await supabaseClient
