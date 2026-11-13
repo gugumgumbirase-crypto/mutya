@@ -13,16 +13,17 @@
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: { brand: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#34d399',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b',950:'#022c22' } },
-                    animation: { 'fade-in': 'fadeIn 0.4s ease-out' },
-                    keyframes: { fadeIn: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } } }
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.3s ease-out' },
+                    keyframes: { 
+                        fadeIn: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+                        slideUp: { from: { transform: 'translateY(100%)' }, to: { transform: 'translateY(0)' } }
+                    }
                 }
             }
         }
     </script>
     
-    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -56,6 +57,7 @@
             user-select: none;
         }
         .calendar-cell:hover { background-color: rgba(16, 185, 129, 0.1); transform: scale(1.05); }
+        .calendar-cell:active { transform: scale(0.95); }
         .calendar-cell.today { border-color: #10b981; }
         .calendar-cell.today::after { content: ''; position: absolute; bottom: 2px; width: 4px; height: 4px; border-radius: 50%; background: #10b981; }
         .calendar-cell .day-num { font-size: 12px; font-weight: 700; color: #334155; line-height: 1; }
@@ -63,7 +65,6 @@
         .calendar-cell.other-month .day-num { color: #cbd5e1; }
         .dark .calendar-cell.other-month .day-num { color: #475569; }
         .calendar-cell .status-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
-        .calendar-cell .status-icon svg { width: 12px; height: 12px; stroke-width: 2.5; }
 
         /* Heatmap */
         .heatmap-cell { width: 12px; height: 12px; border-radius: 3px; transition: all 0.2s; }
@@ -94,7 +95,7 @@
         <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800">
             <div class="text-center mb-6">
                 <div class="bg-brand-600 text-white p-3 rounded-2xl inline-flex items-center justify-center w-14 h-14 mb-4 shadow-lg shadow-brand-500/30">
-                    <i data-lucide="book-open" class="w-7 h-7"></i>
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 </div>
                 <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">UPA Apps</h1>
                 <p class="text-xs text-slate-500 mt-1">Silakan login untuk melanjutkan</p>
@@ -112,7 +113,7 @@
         <div class="flex-1 min-h-0 flex flex-col">
             <div class="p-6 flex items-center space-x-3">
                 <div class="bg-brand-600 text-white p-2.5 rounded-2xl shadow-lg shadow-brand-500/30 flex items-center justify-center w-11 h-11">
-                    <i data-lucide="book-open" class="w-6 h-6"></i>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 </div>
                 <div>
                     <h1 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">UPA Apps</h1>
@@ -122,36 +123,36 @@
             
             <nav class="px-3 mt-4 space-y-1 overflow-y-auto flex-1">
                 <button onclick="switchTab('tilawah')" id="menu-desktop-tilawah" class="nav-item w-full active">
-                    <i data-lucide="book-open" class="w-5 h-5"></i> Tilawah
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Tilawah
                 </button>
                 <button onclick="switchTab('mutabaah')" id="menu-desktop-mutabaah" class="nav-item w-full">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i> Mutabaah
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Mutabaah
                 </button>
                 <button onclick="switchTab('halaqoh')" id="menu-desktop-halaqoh" class="nav-item w-full">
-                    <i data-lucide="users" class="w-5 h-5"></i> Halaqoh
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Halaqoh
                 </button>
                 <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="nav-item w-full">
-                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Rekap & Grafik
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Rekap & Grafik
                 </button>
                 <button onclick="switchTab('stats')" id="menu-desktop-stats" class="nav-item w-full">
-                    <i data-lucide="trending-up" class="w-5 h-5"></i> Statistik
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg> Statistik
                 </button>
             </nav>
         </div>
         
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2">
             <a href="https://upa-finance.vercel.app/" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold text-xs transition hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800 mb-2">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Keuangan
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Keuangan
             </a>
             <div class="text-xs text-slate-500 text-center mb-2">Halo, <span id="sidebarUserName" class="font-bold text-brand-600">...</span></div>
             <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700 mb-2">
-                <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
-                <i data-lucide="sun" class="w-4 h-4 hidden dark:inline"></i>
+                <svg class="w-4 h-4 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <svg class="w-4 h-4 hidden dark:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 <span class="dark:hidden">Mode Gelap</span>
                 <span class="hidden dark:inline">Mode Terang</span>
             </button>
             <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 font-semibold text-xs transition hover:bg-rose-100 dark:hover:bg-rose-900/40">
-                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Logout
             </button>
         </div>
     </aside>
@@ -162,7 +163,7 @@
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md flex items-center justify-center w-9 h-9">
-                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 </div>
                 <div>
                     <h1 class="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">UPA Apps</h1>
@@ -171,11 +172,11 @@
             </div>
             <div class="flex gap-2">
                 <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
-                    <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
-                    <i data-lucide="sun" class="w-4 h-4 hidden dark:inline"></i>
+                    <svg class="w-4 h-4 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg class="w-4 h-4 hidden dark:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
                 <button onclick="handleLogout()" class="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </div>
         </header>
@@ -190,7 +191,7 @@
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
                         <div class="relative z-10 flex items-center justify-between">
                             <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider">
-                                <i data-lucide="flame" class="w-4 h-4 text-amber-300"></i> Streak Kholas
+                                <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg> Streak Kholas
                             </div>
                             <div id="badgeContainer"></div>
                         </div>
@@ -205,7 +206,7 @@
                     <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">% Kholas</span>
-                            <i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i>
+                            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                         </div>
                         <div class="mt-4">
                             <span id="kpiPersenKholas" class="text-4xl font-extrabold text-slate-900 dark:text-white">0%</span>
@@ -217,7 +218,7 @@
                     <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Hari Terisi</span>
-                            <i data-lucide="calendar-check" class="w-4 h-4 text-amber-500"></i>
+                            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
                         <div class="mt-4">
                             <span id="kpiHariTerisi" class="text-4xl font-extrabold text-slate-900 dark:text-white">0</span>
@@ -234,13 +235,13 @@
                         </h3>
                         <div class="flex items-center gap-1 shrink-0">
                             <button onclick="navigateTilawahPeriod(-1)" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
-                                <i data-lucide="chevron-up" class="w-5 h-5"></i>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path></svg>
                             </button>
                             <button onclick="goToTodayTilawah()" class="p-2 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
-                                <i data-lucide="calendar" class="w-5 h-5"></i>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             </button>
                             <button onclick="navigateTilawahPeriod(1)" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
-                                <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                         </div>
                     </div>
@@ -260,11 +261,11 @@
                     <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
                         <div class="flex flex-wrap items-center gap-x-5 gap-y-3 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                             <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Status:</span>
-                            <span class="flex items-center gap-1.5"><span class="text-brand-600"><i data-lucide="check-circle" class="w-4 h-4"></i></span> Kholas</span>
-                            <span class="flex items-center gap-1.5"><span class="text-amber-500"><i data-lucide="clock" class="w-4 h-4"></i></span> Progress</span>
-                            <span class="flex items-center gap-1.5"><span class="text-pink-500"><i data-lucide="bookmark" class="w-4 h-4"></i></span> Tdk Lapor</span>
-                            <span class="flex items-center gap-1.5"><span class="text-slate-500"><i data-lucide="droplet" class="w-4 h-4"></i></span> Kurang</span>
-                            <span class="flex items-center gap-1.5"><span class="text-rose-500"><i data-lucide="x" class="w-4 h-4"></i></span> Tdk Tilawah</span>
+                            <span class="flex items-center gap-1.5"><span class="text-brand-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span> Kholas</span>
+                            <span class="flex items-center gap-1.5"><span class="text-amber-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span> Progress</span>
+                            <span class="flex items-center gap-1.5"><span class="text-pink-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg></span> Tdk Lapor</span>
+                            <span class="flex items-center gap-1.5"><span class="text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg></span> Kurang</span>
+                            <span class="flex items-center gap-1.5"><span class="text-rose-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></span> Tdk Tilawah</span>
                         </div>
                     </div>
                 </div>
@@ -300,7 +301,7 @@
                     <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div class="relative z-10 w-full md:w-auto">
                         <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
-                            <i data-lucide="calendar" class="w-4 h-4"></i> <span id="amalanDateLabel">Hari Ini</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> <span id="amalanDateLabel">Hari Ini</span>
                         </div>
                         <h2 class="text-3xl font-extrabold" id="userNameDisplay">Memuat...</h2>
                         <p class="text-sm text-brand-100 mt-2">Terus jaga konsistensi ibadahmu!</p>
@@ -332,12 +333,12 @@
                     <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
                         <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
                             <div class="flex items-center gap-2">
-                                <button onclick="changeDate(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button onclick="changeDate(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg></button>
                                 <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-sm">
-                                    <i data-lucide="calendar" class="w-4 h-4 text-slate-400"></i>
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     <input type="date" id="datePicker" onchange="onDateChange()" class="bg-transparent text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
                                 </div>
-                                <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></button>
                             </div>
                         </div>
                         <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left">12 Amalan</div>
@@ -353,19 +354,19 @@
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
                     <div id="noGroupState" class="text-center py-10">
                         <div class="bg-slate-100 dark:bg-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                            <i data-lucide="users" class="w-8 h-8"></i>
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         </div>
                         <h2 class="text-xl font-extrabold text-slate-800 dark:text-white mb-2">Belum Ada Grup</h2>
                         <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">Anda belum tergabung dalam Halaqoh manapun. Buat grup baru sebagai Admin, atau minta Admin Anda untuk menambahkan Anda.</p>
                         <button onclick="openCreateGroupModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-sm">
-                            <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i> Buat Grup Baru
+                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg> Buat Grup Baru
                         </button>
                     </div>
                     <div id="groupDetailState" class="hidden">
                         <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
                             <div class="flex items-center gap-4">
                                 <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
-                                    <i data-lucide="users" class="w-6 h-6"></i>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                 </div>
                                 <div>
                                     <h2 class="text-xl font-extrabold text-slate-900 dark:text-white" id="groupNameDisplay">Nama Grup</h2>
@@ -373,7 +374,7 @@
                                 </div>
                             </div>
                             <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
-                                <i data-lucide="user-plus" class="w-4 h-4 inline mr-1"></i> Tambah Anggota
+                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg> Tambah Anggota
                             </button>
                         </div>
                         <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
@@ -405,19 +406,19 @@
     <div class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/20 dark:border-slate-800/50 z-40 pb-safe">
         <div class="flex justify-around items-center h-16">
             <button onclick="switchTab('tilawah')" id="menu-mobile-tilawah" class="flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200">
-                <i data-lucide="book-open" class="w-5 h-5 mb-1"></i>
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 <span class="text-[10px] font-bold">Tilawah</span>
             </button>
             <button onclick="switchTab('mutabaah')" id="menu-mobile-mutabaah" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
-                <i data-lucide="check-circle" class="w-5 h-5 mb-1"></i>
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span class="text-[10px] font-bold">Mutabaah</span>
             </button>
             <button onclick="switchTab('halaqoh')" id="menu-mobile-halaqoh" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
-                <i data-lucide="users" class="w-5 h-5 mb-1"></i>
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 <span class="text-[10px] font-bold">Halaqoh</span>
             </button>
             <button onclick="switchTab('rekap')" id="menu-mobile-rekap" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
-                <i data-lucide="bar-chart-3" class="w-5 h-5 mb-1"></i>
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <span class="text-[10px] font-bold">Rekap</span>
             </button>
         </div>
@@ -443,7 +444,7 @@
         <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
             <h3 id="sheetTitle" class="text-base font-extrabold text-slate-900 dark:text-white">Pilih Status</h3>
             <button onclick="closeTilawahSheet()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center">
-                <i data-lucide="x" class="w-4 h-4"></i>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
         <div id="sheetOptions" class="grid grid-cols-1 gap-2 pb-6"></div>
@@ -467,25 +468,24 @@
             "Shalawat 100x", "Infaq", "Shalat Dhuha", "Shalat 5 Waktu Berjamaah", "Olahraga 30 Menit"
         ];
 
-        // Status Tilawah dengan warna dan ikon
+        // Status Tilawah dengan SVG Icons (Mirip ODOJ)
         const STATUS = [
-            { id: 'kholas', label: 'Kholas 1 Juz', icon: 'check-circle', color: '#059669', bg: '#ecfdf5' },
-            { id: 'progress', label: 'In Progress', icon: 'clock', color: '#d97706', bg: '#fffbeb' },
-            { id: 'tidak-laporan', label: 'Tidak Laporan', icon: 'bookmark', color: '#db2777', bg: '#fdf2f8' },
-            { id: 'kurang', label: 'Kurang 1 Juz', icon: 'droplet', color: '#475569', bg: '#f8fafc' },
-            { id: 'tidak-tilawah', label: 'Tidak Tilawah', icon: 'x', color: '#dc2626', bg: '#fef2f2' },
+            { id: 'kholas', label: 'Kholas 1 Juz', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>', color: '#059669', bg: '#ecfdf5' },
+            { id: 'progress', label: 'In Progress', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>', color: '#d97706', bg: '#fffbeb' },
+            { id: 'tidak-laporan', label: 'Tidak Laporan', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>', color: '#db2777', bg: '#fdf2f8' },
+            { id: 'kurang', label: 'Kurang 1 Juz', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>', color: '#475569', bg: '#f8fafc' },
+            { id: 'tidak-tilawah', label: 'Tidak Tilawah', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>', color: '#dc2626', bg: '#fef2f2' },
         ];
 
         let currentUser = null;
         let currentProfile = null;
         let currentGroup = null;
         let currentDate = new Date();
-        let currentData = {}; // Data mutabaah untuk tanggal aktif (Menu Mutabaah)
+        let currentData = {}; 
         
-        // Variabel Khusus Tilawah
         let tilawahDate = new Date(); 
         let allMutabaahData = []; 
-        let activeEditDate = null; // Tanggal yang sedang diedit di kalender
+        let activeEditDate = null;
 
         // ==========================================
         // 3. AUTHENTICATION
@@ -502,7 +502,6 @@
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
             }
-            lucide.createIcons();
         }
 
         async function handleLogin() {
@@ -584,7 +583,6 @@
             const record = allMutabaahData.find(d => d.date === dateStr);
             if (!record || !record.amalan_data) return null;
             
-            // Konversi centang Mutabaah menjadi Status Tilawah
             if (record.amalan_data["Tilawah Al-Qur'an 1 Juz"] === true) return 'kholas';
             if (record.amalan_data["Baca Terjemah Al-Qur'an"] === true) return 'progress';
             return null; 
@@ -595,13 +593,11 @@
             await fetchAllMutabaahForTilawah();
 
             const now = new Date();
-            const isCurrentMonth = tilawahDate.getMonth() === now.getMonth() && tilawahDate.getFullYear() === now.getFullYear();
             const totalDaysInMonth = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() + 1, 0).getDate();
             
             const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
             document.getElementById('calendarMonthYear').textContent = `${months[tilawahDate.getMonth()]} ${tilawahDate.getFullYear()}`;
 
-            // Kalkulasi Statistik Bulan Ini
             let kholasCount = 0;
             let filledCount = 0;
             for (let day = 1; day <= totalDaysInMonth; day++) {
@@ -618,7 +614,6 @@
             document.getElementById('kpiHariTerisi').textContent = filledCount;
             document.getElementById('kpiTotalHari').textContent = totalDaysInMonth;
 
-            // Hitung Streak
             let streak = 0;
             let checkDate = new Date(now);
             for(let i=0; i<30; i++) {
@@ -670,7 +665,7 @@
                 
                 let iconHtml = '';
                 if (statusObj) {
-                    iconHtml = `<span class="status-icon" style="color:${statusObj.color}"><i data-lucide="${statusObj.icon}" class="w-3.5 h-3.5"></i></span>`;
+                    iconHtml = `<span class="status-icon" style="color:${statusObj.color}">${statusObj.icon}</span>`;
                 }
 
                 html += `
@@ -686,7 +681,6 @@
                 html += `<div class="calendar-cell other-month"><span class="day-num">${i}</span></div>`;
             }
             grid.innerHTML = html;
-            lucide.createIcons();
         }
 
         function renderHeatmapTilawah() {
@@ -737,7 +731,7 @@
             let html = STATUS.map(s => `
                 <button onclick="pickTilawahStatus('${s.id}')" class="w-full flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 active:scale-[0.98] transition text-left shadow-sm">
                     <span class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style="background:${s.bg}; color:${s.color}">
-                        <i data-lucide="${s.icon}" class="w-6 h-6"></i>
+                        ${s.icon}
                     </span>
                     <span class="font-bold text-sm text-slate-800 dark:text-slate-200">${s.label}</span>
                 </button>
@@ -747,14 +741,13 @@
             html += `
                 <button onclick="deleteTilawahStatus()" class="w-full flex items-center gap-4 p-4 rounded-2xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-[0.98] transition text-left mt-2 shadow-sm">
                     <span class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400">
-                        <i data-lucide="trash-2" class="w-6 h-6"></i>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </span>
                     <span class="font-bold text-sm text-rose-700 dark:text-rose-400">Hapus Status</span>
                 </button>
             `;
 
             wrap.innerHTML = html;
-            lucide.createIcons();
         }
 
         function openTilawahSheet(day) {
@@ -784,15 +777,12 @@
             
             let amalanData = (data && data.amalan_data) ? data.amalan_data : {};
             
-            // Reset Tilawah
             delete amalanData["Tilawah Al-Qur'an 1 Juz"];
             delete amalanData["Baca Terjemah Al-Qur'an"];
 
-            // Set sesuai pilihan
             if (statusId === 'kholas') amalanData["Tilawah Al-Qur'an 1 Juz"] = true;
             if (statusId === 'progress') amalanData["Baca Terjemah Al-Qur'an"] = true;
 
-            // Simpan ke Supabase
             await supabaseClient.from('mutabaah').upsert({ 
                 user_id: currentUser.id, date: dateStr, amalan_data: amalanData 
             }, { onConflict: 'user_id, date' });
