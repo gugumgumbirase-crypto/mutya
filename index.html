@@ -315,7 +315,7 @@
                         </button>
                     </div>
                     <div id="groupDetailState" class="hidden">
-                        <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
                             <div class="flex items-center gap-4">
                                 <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -325,9 +325,14 @@
                                     <p class="text-xs text-slate-500 mt-1">Role Anda: <span id="groupRoleDisplay" class="font-bold text-brand-600">Anggota</span></p>
                                 </div>
                             </div>
-                            <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg> Tambah Anggota
-                            </button>
+                            <div class="flex gap-2">
+                                <button id="btnDeleteGroup" onclick="handleDeleteGroup()" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-rose-200 shadow-sm">
+                                    Hapus Grup
+                                </button>
+                                <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg> Tambah Anggota
+                                </button>
+                            </div>
                         </div>
                         <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
                         <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
@@ -469,7 +474,8 @@
         </div>
         <div id="sheetOptions" class="grid grid-cols-1 gap-2 pb-6"></div>
     </div>
-        <script>
+
+    <script>
         // ==========================================
         // 1. KONFIGURASI SUPABASE
         // ==========================================
@@ -961,25 +967,33 @@
                 const isAdmin = currentGroup.admin_id === currentUser.id;
                 document.getElementById('groupRoleDisplay').textContent = isAdmin ? 'Admin' : 'Anggota';
                 const btnAdd = document.getElementById('btnAddMember');
-                if (btnAdd) {
-                    if (isAdmin) btnAdd.classList.remove('hidden');
-                    else btnAdd.classList.add('hidden');
+                const btnDelete = document.getElementById('btnDeleteGroup');
+                if (btnAdd && btnDelete) {
+                    if (isAdmin) {
+                        btnAdd.classList.remove('hidden');
+                        btnDelete.classList.remove('hidden');
+                    } else {
+                        btnAdd.classList.add('hidden');
+                        btnDelete.classList.add('hidden');
+                    }
                 }
 
                 const { data: members } = await supabaseClient.from('profiles').select('*').eq('group_id', currentGroup.id);
                 if (members) {
                     document.getElementById('memberList').innerHTML = members.map(m => {
                         const isSelected = m.id === targetUserId;
+                        const isAdminMember = m.id === currentGroup.admin_id;
                         return `
-                        <div onclick="selectMember('${m.id}', '${m.full_name.replace(/'/g, "\\'")}')" class="cursor-pointer flex items-center justify-between p-3 rounded-xl border-2 transition ${isSelected ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:border-brand-300'}">
-                            <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-between p-3 rounded-xl border-2 transition ${isSelected ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'}">
+                            <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="selectMember('${m.id}', '${m.full_name.replace(/'/g, "\\'")}')">
                                 <div class="w-10 h-10 rounded-full ${isSelected ? 'bg-brand-600 text-white' : 'bg-brand-100 text-brand-600'} flex items-center justify-center font-bold">${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}</div>
                                 <div>
                                     <div class="font-bold text-sm text-slate-800 dark:text-slate-200">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</div>
-                                    <div class="text-[10px] ${m.id === currentGroup.admin_id ? 'text-brand-600 font-bold' : 'text-slate-500'}">${m.id === currentGroup.admin_id ? 'Admin' : 'Anggota'}</div>
+                                    <div class="text-[10px] ${isAdminMember ? 'text-brand-600 font-bold' : 'text-slate-500'}">${isAdminMember ? 'Admin' : 'Anggota'}</div>
                                 </div>
                             </div>
-                            ${isSelected ? '<svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' : ''}
+                            ${isSelected ? '<svg class="w-5 h-5 text-brand-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' : ''}
+                            ${isAdmin && !isAdminMember ? `<button onclick="handleRemoveMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>` : ''}
                         </div>
                     `}).join('');
                 }
@@ -1025,6 +1039,21 @@
             }
         }
 
+        async function handleDeleteGroup() {
+            if (!confirm('Yakin ingin menghapus grup ini? Semua anggota akan dikeluarkan.')) return;
+
+            const { error } = await supabaseClient.rpc('delete_group', { target_group_id: currentGroup.id });
+            
+            if (error) {
+                showToast('Gagal menghapus grup: ' + error.message, 'error');
+            } else {
+                showToast('Grup berhasil dihapus', 'success');
+                currentGroup = null;
+                await fetchProfile();
+                renderHalaqoh();
+            }
+        }
+
         function openAddMemberModal() {
             document.getElementById('addMemberModal').classList.remove('hidden');
             document.getElementById('addMemberModal').classList.add('flex');
@@ -1060,6 +1089,22 @@
             } else {
                 showToast('Anggota berhasil ditambahkan!', 'success');
                 closeAddMemberModal();
+                renderHalaqoh();
+            }
+        }
+
+        async function handleRemoveMember(memberId) {
+            if (!confirm('Yakin ingin mengeluarkan anggota ini dari grup?')) return;
+
+            const { error } = await supabaseClient.rpc('remove_member_from_group', { 
+                target_user_id: memberId, 
+                target_group_id: currentGroup.id 
+            });
+
+            if (error) {
+                showToast('Gagal mengeluarkan anggota: ' + error.message, 'error');
+            } else {
+                showToast('Anggota berhasil dikeluarkan', 'success');
                 renderHalaqoh();
             }
         }
@@ -1289,9 +1334,11 @@
         window.openCreateGroupModal = openCreateGroupModal;
         window.closeCreateGroupModal = closeCreateGroupModal;
         window.handleCreateGroup = handleCreateGroup;
+        window.handleDeleteGroup = handleDeleteGroup;
         window.openAddMemberModal = openAddMemberModal;
         window.closeAddMemberModal = closeAddMemberModal;
         window.handleAddMember = handleAddMember;
+        window.handleRemoveMember = handleRemoveMember;
         window.openTilawahSheet = openTilawahSheet;
         window.closeTilawahSheet = closeTilawahSheet;
         window.pickTilawahStatus = pickTilawahStatus;
