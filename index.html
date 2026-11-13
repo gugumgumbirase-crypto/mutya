@@ -13,7 +13,10 @@
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: { brand: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#34d399',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b',950:'#022c22' } },
-                    animation: { 'fade-in': 'fadeIn 0.4s ease-out', 'slide-up': 'slideUp 0.3s ease-out' },
+                    animation: { 
+                        'fade-in': 'fadeIn 0.4s ease-out',
+                        'slide-up': 'slideUp 0.3s ease-out'
+                    },
                     keyframes: { 
                         fadeIn: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
                         slideUp: { from: { transform: 'translateY(100%)' }, to: { transform: 'translateY(0)' } }
@@ -32,6 +35,7 @@
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .dark .glass-panel { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); }
         
+        /* Gaya Menu Sidebar ODOJ */
         .nav-item { transition: all 0.2s; border-radius: 0.75rem; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 14px; font-weight: 600; color: #64748b; }
         .dark .nav-item { color: #94a3b8; }
         .nav-item:hover { background: rgba(16, 185, 129, 0.05); color: #059669; }
@@ -42,10 +46,6 @@
         .mutabaah-item.checked .mutabaah-checkbox { background: #10b981; border-color: #10b981; }
         .mutabaah-item.checked .mutabaah-checkbox svg { transform: scale(1); opacity: 1; }
         
-        .toast { animation: slideDown 0.3s ease-out; }
-        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
-
         /* Calendar Style */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
         .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
@@ -65,6 +65,7 @@
         .calendar-cell.other-month .day-num { color: #cbd5e1; }
         .dark .calendar-cell.other-month .day-num { color: #475569; }
         .calendar-cell .status-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        .calendar-cell .status-icon svg { width: 12px; height: 12px; stroke-width: 2.5; }
 
         /* Heatmap */
         .heatmap-cell { width: 12px; height: 12px; border-radius: 3px; transition: all 0.2s; }
@@ -79,18 +80,13 @@
         .dark .heatmap-2 { background: #047857; }
         .dark .heatmap-3 { background: #10b981; }
         .dark .heatmap-4 { background: #34d399; }
-
-        .badge-achievement { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-        .badge-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #78350f; }
-        .badge-silver { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); color: #334155; }
-        .badge-bronze { background: linear-gradient(135deg, #fdba74, #fb923c); color: #7c2d12; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased h-screen flex overflow-hidden transition-colors duration-300 w-full max-w-full">
 
     <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- ================= LAYAR LOGIN ================= -->
+    <!-- LAYAR LOGIN -->
     <div id="authScreen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800">
             <div class="text-center mb-6">
@@ -108,7 +104,7 @@
         </div>
     </div>
 
-    <!-- ================= SIDEBAR ================= -->
+    <!-- SIDEBAR -->
     <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
         <div class="flex-1 min-h-0 flex flex-col">
             <div class="p-6 flex items-center space-x-3">
@@ -157,7 +153,7 @@
         </div>
     </aside>
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full" id="mainScroll">
         
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
@@ -183,9 +179,8 @@
 
         <main class="p-4 md:p-8 space-y-6 max-w-6xl mx-auto w-full pb-24 md:pb-8">
             
-            <!-- ================= VIEW: TILAWAH ================= -->
+            <!-- VIEW: TILAWAH -->
             <div id="view-tilawah" class="flex flex-col gap-6 animate-fade-in">
-                <!-- KPI Bento Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="lg:col-span-2 bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
@@ -257,45 +252,10 @@
                     </div>
                     
                     <div id="calendarGrid" class="calendar-grid"></div>
-                    
-                    <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
-                        <div class="flex flex-wrap items-center gap-x-5 gap-y-3 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Status:</span>
-                            <span class="flex items-center gap-1.5"><span class="text-brand-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span> Kholas</span>
-                            <span class="flex items-center gap-1.5"><span class="text-amber-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span> Progress</span>
-                            <span class="flex items-center gap-1.5"><span class="text-pink-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg></span> Tdk Lapor</span>
-                            <span class="flex items-center gap-1.5"><span class="text-slate-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg></span> Kurang</span>
-                            <span class="flex items-center gap-1.5"><span class="text-rose-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></span> Tdk Tilawah</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Heatmap -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-5 md:p-8">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Heatmap Konsistensi</h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Visualisasi intensitas tilawah 6 bulan terakhir</p>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <div id="heatmapContainer" class="flex gap-1 min-w-max"></div>
-                        <div class="flex items-center gap-2 mt-3 text-[10px] text-slate-500 dark:text-slate-400">
-                            <span>Kurang</span>
-                            <div class="flex gap-0.5">
-                                <div class="heatmap-cell heatmap-0"></div>
-                                <div class="heatmap-cell heatmap-1"></div>
-                                <div class="heatmap-cell heatmap-2"></div>
-                                <div class="heatmap-cell heatmap-3"></div>
-                                <div class="heatmap-cell heatmap-4"></div>
-                            </div>
-                            <span>Banyak</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- ================= VIEW: MUTABAAH ================= -->
+            <!-- VIEW: MUTABAAH -->
             <div id="view-mutabaah" class="hidden flex flex-col gap-6 animate-fade-in">
                 <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
@@ -349,7 +309,7 @@
                 </div>
             </div>
 
-            <!-- ================= VIEW: HALAQOH ================= -->
+            <!-- VIEW: HALAQOH -->
             <div id="view-halaqoh" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
                     <div id="noGroupState" class="text-center py-10">
@@ -373,9 +333,6 @@
                                     <p class="text-xs text-slate-500 mt-1">Role Anda: <span id="groupRoleDisplay" class="font-bold text-brand-600">Anggota</span></p>
                                 </div>
                             </div>
-                            <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg> Tambah Anggota
-                            </button>
                         </div>
                         <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
                         <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
@@ -383,7 +340,7 @@
                 </div>
             </div>
 
-            <!-- ================= VIEW: REKAP ================= -->
+            <!-- VIEW: REKAP -->
             <div id="view-rekap" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Rekapitulasi Mutaba'ah</h2>
@@ -391,7 +348,7 @@
                 </div>
             </div>
 
-            <!-- ================= VIEW: STATISTIK ================= -->
+            <!-- VIEW: STATISTIK -->
             <div id="view-stats" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <h2 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Statistik & Insight</h2>
@@ -402,7 +359,7 @@
         </main>
     </div>
 
-    <!-- ================= BOTTOM NAV (MOBILE) ================= -->
+    <!-- BOTTOM NAV (MOBILE) -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/20 dark:border-slate-800/50 z-40 pb-safe">
         <div class="flex justify-around items-center h-16">
             <button onclick="switchTab('tilawah')" id="menu-mobile-tilawah" class="flex flex-col items-center justify-center w-full h-full text-brand-600 dark:text-brand-400 transition-colors duration-200">
@@ -424,7 +381,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL BUAT GRUP ================= -->
+    <!-- MODAL BUAT GRUP -->
     <div id="createGroupModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
             <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Buat Grup Halaqoh</h3>
@@ -437,7 +394,7 @@
         </div>
     </div>
 
-    <!-- ================= BOTTOM SHEET TILAWAH ================= -->
+    <!-- BOTTOM SHEET TILAWAH (PERSIS ODOJ) -->
     <div id="sheetOverlay" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm z-[90] hidden transition-opacity" onclick="closeTilawahSheet()"></div>
     <div id="tilawahSheet" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl z-[100] p-6 transition-transform duration-300 translate-y-full max-h-[85vh] overflow-y-auto border-t border-slate-200 dark:border-slate-800">
         <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-5"></div>
@@ -468,13 +425,22 @@
             "Shalawat 100x", "Infaq", "Shalat Dhuha", "Shalat 5 Waktu Berjamaah", "Olahraga 30 Menit"
         ];
 
-        // Status Tilawah dengan SVG Icons (Mirip ODOJ)
+        // Ikon SVG Murni (Persis ODOJ)
+        const ICONS = {
+            check: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`,
+            progress: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+            bookmark: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>`,
+            droplet: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>`,
+            x: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>`,
+            trash: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`
+        };
+
         const STATUS = [
-            { id: 'kholas', label: 'Kholas 1 Juz', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>', color: '#059669', bg: '#ecfdf5' },
-            { id: 'progress', label: 'In Progress', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>', color: '#d97706', bg: '#fffbeb' },
-            { id: 'tidak-laporan', label: 'Tidak Laporan', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>', color: '#db2777', bg: '#fdf2f8' },
-            { id: 'kurang', label: 'Kurang 1 Juz', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>', color: '#475569', bg: '#f8fafc' },
-            { id: 'tidak-tilawah', label: 'Tidak Tilawah', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>', color: '#dc2626', bg: '#fef2f2' },
+            { id: 'kholas', label: 'Kholas 1 Juz', icon: ICONS.check, color: '#059669', bg: '#ecfdf5' },
+            { id: 'progress', label: 'In Progress', icon: ICONS.progress, color: '#d97706', bg: '#fffbeb' },
+            { id: 'tidak-laporan', label: 'Tidak Laporan', icon: ICONS.bookmark, color: '#db2777', bg: '#fdf2f8' },
+            { id: 'kurang', label: 'Kurang 1 Juz', icon: ICONS.droplet, color: '#475569', bg: '#f8fafc' },
+            { id: 'tidak-tilawah', label: 'Tidak Tilawah', icon: ICONS.x, color: '#dc2626', bg: '#fef2f2' },
         ];
 
         let currentUser = null;
@@ -635,7 +601,6 @@
             document.getElementById('badgeContainer').innerHTML = badge;
 
             renderCalendarTilawah();
-            renderHeatmapTilawah();
         }
 
         function renderCalendarTilawah() {
@@ -683,35 +648,6 @@
             grid.innerHTML = html;
         }
 
-        function renderHeatmapTilawah() {
-            const container = document.getElementById('heatmapContainer');
-            if (!container) return;
-            const months = [];
-            for (let i = 5; i >= 0; i--) {
-                let m = tilawahDate.getMonth() - i;
-                let y = tilawahDate.getFullYear();
-                while (m < 0) { m += 12; y--; }
-                months.push({ m, y });
-            }
-            let html = '';
-            months.forEach(({m, y}) => {
-                const total = new Date(y, m + 1, 0).getDate();
-                const monthNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
-                let monthHtml = `<div class="flex flex-col gap-1"><div class="text-[9px] font-bold text-slate-500 dark:text-slate-400 text-center mb-1">${monthNames[m]}</div><div class="grid grid-cols-7 gap-0.5">`;
-                for (let d = 1; d <= total; d++) {
-                    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                    const status = getTilawahStatus(dateStr);
-                    let level = 0;
-                    if (status === 'kholas') level = 4;
-                    else if (status === 'progress') level = 2;
-                    monthHtml += `<div class="heatmap-cell heatmap-${level}" title="${d} ${monthNames[m]} ${y}"></div>`;
-                }
-                monthHtml += `</div></div>`;
-                html += monthHtml;
-            });
-            container.innerHTML = html;
-        }
-
         function navigateTilawahPeriod(step) {
             tilawahDate.setMonth(tilawahDate.getMonth() + step);
             renderTilawah();
@@ -727,7 +663,6 @@
         // ==========================================
         function buildSheetOptions() {
             const wrap = document.getElementById('sheetOptions');
-            // Opsi Status
             let html = STATUS.map(s => `
                 <button onclick="pickTilawahStatus('${s.id}')" class="w-full flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 active:scale-[0.98] transition text-left shadow-sm">
                     <span class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style="background:${s.bg}; color:${s.color}">
@@ -737,11 +672,10 @@
                 </button>
             `).join('');
 
-            // Tambahkan Tombol Hapus
             html += `
                 <button onclick="deleteTilawahStatus()" class="w-full flex items-center gap-4 p-4 rounded-2xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-[0.98] transition text-left mt-2 shadow-sm">
                     <span class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        ${ICONS.trash}
                     </span>
                     <span class="font-bold text-sm text-rose-700 dark:text-rose-400">Hapus Status</span>
                 </button>
