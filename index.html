@@ -122,60 +122,68 @@
             </div>
         </header>
 
-        <main class="p-4 md:p-8 space-y-6 max-w-6xl mx-auto w-full pb-24 md:pb-8">
-            <!-- KONTEN AMALAN -->
-            <div id="view-amalan" class="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
-                <div class="lg:col-span-4 space-y-6">
-                    <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                        <div class="relative z-10 flex items-start justify-between">
-                            <div>
-                                <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
-                                    <i class="fa-solid fa-calendar-day"></i> <span id="amalanDateLabel">Hari Ini</span>
-                                </div>
-                                <h2 class="text-2xl font-extrabold mt-1" id="userNameDisplay">Memuat...</h2>
+        <main class="p-4 md:p-8 space-y-6 max-w-5xl mx-auto w-full pb-24 md:pb-8">
+            
+            <!-- KONTEN AMALAN (FULL WIDTH LAYOUT) -->
+            <div id="view-amalan" class="flex flex-col gap-6 animate-fade-in">
+                
+                <!-- 1. Kartu Progress (Full Width di atas) -->
+                <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    
+                    <!-- Kiri: Info User & Tanggal -->
+                    <div class="relative z-10 w-full md:w-auto">
+                        <div class="flex items-center gap-2 text-brand-100 font-semibold text-xs uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-calendar-day"></i> <span id="amalanDateLabel">Hari Ini</span>
+                        </div>
+                        <h2 class="text-3xl font-extrabold" id="userNameDisplay">Memuat...</h2>
+                        <p class="text-sm text-brand-100 mt-2">Terus jaga konsistensi ibadahmu!</p>
+                    </div>
+
+                    <!-- Kanan: Ring & Statistik -->
+                    <div class="relative z-10 flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                        <div class="flex gap-3">
+                            <div class="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center w-24">
+                                <div class="text-[10px] text-brand-100 font-semibold uppercase mb-1">Selesai</div>
+                                <div class="text-2xl font-black" id="statDone">0</div>
                             </div>
-                            <div class="relative w-20 h-20 shrink-0">
-                                <svg class="w-20 h-20 transform -rotate-90">
-                                    <circle cx="40" cy="40" r="34" stroke="rgba(255,255,255,0.2)" stroke-width="6" fill="none"/>
-                                    <circle id="mainProgressRing" cx="40" cy="40" r="34" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" class="progress-ring-circle" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <span id="mainProgressText" class="text-sm font-extrabold text-white">0%</span>
-                                </div>
+                            <div class="bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center w-24">
+                                <div class="text-[10px] text-brand-100 font-semibold uppercase mb-1">Tertunda</div>
+                                <div class="text-2xl font-black" id="statPending">0</div>
                             </div>
                         </div>
-                        <div class="relative z-10 mt-6 flex gap-3">
-                            <div class="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center">
-                                <div class="text-[10px] text-brand-100 font-semibold uppercase mb-1">Selesai</div>
-                                <div class="text-xl font-black" id="statDone">0</div>
-                            </div>
-                            <div class="flex-1 bg-white/10 backdrop-blur border border-white/20 rounded-xl p-3 text-center">
-                                <div class="text-[10px] text-brand-100 font-semibold uppercase mb-1">Tertunda</div>
-                                <div class="text-xl font-black" id="statPending">0</div>
+
+                        <div class="relative w-20 h-20 md:w-24 md:h-24 shrink-0">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="50%" cy="50%" r="40%" stroke="rgba(255,255,255,0.2)" stroke-width="6" fill="none"/>
+                                <circle id="mainProgressRing" cx="50%" cy="50%" r="40%" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" class="progress-ring-circle" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="mainProgressText" class="text-lg font-extrabold text-white">0%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-8">
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8 h-full">
-                        <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
-                            <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
-                                <div class="flex items-center gap-2">
-                                    <button onclick="changeDate(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-left"></i></button>
-                                    <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-sm">
-                                        <i class="fa-regular fa-calendar text-slate-400"></i>
-                                        <input type="date" id="datePicker" onchange="onDateChange()" class="bg-transparent text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
-                                    </div>
-                                    <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-right"></i></button>
+                <!-- 2. Kotak Daftar Amalan (Full Width di bawah) -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
+                    <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
+                        <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeDate(-1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-left"></i></button>
+                                <div class="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-sm">
+                                    <i class="fa-regular fa-calendar text-slate-400"></i>
+                                    <input type="date" id="datePicker" onchange="onDateChange()" class="bg-transparent text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
                                 </div>
+                                <button onclick="changeDate(1)" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
-                            <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left">12 Amalan</div>
                         </div>
-                        <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="text-center text-slate-400 py-10 col-span-2">Memuat amalan...</div>
-                        </div>
+                        <div class="text-xs text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg w-full md:w-auto text-center md:text-left">12 Amalan</div>
+                    </div>
+                    
+                    <!-- Grid Amalan -->
+                    <div id="mutabaahList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="text-center text-slate-400 py-10 col-span-2">Memuat amalan...</div>
                     </div>
                 </div>
             </div>
@@ -211,7 +219,6 @@
         const SUPABASE_URL = 'https://nvfdctzpdibztejwrgyr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im52ZmRjdHpwZGlienRlandyZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ1MzU1NDMsImV4cCI6MjExMDExMTU0M30.A91GHmt6Z4T-LVf69pHLB7_Vpsj3rnFSImOuI4xWVcU';
 
-        // Gunakan nama variabel supabaseClient agar tidak bentrok dengan library CDN
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ==========================================
@@ -226,7 +233,7 @@
         let currentUser = null;
         let currentProfile = null;
         let currentDate = new Date();
-        let currentData = {}; // Data amalan dari Supabase untuk tanggal aktif
+        let currentData = {};
 
         // ==========================================
         // 3. AUTHENTICATION (LOGIN/REGISTER)
@@ -290,7 +297,6 @@
         }
 
         async function fetchProfile() {
-            // PERBAIKAN: Menggunakan supabaseClient
             const { data, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
@@ -301,8 +307,6 @@
                 currentProfile = data;
                 document.getElementById('sidebarUserName').textContent = data.full_name;
                 document.getElementById('userNameDisplay').textContent = data.full_name;
-            } else {
-                console.error("Gagal mengambil profil:", error);
             }
         }
 
@@ -313,14 +317,14 @@
             return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
         }
 
-                async function fetchMutabaahData() {
+        async function fetchMutabaahData() {
             const dateKey = formatDateKey(currentDate);
             const { data, error } = await supabaseClient
                 .from('mutabaah')
                 .select('amalan_data')
                 .eq('user_id', currentUser.id)
                 .eq('date', dateKey)
-                .maybeSingle(); // <--- UBAH KE INI
+                .maybeSingle(); // Menggunakan maybeSingle agar tidak error jika data kosong
 
             currentData = (data && data.amalan_data) ? data.amalan_data : {};
         }
@@ -328,7 +332,6 @@
         async function saveMutabaahData() {
             const dateKey = formatDateKey(currentDate);
             
-            // PERBAIKAN: Menggunakan supabaseClient
             const { error } = await supabaseClient
                 .from('mutabaah')
                 .upsert({ 
@@ -381,8 +384,13 @@
             document.getElementById('statPending').textContent = total - doneCount;
 
             const ring = document.getElementById('mainProgressRing');
-            const circumference = 2 * Math.PI * 34;
-            ring.style.strokeDashoffset = circumference - (percent / 100) * circumference;
+            // Karena kita menggunakan 50% / 40% di SVG, kita perlu menghitung ulang kelilingnya
+            const radius = 40; // 40% dari 100
+            const circumference = 2 * Math.PI * radius; 
+            // Catatan: Karena menggunakan persentase, ukuran pastinya akan menyesuaikan container
+            // Kita gunakan trik CSS stroke-dasharray dengan nilai fix (misal 213.6 sebelumnya untuk r=34)
+            // Karena kita ganti ukurannya, kita gunakan nilai statis yang aman untuk lingkaran SVG tersebut
+            ring.style.strokeDashoffset = 213.6 - (percent / 100) * 213.6;
         }
 
         async function toggleAmalan(amalanName) {
@@ -394,10 +402,7 @@
                 currentData[amalanName] = true;
             }
             
-            // Simpan ke server secara background
             await saveMutabaahData();
-            
-            // Update UI secara instan
             renderAmalan();
         }
 
