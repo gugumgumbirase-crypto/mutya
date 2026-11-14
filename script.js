@@ -150,27 +150,32 @@ function updateUIBasedOnTarget() {
     document.getElementById('currentMemberBtnTextMobile').textContent = nameDisplay;
 }
 
+// Cek apakah user punya hak akses edit
+function canEdit() {
+    if (!currentUser || !currentProfile) return false;
+    // Jika profil bernama 'Admin Utama', bisa edit siapa saja
+    if (currentProfile.full_name.toLowerCase() === 'admin utama') return true;
+    // Selain admin, hanya bisa edit data sendiri
+    return targetUserId === currentUser.id;
+}
+
 // ==========================================
 // 4. FITUR SWITCH ANGGOTA (DROPDOWN)
 // ==========================================
-
-// Perbaikan: Fungsi ini sekarang langsung membuka dropdown yang tepat
 function toggleMemberDropdown() {
     const dropdownDesktop = document.getElementById('memberDropdown');
     const dropdownMobile = document.getElementById('memberDropdownMobile');
     
-    // Cek lebar layar untuk menentukan dropdown mana yang harus dibuka
-    const isMobile = window.innerWidth < 768; // 768px adalah breakpoint 'md' di Tailwind
+    const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
         if (dropdownMobile) dropdownMobile.classList.toggle('hidden');
-        if (dropdownDesktop) dropdownDesktop.classList.add('hidden'); // Pastikan desktop tertutup
+        if (dropdownDesktop) dropdownDesktop.classList.add('hidden');
     } else {
         if (dropdownDesktop) dropdownDesktop.classList.toggle('hidden');
-        if (dropdownMobile) dropdownMobile.classList.add('hidden'); // Pastikan mobile tertutup
+        if (dropdownMobile) dropdownMobile.classList.add('hidden');
     }
 
-    // Render isi list dropdown
     if ((dropdownDesktop && !dropdownDesktop.classList.contains('hidden')) || 
         (dropdownMobile && !dropdownMobile.classList.contains('hidden'))) {
         renderMemberDropdownList();
@@ -226,7 +231,6 @@ function switchMember(id, name) {
     localStorage.setItem('lastTargetUserId', id);
     localStorage.setItem('lastTargetUserName', name);
     
-    // Sembunyikan kedua dropdown
     document.getElementById('memberDropdown').classList.add('hidden');
     document.getElementById('memberDropdownMobile').classList.add('hidden');
     
@@ -241,15 +245,12 @@ function switchMember(id, name) {
     showToast(`Beralih ke data: ${name}`, 'success');
 }
 
-// Event listener menutup dropdown jika klik di luar area
 document.addEventListener('click', function(event) {
     const ddDesktop = document.getElementById('memberDropdown');
     const ddMobile = document.getElementById('memberDropdownMobile');
     
-    // Cek apakah yang diklik adalah tombol pembuka (di desktop atau mobile)
     const isBtnClick = event.target.closest('button[onclick="toggleMemberDropdown()"]');
     
-    // Jika yang diklik BUKAN tombol dropdown, dan BUKAN area dropdown itu sendiri, maka tutup.
     if (!isBtnClick) {
         if (ddDesktop && !ddDesktop.contains(event.target)) ddDesktop.classList.add('hidden');
         if (ddMobile && !ddMobile.contains(event.target)) ddMobile.classList.add('hidden');
@@ -415,6 +416,10 @@ function buildSheetOptions() {
 }
 
 function openTilawahSheet(day) {
+    if (!canEdit()) {
+        showToast('Anda tidak memiliki akses untuk mengedit data ini.', 'error');
+        return;
+    }
     activeEditDate = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth(), day);
     const daysIndo = ["Ahad","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
     const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -515,15 +520,23 @@ async function renderMutabaah() {
     
     const list = document.getElementById('mutabaahList');
     let doneCount = 0;
+    const isEditable = canEdit();
 
     list.innerHTML = DEFAULT_AMALAN.map((text) => {
         const isDone = currentData[text] === true;
         if (isDone) doneCount++;
+        
+        const clickAction = isEditable ? `onclick="toggleAmalan(\`${text}\`)"` : '';
+        const cursorStyle = isEditable ? 'cursor-pointer hover:border-brand-500' : 'cursor-not-allowed opacity-70';
+
         return `
-        <div class="mutabaah-item ${isDone ? 'checked' : ''} flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 cursor-pointer transition hover:border-brand-500" onclick="toggleAmalan(\`${text}\`)">
+        <div class="mutabaah-item ${isDone ? 'checked' : ''} flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 transition ${cursorStyle}" ${clickAction}>
             <span class="text-[13px] font-semibold text-slate-700 dark:text-slate-300 pr-2 ${isDone ? 'line-through opacity-50' : ''}">${text}</span>
-            <div class="mutabaah-checkbox w-6 h-6 rounded-md border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center shrink-0 transition-colors">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+            <div class="flex items-center gap-2">
+                ${!isEditable ? '<svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>' : ''}
+                <div class="mutabaah-checkbox w-6 h-6 rounded-md border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center shrink-0 transition-colors">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                </div>
             </div>
         </div>`;
     }).join('');
@@ -538,6 +551,10 @@ async function renderMutabaah() {
 }
 
 async function toggleAmalan(amalanName) {
+    if (!canEdit()) {
+        showToast('Anda tidak memiliki akses untuk mengedit data ini.', 'error');
+        return;
+    }
     if (navigator.vibrate) navigator.vibrate(50);
     if (currentData[amalanName]) delete currentData[amalanName];
     else currentData[amalanName] = true;
@@ -602,8 +619,8 @@ async function renderRekap() {
         return `
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                 <td class="px-2 md:px-4 py-3 text-left font-bold text-slate-700 dark:text-slate-300 sticky left-0 bg-white dark:bg-slate-900 text-[11px] md:text-sm leading-tight">${amalan}</td>
-<td class="px-1 md:px-4 py-3 font-extrabold text-brand-600 dark:text-brand-400 text-[11px] md:text-sm whitespace-nowrap">${count} <span class="text-[9px] md:text-xs font-normal text-slate-400">/ ${totalDays} hr</span></td>
-<td class="px-2 md:px-4 py-3">
+                <td class="px-1 md:px-4 py-3 font-extrabold text-brand-600 dark:text-brand-400 text-[11px] md:text-sm whitespace-nowrap">${count} <span class="text-[9px] md:text-xs font-normal text-slate-400">/ ${totalDays} hr</span></td>
+                <td class="px-2 md:px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                             <div class="${barColor} h-full rounded-full" style="width: ${percent}%"></div>
