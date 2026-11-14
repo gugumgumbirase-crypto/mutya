@@ -162,7 +162,7 @@
     <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full" id="mainScroll">
         
-        <!-- HEADER MOBILE (DIPERBAIKI) -->
+        <!-- HEADER MOBILE -->
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md flex items-center justify-center w-9 h-9">
@@ -281,13 +281,7 @@
             <!-- VIEW: MUTABAAH -->
             <div id="view-mutabaah" class="hidden flex flex-col gap-6 animate-fade-in">
                 
-                <div id="viewAsBanner" class="hidden bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-3 flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-amber-800 dark:text-amber-300 text-sm font-bold">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Sedang mengedit data: <span id="targetNameDisplay" class="underline"></span>
-                    </div>
-                    <button onclick="clearTarget()" class="text-xs bg-white dark:bg-slate-800 px-3 py-1 rounded-lg font-bold text-slate-600 dark:text-slate-300 shadow-sm">Kembali ke Diri Sendiri</button>
-                </div>
+                <!-- BANNER KUNING SUDAH DIHAPUS DARI SINI -->
 
                 <div class="bg-gradient-to-br from-brand-600 to-brand-800 rounded-3xl p-6 md:p-8 text-white shadow-xl shadow-brand-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                     <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
@@ -585,22 +579,6 @@
             document.getElementById('userNameDisplay').textContent = nameDisplay;
             document.getElementById('streakName').textContent = nameDisplay;
             document.getElementById('rekapTargetName').textContent = nameDisplay;
-
-            const banner = document.getElementById('viewAsBanner');
-            if (targetUserId !== currentUser.id) {
-                banner.classList.remove('hidden');
-                document.getElementById('targetNameDisplay').textContent = targetUserName;
-            } else {
-                banner.classList.add('hidden');
-            }
-        }
-
-        function clearTarget() {
-            targetUserId = currentUser.id;
-            updateUIBasedOnTarget();
-            renderTilawah();
-            renderMutabaah();
-            if (!document.getElementById('view-rekap').classList.contains('hidden')) renderRekap();
         }
 
         // ==========================================
@@ -685,7 +663,7 @@
             document.getElementById('memberDropdown').classList.add('hidden');
             document.getElementById('memberDropdownMobile').classList.add('hidden');
             
-            // 4. Update Nama di Kartu Hijau & Banner
+            // 4. Update Nama di Kartu Hijau
             updateUIBasedOnTarget();
             
             // 5. Reload data Mutabaah & Tilawah untuk user yang dipilih
@@ -1258,7 +1236,6 @@
         window.navigateTilawahPeriod = navigateTilawahPeriod;
         window.goToTodayTilawah = goToTodayTilawah;
         window.renderRekap = renderRekap;
-        window.clearTarget = clearTarget;
         window.openChangePasswordModal = openChangePasswordModal;
         window.closeChangePasswordModal = closeChangePasswordModal;
         window.handleChangePassword = handleChangePassword;
