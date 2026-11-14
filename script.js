@@ -182,21 +182,33 @@ async function renderMemberDropdownList() {
     if(listDesktop) listDesktop.innerHTML = loadingHtml;
     if(listMobile) listMobile.innerHTML = loadingHtml;
 
-    const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
+    // 1. Cek apakah yang login adalah Admin Utama
+    const isAdmin = currentProfile && currentProfile.full_name.toLowerCase() === 'admin utama';
 
-    if (error || !data || data.length === 0) {
-        const errorHtml = '<div class="text-xs text-slate-500 p-2 text-center">Belum ada anggota</div>';
-        if(listDesktop) listDesktop.innerHTML = errorHtml;
-        if(listMobile) listMobile.innerHTML = errorHtml;
-        return;
+    let dataToRender = [];
+
+    if (isAdmin) {
+        // Jika Admin, ambil SEMUA profil
+        const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
+        if (error || !data) return;
+        
+        dataToRender = data;
+        
+        // Urutkan: Admin sendiri di paling atas
+        dataToRender.sort((a, b) => {
+            if (a.id === currentUser.id) return -1;
+            if (b.id === currentUser.id) return 1;
+            return a.full_name.localeCompare(b.full_name);
+        });
+    } else {
+        // Jika Anggota Biasa, HANYA tampilkan dirinya sendiri
+        dataToRender = [{
+            id: currentUser.id,
+            full_name: currentProfile.full_name
+        }];
     }
 
-    data.sort((a, b) => {
-        if (a.id === currentUser.id) return -1;
-        if (b.id === currentUser.id) return 1;
-        return a.full_name.localeCompare(b.full_name);
-    });
-
+    // 2. Render ke HTML
     const generateHtml = (m) => {
         const isSelected = targetUserId === m.id;
         return `
@@ -212,8 +224,8 @@ async function renderMemberDropdownList() {
         `;
     };
 
-    if(listDesktop) listDesktop.innerHTML = data.map(generateHtml).join('');
-    if(listMobile) listMobile.innerHTML = data.map(generateHtml).join('');
+    if(listDesktop) listDesktop.innerHTML = dataToRender.map(generateHtml).join('');
+    if(listMobile) listMobile.innerHTML = dataToRender.map(generateHtml).join('');
 }
 
 function switchMember(id, name) {
