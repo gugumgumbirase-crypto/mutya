@@ -108,7 +108,7 @@
         <div class="flex-1 overflow-y-auto no-scrollbar px-3 mt-4 space-y-1">
             
             <!-- Dropdown Anggota (Desktop) -->
-            <div class="mb-4 relative">
+            <div class="mb-4 relative z-50">
                 <button onclick="toggleMemberDropdown()" class="w-full flex items-center justify-between bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 font-bold text-sm rounded-xl px-4 py-3 transition hover:bg-brand-100">
                     <div class="flex items-center gap-2">
                         <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -481,7 +481,7 @@
         let chartDonutInstance = null;
 
         // ==========================================
-        // 3. AUTHENTICATION & LOCAL STORAGE (PENTING)
+        // 3. AUTHENTICATION & LOCAL STORAGE
         // ==========================================
         async function checkAuth() {
             const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -498,11 +498,9 @@
             const savedTargetName = localStorage.getItem('lastTargetUserName');
 
             if (savedTargetId && savedTargetName) {
-                // Jika ada, gunakan yang tersimpan
                 targetUserId = savedTargetId;
                 targetUserName = savedTargetName;
             } else {
-                // Jika tidak ada, default ke akun sendiri
                 targetUserId = currentUser.id; 
             }
             
@@ -512,7 +510,6 @@
             renderMutabaah();
             buildSheetOptions();
             
-            // Render list dropdown untuk desktop & mobile
             renderMemberDropdownList(); 
         }
 
@@ -574,16 +571,11 @@
 
             if (data) {
                 currentProfile = data;
+                // Teks ini HANYA menampilkan nama akun yang sedang login
                 document.getElementById('sidebarUserName').textContent = data.full_name || currentUser.email;
-                
-                // Update teks tombol dropdown (Desktop & Mobile)
-                document.getElementById('currentMemberBtnText').textContent = data.full_name || currentUser.email;
-                document.getElementById('currentMemberBtnTextMobile').textContent = data.full_name || currentUser.email;
             } else {
                 currentProfile = { full_name: currentUser.email.split('@')[0] };
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
-                document.getElementById('currentMemberBtnText').textContent = currentProfile.full_name;
-                document.getElementById('currentMemberBtnTextMobile').textContent = currentProfile.full_name;
             }
             
             updateUIBasedOnTarget();
@@ -592,11 +584,12 @@
         function updateUIBasedOnTarget() {
             const nameDisplay = targetUserId === currentUser.id ? currentProfile.full_name : targetUserName;
             
+            // Kartu hijau & Teks rekap mengikuti target
             document.getElementById('userNameDisplay').textContent = nameDisplay;
             document.getElementById('streakName').textContent = nameDisplay;
             document.getElementById('rekapTargetName').textContent = nameDisplay;
 
-            // Update nama di tombol dropdown (Desktop & Mobile) agar sesuai dengan target
+            // Tombol dropdown mengikuti target
             document.getElementById('currentMemberBtnText').textContent = nameDisplay;
             document.getElementById('currentMemberBtnTextMobile').textContent = nameDisplay;
         }
@@ -672,29 +665,22 @@
             targetUserId = id;
             targetUserName = name;
             
-            // PENTING: Simpan pilihan ke localStorage
+            // Simpan pilihan ke localStorage
             localStorage.setItem('lastTargetUserId', id);
             localStorage.setItem('lastTargetUserName', name);
             
-            // 1. Update Teks di Tombol Dropdown (Desktop & Mobile)
-            document.getElementById('currentMemberBtnText').textContent = name;
-            document.getElementById('currentMemberBtnTextMobile').textContent = name;
-            
-            // 2. Update Teks "Halo, ..." di Header Sidebar Desktop
-            document.getElementById('sidebarUserName').textContent = name;
-            
-            // 3. Tutup Dropdown
+            // Tutup Dropdown
             document.getElementById('memberDropdown').classList.add('hidden');
             document.getElementById('memberDropdownMobile').classList.add('hidden');
             
-            // 4. Update Nama di Kartu Hijau
+            // Update Nama di Kartu Hijau & Tombol
             updateUIBasedOnTarget();
             
-            // 5. Reload data Mutabaah & Tilawah untuk user yang dipilih
+            // Reload data Mutabaah & Tilawah untuk user yang dipilih
             renderMutabaah();
             renderTilawah();
             
-            // 6. Jika sedang di menu Rekap, reload juga
+            // Jika sedang di menu Rekap, reload juga
             if (!document.getElementById('view-rekap').classList.contains('hidden')) {
                 renderRekap();
             }
@@ -707,15 +693,16 @@
             const ddDesktop = document.getElementById('memberDropdown');
             const ddMobile = document.getElementById('memberDropdownMobile');
             
-            const btnDesktop = event.target.closest('button[onclick="toggleMemberDropdown()"]');
+            // Cek apakah yang diklik adalah tombol dropdown (Desktop atau Mobile)
+            const clickedDropdownBtn = event.target.closest('button[onclick="toggleMemberDropdown()"]');
             
             if (ddDesktop && !ddDesktop.classList.contains('hidden')) {
-                if (!event.target.closest('#memberDropdown') && !btnDesktop) {
+                if (!event.target.closest('#memberDropdown') && !clickedDropdownBtn) {
                     ddDesktop.classList.add('hidden');
                 }
             }
             if (ddMobile && !ddMobile.classList.contains('hidden')) {
-                if (!event.target.closest('#memberDropdownMobile') && !btnDesktop) {
+                if (!event.target.closest('#memberDropdownMobile') && !clickedDropdownBtn) {
                     ddMobile.classList.add('hidden');
                 }
             }
