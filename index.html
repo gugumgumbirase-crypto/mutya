@@ -237,7 +237,7 @@
         <svg class="icon-lg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
     </button>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (DESKTOP) -->
     <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-30 border-r border-slate-200/50 dark:border-slate-800/50">
         <div class="flex-1 min-h-0 flex flex-col">
             <div class="p-6 flex items-center space-x-3">
@@ -271,7 +271,7 @@
         </div>
 <button onclick="openChangePinModal()" id="btnChangePin" class="hidden-menu w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700 mb-2">
     <svg class="icon-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-    Ganti Password
+    Ganti PIN
 </button>
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2">
             <button onclick="exportData()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs transition hover:bg-slate-200 dark:hover:bg-slate-700">
@@ -284,10 +284,6 @@
                 <span class="dark:hidden">Mode Gelap</span>
                 <span class="hidden dark:inline">Mode Terang</span>
             </button>
-            <button onclick="handleAuthClick()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 font-semibold text-xs transition hover:bg-rose-100 dark:hover:bg-rose-900/40 mt-2">
-                <svg class="icon-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                Logout
-            </button>
         </div>
     </aside>
 
@@ -295,8 +291,10 @@
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full" id="mainScroll">
         <div class="absolute top-0 left-0 md:left-1/4 w-72 h-72 md:w-96 md:h-96 bg-brand-200/40 dark:bg-brand-900/20 rounded-full blur-3xl -z-10 pointer-events-none max-w-full"></div>
 
+        <!-- HEADER -->
         <header class="sticky top-0 z-20 px-4 md:px-8 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 glass-panel border-b border-white/20 dark:border-slate-800/30 w-full max-w-full">
-            <!-- Bagian Kiri: Logo Mobile & Judul Desktop -->
+            
+            <!-- Bagian Kiri: Logo (Mobile) & Judul (Desktop) -->
             <div class="flex items-center justify-between w-full md:w-auto">
                 <div class="flex md:hidden items-center gap-3">
                     <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md">
@@ -313,7 +311,7 @@
                     <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Pantau konsistensi tilawah harian anggota</p>
                 </div>
 
-                <!-- TOMBOL PROFILE MOBILE (Muncul di HP) -->
+                <!-- TOMBOL PROFILE MOBILE (BARU) -->
                 <div class="md:hidden relative">
                     <button onclick="toggleProfileMenu()" class="flex items-center gap-2 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 rounded-xl px-3 py-1.5 shadow-sm">
                         <span id="mobile-header-name" class="text-xs font-bold text-brand-800 dark:text-brand-200">Tamu</span>
@@ -717,7 +715,7 @@
 <div id="changePinModal" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm z-[60] hidden transition-opacity flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800 animate-bounce-in">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Ganti Password</h3>
+            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Ganti PIN</h3>
             <button onclick="closeChangePinModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center">
                 <svg class="icon-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -912,7 +910,7 @@
             if(dataStore[key]) { delete dataStore[key][day]; saveData(); }
         }
 
-        // ==================== DROPDOWN PROFILE MOBILE ====================
+        // ==================== DROPDOWN PROFILE MOBILE (BARU) ====================
         function toggleProfileMenu() {
             const dropdown = document.getElementById('profileDropdown');
             if (dropdown) dropdown.classList.toggle('hidden');
@@ -941,7 +939,7 @@
             const cardRekapMutabaah = document.getElementById('card-rekap-mutabaah');
             const fab = document.getElementById('fabQuickLog');
             
-            // Elemen UI untuk Mobile Dropdown
+            // Elemen UI untuk Mobile Dropdown (Baru)
             const mobileHeaderName = document.getElementById('mobile-header-name');
             const dropdownAuthText = document.getElementById('dropdown-auth-text');
 
@@ -1023,14 +1021,13 @@
                     return;
                 }
             } else {
-                // Cek apakah user sudah punya custom PIN, jika belum pakai default 123456
-                const userPin = pinStore[nama] || '123456';
-                if (pass === userPin) {
+                // PIN default anggota adalah 123456 (bisa diubah di masa depan)
+                if (pass === '123456') {
                     currentUser = { nama: nama, role: 'member' };
                     // Paksa pilih nama sendiri saat login sebagai anggota
                     selectedNama = nama;
                 } else {
-                    showToast('PIN salah!', 'error');
+                    showToast('PIN salah! Gunakan 123456', 'error');
                     haptic([50, 30, 50]);
                     return;
                 }
