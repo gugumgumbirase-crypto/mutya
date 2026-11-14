@@ -57,15 +57,9 @@ async function checkAuth() {
 
     currentUser = session.user;
     
-    const savedTargetId = localStorage.getItem('lastTargetUserId');
-    const savedTargetName = localStorage.getItem('lastTargetUserName');
-
-    if (savedTargetId && savedTargetName) {
-        targetUserId = savedTargetId;
-        targetUserName = savedTargetName;
-    } else {
-        targetUserId = currentUser.id; 
-    }
+    // LANGSUNG KEMBALIKAN KE AKUN SENDIRI (Tidak pakai localStorage)
+    targetUserId = currentUser.id; 
+    targetUserName = currentUser.email.split('@')[0]; // Nama sementara sebelum profil dimuat
     
     await fetchProfile();
     document.getElementById('authScreen').classList.add('hidden');
@@ -113,9 +107,7 @@ async function handleRegister() {
 
 async function handleLogout() {
     await supabaseClient.auth.signOut();
-    localStorage.removeItem('lastTargetUserId');
-    localStorage.removeItem('lastTargetUserName');
-
+    // Hapus baris localStorage.removeItem di sini
     currentUser = null;
     currentProfile = null;
     targetUserId = null;
@@ -228,8 +220,7 @@ function switchMember(id, name) {
     targetUserId = id;
     targetUserName = name;
     
-    localStorage.setItem('lastTargetUserId', id);
-    localStorage.setItem('lastTargetUserName', name);
+    // Hapus baris localStorage.setItem di sini
     
     document.getElementById('memberDropdown').classList.add('hidden');
     document.getElementById('memberDropdownMobile').classList.add('hidden');
