@@ -481,7 +481,7 @@
         let chartDonutInstance = null;
 
         // ==========================================
-        // 3. AUTHENTICATION & ONLINE STATE SYNC
+        // 3. AUTHENTICATION & LOCAL STORAGE (PENTING)
         // ==========================================
         async function checkAuth() {
             const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -493,38 +493,26 @@
 
             currentUser = session.user;
             
-            // Ambil data profil dari database (termasuk active_target_id)
-            await fetchProfile();
-            
-            // Jika active_target_id ada di database, gunakan itu
-            if (currentProfile && currentProfile.active_target_id) {
-                targetUserId = currentProfile.active_target_id;
-                
-                // Kita perlu fetch nama target tersebut
-                const { data: targetProfile } = await supabaseClient
-                    .from('profiles').select('full_name').eq('id', targetUserId).maybeSingle();
-                
-                if (targetProfile) {
-                    targetUserName = targetProfile.full_name;
-                } else {
-                    // Jika gagal ambil nama (misal user dihapus), kembalikan ke diri sendiri
-                    targetUserId = currentUser.id;
-                    targetUserName = currentProfile.full_name;
-                }
+            // Cek apakah ada user target yang tersimpan di localStorage
+            const savedTargetId = localStorage.getItem('lastTargetUserId');
+            const savedTargetName = localStorage.getItem('lastTargetUserName');
+
+            if (savedTargetId && savedTargetName) {
+                // Jika ada, gunakan yang tersimpan
+                targetUserId = savedTargetId;
+                targetUserName = savedTargetName;
             } else {
-                // Jika belum ada, default ke diri sendiri
+                // Jika tidak ada, default ke akun sendiri
                 targetUserId = currentUser.id; 
-                targetUserName = currentProfile.full_name;
             }
             
+            await fetchProfile();
             document.getElementById('authScreen').classList.add('hidden');
-            
-            // Update UI pertama kali
-            updateUIBasedOnTarget();
-
             renderTilawah(); 
             renderMutabaah();
             buildSheetOptions();
+            
+            // Render list dropdown untuk desktop & mobile
             renderMemberDropdownList(); 
         }
 
@@ -565,12 +553,12 @@
         }
 
         async function handleLogout() {
-            // Reset target id ke diri sendiri saat logout (opsional, agar bersih)
-            if (currentUser) {
-                await supabaseClient.from('profiles').update({ active_target_id: currentUser.id }).eq('id', currentUser.id);
-            }
-            
             await supabaseClient.auth.signOut();
+            
+            // Hapus memori akun target saat logout
+            localStorage.removeItem('lastTargetUserId');
+            localStorage.removeItem('lastTargetUserName');
+
             currentUser = null;
             currentProfile = null;
             targetUserId = null;
@@ -587,10 +575,18 @@
             if (data) {
                 currentProfile = data;
                 document.getElementById('sidebarUserName').textContent = data.full_name || currentUser.email;
+                
+                // Update teks tombol dropdown (Desktop & Mobile)
+                document.getElementById('currentMemberBtnText').textContent = data.full_name || currentUser.email;
+                document.getElementById('currentMemberBtnTextMobile').textContent = data.full_name || currentUser.email;
             } else {
-                currentProfile = { full_name: currentUser.email.split('@')[0], active_target_id: currentUser.id };
+                currentProfile = { full_name: currentUser.email.split('@')[0] };
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
+                document.getElementById('currentMemberBtnText').textContent = currentProfile.full_name;
+                document.getElementById('currentMemberBtnTextMobile').textContent = currentProfile.full_name;
             }
+            
+            updateUIBasedOnTarget();
         }
 
         function updateUIBasedOnTarget() {
@@ -672,21 +668,14 @@
             if(listMobile) listMobile.innerHTML = data.map(generateHtml).join('');
         }
 
-        async function switchMember(id, name) {
+        function switchMember(id, name) {
             targetUserId = id;
             targetUserName = name;
             
-            // PENTING: Simpan pilihan ke database secara online
-            const { error } = await supabaseClient
-                .from('profiles')
-                .update({ active_target_id: id })
-                .eq('id', currentUser.id);
-
-            if (error) {
-                console.error("Gagal menyimpan target ke database:", error);
-                showToast('Gagal menyimpan pilihan akun ke server', 'error');
-            }
-
+            // PENTING: Simpan pilihan ke localStorage
+            localStorage.setItem('lastTargetUserId', id);
+            localStorage.setItem('lastTargetUserName', name);
+            
             // 1. Update Teks di Tombol Dropdown (Desktop & Mobile)
             document.getElementById('currentMemberBtnText').textContent = name;
             document.getElementById('currentMemberBtnTextMobile').textContent = name;
