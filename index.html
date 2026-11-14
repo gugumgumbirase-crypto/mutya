@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR DESKTOP -->
     <aside class="hidden md:flex w-64 glass-panel flex-col h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
         
         <!-- Header Profil (Fixed) -->
@@ -107,7 +107,7 @@
         <!-- AREA SCROLL: Dropdown & Menu Navigasi -->
         <div class="flex-1 overflow-y-auto no-scrollbar px-3 mt-4 space-y-1">
             
-            <!-- Dropdown Anggota -->
+            <!-- Dropdown Anggota (Desktop) -->
             <div class="mb-4 relative">
                 <button onclick="toggleMemberDropdown()" class="w-full flex items-center justify-between bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 font-bold text-sm rounded-xl px-4 py-3 transition hover:bg-brand-100">
                     <div class="flex items-center gap-2">
@@ -124,7 +124,7 @@
                 </div>
             </div>
 
-            <!-- Menu Navigasi -->
+            <!-- Menu Navigasi Desktop -->
             <button onclick="switchTab('tilawah')" id="menu-desktop-tilawah" class="nav-item active">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> Tilawah
             </button>
@@ -136,7 +136,7 @@
             </button>
         </div>
         
-        <!-- Menu Bawah (Fixed) -->
+        <!-- Menu Bawah Desktop (Fixed) -->
         <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2 shrink-0 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md">
             <button onclick="openChangePasswordModal()" class="nav-item">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> Ganti Password
@@ -162,6 +162,7 @@
     <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden relative w-full max-w-full" id="mainScroll">
         
+        <!-- HEADER MOBILE (DIPERBAIKI) -->
         <header class="md:hidden sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md flex items-center justify-center w-9 h-9">
@@ -172,12 +173,29 @@
                     <p class="text-[9px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">3216M010</p>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300">
+
+            <!-- Tombol Dropdown & Aksi di Mobile -->
+            <div class="flex items-center gap-2 relative">
+                
+                <!-- Tombol Pilih Anggota (Dropdown) -->
+                <button onclick="toggleMemberDropdown()" class="flex items-center gap-1 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 rounded-lg px-2.5 py-1.5 shadow-sm max-w-[120px]">
+                    <span id="currentMemberBtnTextMobile" class="text-[11px] font-bold text-brand-800 dark:text-brand-200 truncate">...</span>
+                    <svg class="w-3 h-3 text-brand-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                <!-- Dropdown List Anggota (Mobile) -->
+                <div id="memberDropdownMobile" class="hidden absolute top-full right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto">
+                    <div id="memberDropdownListMobile" class="p-2 space-y-1">
+                        <!-- Diisi oleh JS -->
+                    </div>
+                </div>
+
+                <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
                     <svg class="w-4 h-4 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     <svg class="w-4 h-4 hidden dark:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
-                <button onclick="handleLogout()" class="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                
+                <button onclick="handleLogout()" class="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </div>
@@ -489,7 +507,9 @@
             renderTilawah(); 
             renderMutabaah();
             buildSheetOptions();
-            renderMemberDropdownList();
+            
+            // Render list dropdown untuk desktop & mobile
+            renderMemberDropdownList(); 
         }
 
         async function handleLogin() {
@@ -545,11 +565,15 @@
             if (data) {
                 currentProfile = data;
                 document.getElementById('sidebarUserName').textContent = data.full_name || currentUser.email;
+                
+                // Update teks tombol dropdown (Desktop & Mobile)
                 document.getElementById('currentMemberBtnText').textContent = data.full_name || currentUser.email;
+                document.getElementById('currentMemberBtnTextMobile').textContent = data.full_name || currentUser.email;
             } else {
                 currentProfile = { full_name: currentUser.email.split('@')[0] };
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
                 document.getElementById('currentMemberBtnText').textContent = currentProfile.full_name;
+                document.getElementById('currentMemberBtnTextMobile').textContent = currentProfile.full_name;
             }
             
             updateUIBasedOnTarget();
@@ -580,25 +604,43 @@
         }
 
         // ==========================================
-        // 4. FITUR SWITCH ANGGOTA
+        // 4. FITUR SWITCH ANGGOTA (DROPDOWN)
         // ==========================================
         function toggleMemberDropdown() {
-            const dropdown = document.getElementById('memberDropdown');
-            dropdown.classList.toggle('hidden');
-            if (!dropdown.classList.contains('hidden')) {
+            const dropdownDesktop = document.getElementById('memberDropdown');
+            const dropdownMobile = document.getElementById('memberDropdownMobile');
+            
+            // Toggle Desktop
+            if (dropdownDesktop && !document.querySelector('aside').classList.contains('hidden')) {
+                dropdownDesktop.classList.toggle('hidden');
+            }
+            // Toggle Mobile
+            if (dropdownMobile && document.querySelector('aside').classList.contains('hidden')) {
+                dropdownMobile.classList.toggle('hidden');
+            }
+
+            // Pastikan isi dropdown terbaru
+            if ((dropdownDesktop && !dropdownDesktop.classList.contains('hidden')) || 
+                (dropdownMobile && !dropdownMobile.classList.contains('hidden'))) {
                 renderMemberDropdownList();
             }
         }
 
         async function renderMemberDropdownList() {
-            const list = document.getElementById('memberDropdownList');
-            list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Memuat...</div>';
+            const listDesktop = document.getElementById('memberDropdownList');
+            const listMobile = document.getElementById('memberDropdownListMobile');
+            
+            const loadingHtml = '<div class="text-xs text-slate-500 p-2 text-center">Memuat...</div>';
+            if(listDesktop) listDesktop.innerHTML = loadingHtml;
+            if(listMobile) listMobile.innerHTML = loadingHtml;
 
-            // Ambil semua profil yang ada (karena kita tidak punya grup lagi)
+            // Ambil semua profil yang ada
             const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
 
             if (error || !data || data.length === 0) {
-                list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Belum ada anggota</div>';
+                const errorHtml = '<div class="text-xs text-slate-500 p-2 text-center">Belum ada anggota</div>';
+                if(listDesktop) listDesktop.innerHTML = errorHtml;
+                if(listMobile) listMobile.innerHTML = errorHtml;
                 return;
             }
 
@@ -609,7 +651,7 @@
                 return a.full_name.localeCompare(b.full_name);
             });
 
-            list.innerHTML = data.map(m => {
+            const generateHtml = (m) => {
                 const isSelected = targetUserId === m.id;
                 return `
                     <button onclick="switchMember('${m.id}', '${m.full_name}')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition ${isSelected ? 'bg-brand-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'}">
@@ -617,26 +659,31 @@
                             <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${isSelected ? 'bg-white text-brand-600' : 'bg-brand-100 text-brand-600'}">
                                 ${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}
                             </div>
-                            <span class="text-xs font-bold">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</span>
+                            <span class="text-xs font-bold truncate">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</span>
                         </div>
-                        ${isSelected ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                        ${isSelected ? '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>' : ''}
                     </button>
                 `;
-            }).join('');
+            };
+
+            if(listDesktop) listDesktop.innerHTML = data.map(generateHtml).join('');
+            if(listMobile) listMobile.innerHTML = data.map(generateHtml).join('');
         }
 
         function switchMember(id, name) {
             targetUserId = id;
             targetUserName = name;
             
-            // 1. Update Teks di Tombol Dropdown
+            // 1. Update Teks di Tombol Dropdown (Desktop & Mobile)
             document.getElementById('currentMemberBtnText').textContent = name;
+            document.getElementById('currentMemberBtnTextMobile').textContent = name;
             
-            // 2. Update Teks "Halo, ..." di Header Sidebar
+            // 2. Update Teks "Halo, ..." di Header Sidebar Desktop
             document.getElementById('sidebarUserName').textContent = name;
             
             // 3. Tutup Dropdown
             document.getElementById('memberDropdown').classList.add('hidden');
+            document.getElementById('memberDropdownMobile').classList.add('hidden');
             
             // 4. Update Nama di Kartu Hijau & Banner
             updateUIBasedOnTarget();
@@ -655,11 +702,19 @@
 
         // Event listener untuk menutup dropdown jika klik di luar
         document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('memberDropdown');
-            const btn = document.getElementById('currentMemberBtnText');
-            if (dropdown && !dropdown.classList.contains('hidden')) {
-                if (!event.target.closest('#memberDropdown') && !event.target.closest('button[onclick="toggleMemberDropdown()"]')) {
-                    dropdown.classList.add('hidden');
+            const ddDesktop = document.getElementById('memberDropdown');
+            const ddMobile = document.getElementById('memberDropdownMobile');
+            
+            const btnDesktop = event.target.closest('button[onclick="toggleMemberDropdown()"]');
+            
+            if (ddDesktop && !ddDesktop.classList.contains('hidden')) {
+                if (!event.target.closest('#memberDropdown') && !btnDesktop) {
+                    ddDesktop.classList.add('hidden');
+                }
+            }
+            if (ddMobile && !ddMobile.classList.contains('hidden')) {
+                if (!event.target.closest('#memberDropdownMobile') && !btnDesktop) {
+                    ddMobile.classList.add('hidden');
                 }
             }
         });
