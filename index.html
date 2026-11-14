@@ -594,6 +594,7 @@
             const list = document.getElementById('memberDropdownList');
             list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Memuat...</div>';
 
+            // Ambil semua profil yang ada (karena kita tidak punya grup lagi)
             const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
 
             if (error || !data || data.length === 0) {
@@ -601,6 +602,7 @@
                 return;
             }
 
+            // Urutkan: diri sendiri di atas
             data.sort((a, b) => {
                 if (a.id === currentUser.id) return -1;
                 if (b.id === currentUser.id) return 1;
@@ -651,6 +653,7 @@
             showToast(`Beralih ke data: ${name}`, 'success');
         }
 
+        // Event listener untuk menutup dropdown jika klik di luar
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('memberDropdown');
             const btn = document.getElementById('currentMemberBtnText');
