@@ -633,6 +633,32 @@
             targetUserId = id;
             targetUserName = name;
             
+            // 1. Update Teks di Tombol Dropdown
+            document.getElementById('currentMemberBtnText').textContent = name;
+            
+            // 2. Update Teks "Halo, ..." di Header Sidebar
+            document.getElementById('sidebarUserName').textContent = name;
+            
+            // 3. Tutup Dropdown
+            document.getElementById('memberDropdown').classList.add('hidden');
+            
+            // 4. Update Nama di Kartu Hijau & Banner
+            updateUIBasedOnTarget();
+            
+            // 5. Reload data Mutabaah & Tilawah untuk user yang dipilih
+            renderMutabaah();
+            renderTilawah();
+            
+            // 6. Jika sedang di menu Rekap, reload juga
+            if (!document.getElementById('view-rekap').classList.contains('hidden')) {
+                renderRekap();
+            }
+            
+            showToast(`Beralih ke data: ${name}`, 'success');
+        }
+            targetUserId = id;
+            targetUserName = name;
+            
             document.getElementById('currentMemberBtnText').textContent = name;
             document.getElementById('memberDropdown').classList.add('hidden');
             
