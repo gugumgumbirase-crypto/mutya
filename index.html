@@ -598,6 +598,45 @@
             const list = document.getElementById('memberDropdownList');
             list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Memuat...</div>';
 
+            // Ambil SEMUA profil dari database
+            const { data, error } = await supabaseClient.from('profiles').select('id, full_name').order('full_name');
+
+            if (error) {
+                console.error(error);
+                list.innerHTML = '<div class="text-xs text-rose-500 p-2 text-center">Gagal memuat data</div>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Belum ada anggota</div>';
+                return;
+            }
+
+            // Urutkan: diri sendiri di atas
+            data.sort((a, b) => {
+                if (a.id === currentUser.id) return -1;
+                if (b.id === currentUser.id) return 1;
+                return a.full_name.localeCompare(b.full_name);
+            });
+
+            list.innerHTML = data.map(m => {
+                const isSelected = targetUserId === m.id;
+                return `
+                    <button onclick="switchMember('${m.id}', '${m.full_name}')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition ${isSelected ? 'bg-brand-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'}">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${isSelected ? 'bg-white text-brand-600' : 'bg-brand-100 text-brand-600'}">
+                                ${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <span class="text-xs font-bold">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</span>
+                        </div>
+                        ${isSelected ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+            const list = document.getElementById('memberDropdownList');
+            list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Memuat...</div>';
+
             // Ambil semua profil yang ada (karena kita tidak punya grup lagi)
             const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
 
