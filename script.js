@@ -153,17 +153,24 @@ function updateUIBasedOnTarget() {
 // ==========================================
 // 4. FITUR SWITCH ANGGOTA (DROPDOWN)
 // ==========================================
+
+// Perbaikan: Fungsi ini sekarang langsung membuka dropdown yang tepat
 function toggleMemberDropdown() {
     const dropdownDesktop = document.getElementById('memberDropdown');
     const dropdownMobile = document.getElementById('memberDropdownMobile');
     
-    if (dropdownDesktop && !document.querySelector('aside').classList.contains('hidden')) {
-        dropdownDesktop.classList.toggle('hidden');
-    }
-    if (dropdownMobile && document.querySelector('aside').classList.contains('hidden')) {
-        dropdownMobile.classList.toggle('hidden');
+    // Cek lebar layar untuk menentukan dropdown mana yang harus dibuka
+    const isMobile = window.innerWidth < 768; // 768px adalah breakpoint 'md' di Tailwind
+
+    if (isMobile) {
+        if (dropdownMobile) dropdownMobile.classList.toggle('hidden');
+        if (dropdownDesktop) dropdownDesktop.classList.add('hidden'); // Pastikan desktop tertutup
+    } else {
+        if (dropdownDesktop) dropdownDesktop.classList.toggle('hidden');
+        if (dropdownMobile) dropdownMobile.classList.add('hidden'); // Pastikan mobile tertutup
     }
 
+    // Render isi list dropdown
     if ((dropdownDesktop && !dropdownDesktop.classList.contains('hidden')) || 
         (dropdownMobile && !dropdownMobile.classList.contains('hidden'))) {
         renderMemberDropdownList();
@@ -219,6 +226,7 @@ function switchMember(id, name) {
     localStorage.setItem('lastTargetUserId', id);
     localStorage.setItem('lastTargetUserName', name);
     
+    // Sembunyikan kedua dropdown
     document.getElementById('memberDropdown').classList.add('hidden');
     document.getElementById('memberDropdownMobile').classList.add('hidden');
     
@@ -233,13 +241,15 @@ function switchMember(id, name) {
     showToast(`Beralih ke data: ${name}`, 'success');
 }
 
-// Event listener menutup dropdown
+// Event listener menutup dropdown jika klik di luar area
 document.addEventListener('click', function(event) {
     const ddDesktop = document.getElementById('memberDropdown');
     const ddMobile = document.getElementById('memberDropdownMobile');
     
+    // Cek apakah yang diklik adalah tombol pembuka (di desktop atau mobile)
     const isBtnClick = event.target.closest('button[onclick="toggleMemberDropdown()"]');
     
+    // Jika yang diklik BUKAN tombol dropdown, dan BUKAN area dropdown itu sendiri, maka tutup.
     if (!isBtnClick) {
         if (ddDesktop && !ddDesktop.contains(event.target)) ddDesktop.classList.add('hidden');
         if (ddMobile && !ddMobile.contains(event.target)) ddMobile.classList.add('hidden');
