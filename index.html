@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <!-- SIDEBAR (Diperbarui Sesuai Permintaan) -->
+    <!-- SIDEBAR (Sesuai Permintaan Anda) -->
     <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
         <div class="flex-1 min-h-0 flex flex-col">
             <!-- Header Profil -->
@@ -916,12 +916,11 @@
         async function saveMutabaahData() {
             const dateKey = formatDateKey(currentDate);
             
-            // Gunakan try-catch untuk menangkap error jika ada
             try {
                 const { error } = await supabaseClient
                     .from('mutabaah')
                     .upsert({ 
-                        user_id: targetUserId, // Pastikan menggunakan targetUserId, bukan currentUser.id
+                        user_id: targetUserId, 
                         date: dateKey, 
                         amalan_data: currentData 
                     }, { onConflict: 'user_id, date' });
@@ -933,17 +932,6 @@
             } catch (err) {
                 console.error("Catch Error:", err);
                 showToast('Terjadi kesalahan sistem saat menyimpan', 'error');
-            }
-        }
-            const dateKey = formatDateKey(currentDate);
-            const { error } = await supabaseClient
-                .from('mutabaah').upsert({ 
-                    user_id: targetUserId, date: dateKey, amalan_data: currentData 
-                }, { onConflict: 'user_id, date' });
-
-            if (error) {
-                console.error(error);
-                showToast('Gagal menyimpan data ke server', 'error');
             }
         }
 
