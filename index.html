@@ -915,6 +915,27 @@
 
         async function saveMutabaahData() {
             const dateKey = formatDateKey(currentDate);
+            
+            // Gunakan try-catch untuk menangkap error jika ada
+            try {
+                const { error } = await supabaseClient
+                    .from('mutabaah')
+                    .upsert({ 
+                        user_id: targetUserId, // Pastikan menggunakan targetUserId, bukan currentUser.id
+                        date: dateKey, 
+                        amalan_data: currentData 
+                    }, { onConflict: 'user_id, date' });
+
+                if (error) {
+                    console.error("Supabase Error:", error);
+                    showToast('Gagal menyimpan: ' + error.message, 'error');
+                }
+            } catch (err) {
+                console.error("Catch Error:", err);
+                showToast('Terjadi kesalahan sistem saat menyimpan', 'error');
+            }
+        }
+            const dateKey = formatDateKey(currentDate);
             const { error } = await supabaseClient
                 .from('mutabaah').upsert({ 
                     user_id: targetUserId, date: dateKey, amalan_data: currentData 
