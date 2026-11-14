@@ -312,14 +312,14 @@
 
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
                     <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
-                        <table class="w-full text-left border-collapse min-w-[600px]">
-                            <thead class="bg-brand-600 text-white text-[11px] uppercase tracking-wider font-extrabold text-center">
-                                <tr>
-                                    <th class="px-4 py-3 border-r border-brand-500/50 sticky left-0 bg-brand-600 z-10 w-[40%] text-left">Nama Amalan</th>
-                                    <th class="px-4 py-3 border-r border-brand-500/50">Total Selesai</th>
-                                    <th class="px-4 py-3">Persentase</th>
-                                </tr>
-                            </thead>
+                        <table class="w-full text-left border-collapse min-w-full">
+    <thead class="bg-brand-600 text-white text-[11px] uppercase tracking-wider font-extrabold text-center">
+        <tr>
+            <th class="px-2 md:px-4 py-3 border-r border-brand-500/50 sticky left-0 bg-brand-600 z-10 w-[50%] text-left text-xs md:text-sm">Nama Amalan</th>
+            <th class="px-1 md:px-4 py-3 border-r border-brand-500/50 w-[25%] text-[10px] md:text-xs leading-tight">Total<br class="md:hidden">Selesai</th>
+            <th class="px-2 md:px-4 py-3 w-[25%] text-[10px] md:text-xs">Persen<br class="md:hidden">tase</th>
+        </tr>
+    </thead>
                             <tbody id="tbody-rekap" class="divide-y divide-slate-200 dark:divide-slate-800 text-center text-sm font-medium bg-white dark:bg-slate-900">
                                 <!-- Diisi via JS -->
                             </tbody>

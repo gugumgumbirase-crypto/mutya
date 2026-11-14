@@ -601,9 +601,9 @@ async function renderRekap() {
 
         return `
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                <td class="px-4 py-3 text-left font-bold text-slate-700 dark:text-slate-300 sticky left-0 bg-white dark:bg-slate-900">${amalan}</td>
-                <td class="px-4 py-3 font-extrabold text-brand-600 dark:text-brand-400">${count} <span class="text-xs font-normal text-slate-400">/ ${totalDays} hr</span></td>
-                <td class="px-4 py-3">
+                <td class="px-2 md:px-4 py-3 text-left font-bold text-slate-700 dark:text-slate-300 sticky left-0 bg-white dark:bg-slate-900 text-[11px] md:text-sm leading-tight">${amalan}</td>
+<td class="px-1 md:px-4 py-3 font-extrabold text-brand-600 dark:text-brand-400 text-[11px] md:text-sm whitespace-nowrap">${count} <span class="text-[9px] md:text-xs font-normal text-slate-400">/ ${totalDays} hr</span></td>
+<td class="px-2 md:px-4 py-3">
                     <div class="flex items-center gap-2">
                         <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                             <div class="${barColor} h-full rounded-full" style="width: ${percent}%"></div>
