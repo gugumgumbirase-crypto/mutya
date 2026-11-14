@@ -547,20 +547,23 @@
         // 3. AUTHENTICATION
         // ==========================================
         async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                targetUserId = currentUser.id; 
-                await fetchProfile();
-                document.getElementById('authScreen').classList.add('hidden');
-                renderTilawah(); 
-                renderMutabaah();
-                buildSheetOptions();
-            } else {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            
+            if (error || !session) {
                 document.getElementById('authScreen').classList.remove('hidden');
+                return;
             }
-        }
 
+            currentUser = session.user;
+            // PASTIKAN targetUserId di-set ke ID user yang login
+            targetUserId = currentUser.id; 
+            
+            await fetchProfile();
+            document.getElementById('authScreen').classList.add('hidden');
+            renderTilawah(); 
+            renderMutabaah();
+            buildSheetOptions();
+        }
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -607,6 +610,23 @@
         }
 
         async function fetchProfile() {
+            // Pastikan currentUser ada sebelum query
+            if (!currentUser) return;
+
+            const { data, error } = await supabaseClient
+                .from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+
+            if (data) {
+                currentProfile = data;
+                document.getElementById('sidebarUserName').textContent = data.full_name || currentUser.email;
+            } else {
+                // Fallback jika profil belum dibuat
+                currentProfile = { full_name: currentUser.email.split('@')[0] };
+                document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
+            }
+            
+            // ... (sisa kode group memberships tetap sama)
+        }
             const { data, error } = await supabaseClient
                 .from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
 
