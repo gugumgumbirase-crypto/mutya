@@ -57,9 +57,8 @@ async function checkAuth() {
 
     currentUser = session.user;
     
-    // LANGSUNG KEMBALIKAN KE AKUN SENDIRI (Tidak pakai localStorage)
     targetUserId = currentUser.id; 
-    targetUserName = currentUser.email.split('@')[0]; // Nama sementara sebelum profil dimuat
+    targetUserName = currentUser.email.split('@')[0];
     
     await fetchProfile();
     document.getElementById('authScreen').classList.add('hidden');
@@ -107,7 +106,6 @@ async function handleRegister() {
 
 async function handleLogout() {
     await supabaseClient.auth.signOut();
-    // Hapus baris localStorage.removeItem di sini
     currentUser = null;
     currentProfile = null;
     targetUserId = null;
@@ -145,9 +143,7 @@ function updateUIBasedOnTarget() {
 // Cek apakah user punya hak akses edit
 function canEdit() {
     if (!currentUser || !currentProfile) return false;
-    // Jika profil bernama 'Admin Utama', bisa edit siapa saja
     if (currentProfile.full_name.toLowerCase() === 'admin utama') return true;
-    // Selain admin, hanya bisa edit data sendiri
     return targetUserId === currentUser.id;
 }
 
@@ -182,33 +178,28 @@ async function renderMemberDropdownList() {
     if(listDesktop) listDesktop.innerHTML = loadingHtml;
     if(listMobile) listMobile.innerHTML = loadingHtml;
 
-    // 1. Cek apakah yang login adalah Admin Utama
     const isAdmin = currentProfile && currentProfile.full_name.toLowerCase() === 'admin utama';
 
     let dataToRender = [];
 
     if (isAdmin) {
-        // Jika Admin, ambil SEMUA profil
         const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
         if (error || !data) return;
         
         dataToRender = data;
         
-        // Urutkan: Admin sendiri di paling atas
         dataToRender.sort((a, b) => {
             if (a.id === currentUser.id) return -1;
             if (b.id === currentUser.id) return 1;
             return a.full_name.localeCompare(b.full_name);
         });
     } else {
-        // Jika Anggota Biasa, HANYA tampilkan dirinya sendiri
         dataToRender = [{
             id: currentUser.id,
             full_name: currentProfile.full_name
         }];
     }
 
-    // 2. Render ke HTML
     const generateHtml = (m) => {
         const isSelected = targetUserId === m.id;
         return `
@@ -232,8 +223,6 @@ function switchMember(id, name) {
     targetUserId = id;
     targetUserName = name;
     
-    // Hapus baris localStorage.setItem di sini
-    
     document.getElementById('memberDropdown').classList.add('hidden');
     document.getElementById('memberDropdownMobile').classList.add('hidden');
     
@@ -248,17 +237,13 @@ function switchMember(id, name) {
     showToast(`Beralih ke data: ${name}`, 'success');
 }
 
-document.addEventListener('click', function(event) {
-    const ddDesktop = document.getElementById('memberDropdown');
-    const ddMobile = document.getElementById('memberDropdownMobile');
-    
-    const isBtnClick = event.target.closest('button[onclick="toggleMemberDropdown()"]');
-    
-    if (!isBtnClick) {
-        if (ddDesktop && !ddDesktop.contains(event.target)) ddDesktop.classList.add('hidden');
-        if (ddMobile && !ddMobile.contains(event.target)) ddMobile.classList.add('hidden');
-    }
-});
+// ==========================================
+// 4b. MENU PENGATURAN HP
+// ==========================================
+function toggleSettingsMenu() {
+    const dropdown = document.getElementById('settingsDropdownMobile');
+    if (dropdown) dropdown.classList.toggle('hidden');
+}
 
 // ==========================================
 // 5. LOGIKA TILAWAH
@@ -579,7 +564,7 @@ function onDateChange() {
 }
 
 // ==========================================
-// 8. LOGIKA REKAP & GRAFIK (MURNI DARI MUTABAAH)
+// 8. LOGIKA REKAP & GRAFIK
 // ==========================================
 async function renderRekap() {
     if (!currentUser || !targetUserId) return;
@@ -790,6 +775,55 @@ function toggleDarkMode() {
     }
 }
 
+// ==========================================
+// 11. EVENT LISTENER & EXPOSE KE WINDOW
+// ==========================================
+document.addEventListener('click', function(event) {
+    const ddDesktop = document.getElementById('memberDropdown');
+    const ddMobile = document.getElementById('memberDropdownMobile');
+    const settingsDropdown = document.getElementById('settingsDropdownMobile');
+    
+    const isBtnMemberClick = event.target.closest('button[onclick="toggleMemberDropdown()"]');
+    const isBtnSettingsClick = event.target.closest('button[onclick="toggleSettingsMenu()"]');
+    
+    if (!isBtnMemberClick) {
+        if (ddDesktop && !ddDesktop.contains(event.target)) ddDesktop.classList.add('hidden');
+        if (ddMobile && !ddMobile.contains(event.target)) ddMobile.classList.add('hidden');
+    }
+
+    if (!isBtnSettingsClick) {
+        if (settingsDropdown && !settingsDropdown.contains(event.target)) {
+            settingsDropdown.classList.add('hidden');
+        }
+    }
+});
+
+// Daftarkan fungsi agar bisa dipanggil dari HTML
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.handleLogout = handleLogout;
+window.switchTab = switchTab;
+window.toggleDarkMode = toggleDarkMode;
+window.openTilawahSheet = openTilawahSheet;
+window.closeTilawahSheet = closeTilawahSheet;
+window.pickTilawahStatus = pickTilawahStatus;
+window.deleteTilawahStatus = deleteTilawahStatus;
+window.toggleAmalan = toggleAmalan;
+window.changeDate = changeDate;
+window.onDateChange = onDateChange;
+window.navigateTilawahPeriod = navigateTilawahPeriod;
+window.goToTodayTilawah = goToTodayTilawah;
+window.renderRekap = renderRekap;
+window.openChangePasswordModal = openChangePasswordModal;
+window.closeChangePasswordModal = closeChangePasswordModal;
+window.handleChangePassword = handleChangePassword;
+window.toggleMemberDropdown = toggleMemberDropdown;
+window.switchMember = switchMember;
+window.toggleSettingsMenu = toggleSettingsMenu;
+
+// ==========================================
+// 12. INIT
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
