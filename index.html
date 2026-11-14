@@ -851,6 +851,25 @@
             if (!activeEditDate) return;
             const dateStr = formatDateKey(activeEditDate);
             
+            // Simpan HANYA ke kolom tilawah_status, jangan sentuh amalan_data
+            const { error: saveError } = await supabaseClient.from('mutabaah').upsert({ 
+                user_id: targetUserId, 
+                date: dateStr, 
+                tilawah_status: statusId 
+            }, { onConflict: 'user_id, date' });
+
+            if (saveError) {
+                showToast('Gagal menyimpan status', 'error');
+                return;
+            }
+
+            closeTilawahSheet();
+            renderTilawah();
+            showToast('Status tilawah tersimpan', 'success');
+        }
+            if (!activeEditDate) return;
+            const dateStr = formatDateKey(activeEditDate);
+            
             const { data, error } = await supabaseClient.from('mutabaah').select('amalan_data')
                 .eq('user_id', targetUserId).eq('date', dateStr).maybeSingle();
             
