@@ -681,7 +681,7 @@
             if (!targetUserId) return;
             const firstDay = new Date(tilawahDate.getFullYear(), tilawahDate.getMonth() - 5, 1);
             const { data, error } = await supabaseClient
-                .from('mutabaah').select('date, amalan_data')
+                .from('mutabaah').select('date, amalan_data, tilawah_status')
                 .eq('user_id', targetUserId) 
                 .gte('date', formatDateKey(firstDay));
             
@@ -694,22 +694,12 @@
 
         function getTilawahStatus(dateStr) {
             const record = allMutabaahData.find(d => d.date === dateStr);
-            if (!record || !record.amalan_data) return null;
+            if (!record) return null;
             
-            // Prioritaskan membaca kolom tilawah_status
             if (record.tilawah_status) return record.tilawah_status;
             
-            // Fallback untuk data lama (jika ada)
-            if (record.amalan_data["Tilawah Al-Qur'an 1 Juz"] === true) return 'kholas';
-            if (record.amalan_data["Baca Terjemah Al-Qur'an"] === true) return 'progress';
-            
-            return null; 
-        }
-            const record = allMutabaahData.find(d => d.date === dateStr);
-            if (!record || !record.amalan_data) return null;
-            
-            if (record.amalan_data["Tilawah Al-Qur'an 1 Juz"] === true) return 'kholas';
-            if (record.amalan_data["Baca Terjemah Al-Qur'an"] === true) return 'progress';
+            if (record.amalan_data && record.amalan_data["Tilawah Al-Qur'an 1 Juz"] === true) return 'kholas';
+            if (record.amalan_data && record.amalan_data["Baca Terjemah Al-Qur'an"] === true) return 'progress';
             return null; 
         }
 
@@ -876,54 +866,17 @@
             
             let amalanData = (data && data.amalan_data) ? data.amalan_data : {};
             
-            // Reset centang tilawah di amalan_data
             delete amalanData["Tilawah Al-Qur'an 1 Juz"];
             delete amalanData["Baca Terjemah Al-Qur'an"];
 
             if (statusId === 'kholas') amalanData["Tilawah Al-Qur'an 1 Juz"] = true;
             if (statusId === 'progress') amalanData["Baca Terjemah Al-Qur'an"] = true;
 
-            // Simpan statusId ke kolom tilawah_status
             const { error: saveError } = await supabaseClient.from('mutabaah').upsert({ 
                 user_id: targetUserId, 
                 date: dateStr, 
                 amalan_data: amalanData,
-                tilawah_status: statusId // <-- Ini yang baru
-            }, { onConflict: 'user_id, date' });
-
-            if (saveError) {
-                showToast('Gagal menyimpan status', 'error');
-                return;
-            }
-
-            closeTilawahSheet();
-            renderTilawah();
-            if (!document.getElementById('view-mutabaah').classList.contains('hidden')) {
-                renderMutabaah();
-            }
-            showToast('Status tilawah tersimpan', 'success');
-        }
-            if (!activeEditDate) return;
-            const dateStr = formatDateKey(activeEditDate);
-            
-            const { data, error } = await supabaseClient.from('mutabaah').select('amalan_data')
-                .eq('user_id', targetUserId).eq('date', dateStr).maybeSingle();
-            
-            if (error) {
-                showToast('Gagal memuat data dari server', 'error');
-                return;
-            }
-            
-            let amalanData = (data && data.amalan_data) ? data.amalan_data : {};
-            
-            delete amalanData["Tilawah Al-Qur'an 1 Juz"];
-            delete amalanData["Baca Terjemah Al-Qur'an"];
-
-            if (statusId === 'kholas') amalanData["Tilawah Al-Qur'an 1 Juz"] = true;
-            if (statusId === 'progress') amalanData["Baca Terjemah Al-Qur'an"] = true;
-
-            const { error: saveError } = await supabaseClient.from('mutabaah').upsert({ 
-                user_id: targetUserId, date: dateStr, amalan_data: amalanData 
+                tilawah_status: statusId 
             }, { onConflict: 'user_id, date' });
 
             if (saveError) {
@@ -952,7 +905,10 @@
                 delete amalanData["Baca Terjemah Al-Qur'an"];
                 
                 await supabaseClient.from('mutabaah').upsert({ 
-                    user_id: targetUserId, date: dateStr, amalan_data: amalanData 
+                    user_id: targetUserId, 
+                    date: dateStr, 
+                    amalan_data: amalanData,
+                    tilawah_status: null
                 }, { onConflict: 'user_id, date' });
             }
 
