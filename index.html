@@ -62,6 +62,9 @@
 
         .table-rekap { border-radius: 0.75rem !important; overflow: hidden !important; border-collapse: separate !important; border-spacing: 0; border: 1px solid #e2e8f0; width: 100%; }
         .dark .table-rekap { border-color: #334155; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased h-screen flex overflow-hidden transition-colors duration-300 w-full max-w-full">
@@ -87,36 +90,54 @@
     </div>
 
     <!-- SIDEBAR -->
-    <aside class="hidden md:flex w-64 glass-panel flex-col justify-between shrink-0 h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
-        <div class="flex-1 min-h-0 flex flex-col">
-            <div class="p-6 border-b border-slate-200/50 dark:border-slate-800/50 flex flex-col items-center">
-                <div class="bg-brand-600 text-white p-3 rounded-2xl shadow-lg shadow-brand-500/30 flex items-center justify-center w-12 h-12 mb-3">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                </div>
-                <h1 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white text-center">UPA Apps</h1>
-                <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">3216M010</p>
-                <div class="mt-3 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
-                    <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Halo, <span id="sidebarUserName" class="text-brand-600">...</span></span>
-                </div>
+    <aside class="hidden md:flex w-64 glass-panel flex-col h-screen z-40 border-r border-slate-200/50 dark:border-slate-800/50">
+        
+        <!-- Header Profil (Fixed) -->
+        <div class="p-6 border-b border-slate-200/50 dark:border-slate-800/50 flex flex-col items-center shrink-0">
+            <div class="bg-brand-600 text-white p-3 rounded-2xl shadow-lg shadow-brand-500/30 flex items-center justify-center w-12 h-12 mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
             </div>
-            
-            <nav class="px-3 mt-4 space-y-1 overflow-y-auto flex-1">
-                <button onclick="switchTab('tilawah')" id="menu-desktop-tilawah" class="nav-item active">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> Tilawah
-                </button>
-                <button onclick="switchTab('mutabaah')" id="menu-desktop-mutabaah" class="nav-item">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Mutabaah
-                </button>
-                <button onclick="switchTab('halaqoh')" id="menu-desktop-halaqoh" class="nav-item">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Halaqoh
-                </button>
-                <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="nav-item">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Rekap & Grafik
-                </button>
-            </nav>
+            <h1 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white text-center">UPA Apps</h1>
+            <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold uppercase tracking-widest">3216M010</p>
+            <div class="mt-3 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Halo, <span id="sidebarUserName" class="text-brand-600">...</span></span>
+            </div>
         </div>
         
-        <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2">
+        <!-- AREA SCROLL: Dropdown & Menu Navigasi -->
+        <div class="flex-1 overflow-y-auto no-scrollbar px-3 mt-4 space-y-1">
+            
+            <!-- Dropdown Anggota -->
+            <div class="mb-4 relative">
+                <button onclick="toggleMemberDropdown()" class="w-full flex items-center justify-between bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 font-bold text-sm rounded-xl px-4 py-3 transition hover:bg-brand-100">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span id="currentMemberBtnText">...</span>
+                    </div>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                
+                <div id="memberDropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto">
+                    <div id="memberDropdownList" class="p-2 space-y-1">
+                        <!-- Diisi oleh JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Navigasi -->
+            <button onclick="switchTab('tilawah')" id="menu-desktop-tilawah" class="nav-item active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> Tilawah
+            </button>
+            <button onclick="switchTab('mutabaah')" id="menu-desktop-mutabaah" class="nav-item">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Mutabaah
+            </button>
+            <button onclick="switchTab('rekap')" id="menu-desktop-rekap" class="nav-item">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Rekap & Grafik
+            </button>
+        </div>
+        
+        <!-- Menu Bawah (Fixed) -->
+        <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 space-y-2 shrink-0 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md">
             <button onclick="openChangePasswordModal()" class="nav-item">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg> Ganti Password
             </button>
@@ -302,56 +323,6 @@
                 </div>
             </div>
 
-            <!-- VIEW: HALAQOH -->
-            <div id="view-halaqoh" class="hidden space-y-6 animate-fade-in">
-                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6 md:p-8">
-                    
-                    <div class="flex flex-col md:flex-row items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
-                        <div class="flex items-center gap-3 w-full md:w-auto">
-                            <label class="text-sm font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap">Grup Aktif:</label>
-                            <select id="groupSelector" onchange="switchGroup(this.value)" class="w-full md:w-64 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500 cursor-pointer">
-                                <!-- Diisi JS -->
-                            </select>
-                        </div>
-                        <button onclick="openCreateGroupModal()" class="w-full md:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-5 rounded-xl transition shadow-sm text-sm">
-                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg> Buat Grup Baru
-                        </button>
-                    </div>
-
-                    <div id="noGroupState" class="text-center py-10">
-                        <div class="bg-slate-100 dark:bg-slate-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
-                        <h2 class="text-xl font-extrabold text-slate-800 dark:text-white mb-2">Belum Ada Grup</h2>
-                        <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">Anda belum tergabung dalam Halaqoh manapun. Silakan buat grup baru di atas.</p>
-                    </div>
-                    
-                    <div id="groupDetailState" class="hidden">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                </div>
-                                <div>
-                                    <h2 class="text-xl font-extrabold text-slate-900 dark:text-white" id="groupNameDisplay">Nama Grup</h2>
-                                    <p class="text-xs text-slate-500 mt-1">Role Anda: <span id="groupRoleDisplay" class="font-bold text-brand-600">Anggota</span></p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <button id="btnDeleteGroup" onclick="handleDeleteGroup()" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-rose-200 shadow-sm">
-                                    Hapus Grup
-                                </button>
-                                <button id="btnAddMember" onclick="openAddMemberModal()" class="hidden bg-brand-50 hover:bg-brand-100 text-brand-600 px-4 py-2.5 rounded-xl font-bold text-sm transition border border-brand-200 shadow-sm">
-                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg> Tambah Anggota
-                                </button>
-                            </div>
-                        </div>
-                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-white mb-4">Daftar Anggota Halaqoh</h3>
-                        <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-                    </div>
-                </div>
-            </div>
-
             <!-- VIEW: REKAP & GRAFIK -->
             <div id="view-rekap" class="hidden space-y-6 animate-fade-in">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm p-6">
@@ -412,49 +383,10 @@
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span class="text-[10px] font-bold">Mutabaah</span>
             </button>
-            <button onclick="switchTab('halaqoh')" id="menu-mobile-halaqoh" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
-                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span class="text-[10px] font-bold">Halaqoh</span>
-            </button>
             <button onclick="switchTab('rekap')" id="menu-mobile-rekap" class="flex flex-col items-center justify-center w-full h-full text-slate-400 dark:text-slate-500 transition-colors duration-200">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <span class="text-[10px] font-bold">Rekap</span>
             </button>
-        </div>
-    </div>
-
-    <!-- MODAL BUAT GRUP -->
-    <div id="createGroupModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
-            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Buat Grup Halaqoh</h3>
-            <p class="text-xs text-slate-500 mb-4">Anda akan menjadi Admin di grup ini.</p>
-            <input type="text" id="newGroupName" placeholder="Nama Halaqoh" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
-            <div class="flex gap-2">
-                <button onclick="closeCreateGroupModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
-                <button onclick="handleCreateGroup()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Buat</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL TAMBAH ANGGOTA -->
-    <div id="addMemberModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm p-6 border border-slate-200 dark:border-slate-800">
-            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white mb-4">Tambah Anggota Halaqoh</h3>
-            <p class="text-xs text-slate-500 mb-4">Akun akan dibuatkan otomatis dan langsung masuk ke grup ini.</p>
-            
-            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Nama Lengkap</label>
-            <input type="text" id="newMemberName" placeholder="Nama Anggota" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3 focus:outline-none focus:border-brand-500">
-            
-            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Email</label>
-            <input type="email" id="newMemberEmail" placeholder="email@contoh.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-3 focus:outline-none focus:border-brand-500">
-            
-            <label class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Password Sementara</label>
-            <input type="text" id="newMemberPassword" value="123456" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm mb-4 focus:outline-none focus:border-brand-500">
-
-            <div class="flex gap-2">
-                <button onclick="closeAddMemberModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl transition">Batal</button>
-                <button onclick="handleAddMember()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition shadow-sm">Tambah</button>
-            </div>
         </div>
     </div>
 
@@ -525,8 +457,8 @@
         let currentUser = null;
         let currentProfile = null;
         
-        let userGroups = []; 
-        let currentGroup = null; 
+        let userGroups = []; // Tidak dipakai lagi, tapi dibiarkan
+        let currentGroup = null; // Tidak dipakai lagi
         
         let targetUserId = null; 
         let targetUserName = null;
@@ -560,6 +492,7 @@
             renderTilawah(); 
             renderMutabaah();
             buildSheetOptions();
+            renderMemberDropdownList();
         }
 
         async function handleLogin() {
@@ -616,26 +549,11 @@
             if (data) {
                 currentProfile = data;
                 document.getElementById('sidebarUserName').textContent = data.full_name || currentUser.email;
+                document.getElementById('currentMemberBtnText').textContent = data.full_name || currentUser.email;
             } else {
                 currentProfile = { full_name: currentUser.email.split('@')[0] };
                 document.getElementById('sidebarUserName').textContent = currentProfile.full_name;
-            }
-
-            const { data: memberships } = await supabaseClient
-                .from('group_members')
-                .select(`
-                    group_id,
-                    groups (id, name, admin_id)
-                `)
-                .eq('user_id', currentUser.id);
-
-            if (memberships) {
-                userGroups = memberships.map(m => m.groups).filter(g => g !== null);
-                if (userGroups.length > 0) {
-                    currentGroup = userGroups[0]; 
-                } else {
-                    currentGroup = null;
-                }
+                document.getElementById('currentMemberBtnText').textContent = currentProfile.full_name;
             }
             
             updateUIBasedOnTarget();
@@ -666,7 +584,82 @@
         }
 
         // ==========================================
-        // 4. LOGIKA TILAWAH
+        // 4. FITUR SWITCH ANGGOTA
+        // ==========================================
+        function toggleMemberDropdown() {
+            const dropdown = document.getElementById('memberDropdown');
+            dropdown.classList.toggle('hidden');
+            if (!dropdown.classList.contains('hidden')) {
+                renderMemberDropdownList();
+            }
+        }
+
+        async function renderMemberDropdownList() {
+            const list = document.getElementById('memberDropdownList');
+            list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Memuat...</div>';
+
+            // Ambil semua profil yang ada (karena kita tidak punya grup lagi)
+            const { data, error } = await supabaseClient.from('profiles').select('id, full_name');
+
+            if (error || !data || data.length === 0) {
+                list.innerHTML = '<div class="text-xs text-slate-500 p-2 text-center">Belum ada anggota</div>';
+                return;
+            }
+
+            // Urutkan: diri sendiri di atas
+            data.sort((a, b) => {
+                if (a.id === currentUser.id) return -1;
+                if (b.id === currentUser.id) return 1;
+                return a.full_name.localeCompare(b.full_name);
+            });
+
+            list.innerHTML = data.map(m => {
+                const isSelected = targetUserId === m.id;
+                return `
+                    <button onclick="switchMember('${m.id}', '${m.full_name}')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition ${isSelected ? 'bg-brand-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'}">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${isSelected ? 'bg-white text-brand-600' : 'bg-brand-100 text-brand-600'}">
+                                ${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <span class="text-xs font-bold">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</span>
+                        </div>
+                        ${isSelected ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function switchMember(id, name) {
+            targetUserId = id;
+            targetUserName = name;
+            
+            document.getElementById('currentMemberBtnText').textContent = name;
+            document.getElementById('memberDropdown').classList.add('hidden');
+            
+            updateUIBasedOnTarget();
+            renderMutabaah();
+            renderTilawah();
+            
+            if (!document.getElementById('view-rekap').classList.contains('hidden')) {
+                renderRekap();
+            }
+            
+            showToast(`Beralih ke data: ${name}`, 'success');
+        }
+
+        // Event listener untuk menutup dropdown jika klik di luar
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('memberDropdown');
+            const btn = document.getElementById('currentMemberBtnText');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                if (!event.target.closest('#memberDropdown') && !event.target.closest('button[onclick="toggleMemberDropdown()"]')) {
+                    dropdown.classList.add('hidden');
+                }
+            }
+        });
+
+        // ==========================================
+        // 5. LOGIKA TILAWAH
         // ==========================================
         function formatDateKey(dateObj) {
             return `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
@@ -803,7 +796,7 @@
         }
 
         // ==========================================
-        // 5. LOGIKA SHEET
+        // 6. LOGIKA SHEET
         // ==========================================
         function buildSheetOptions() {
             const wrap = document.getElementById('sheetOptions');
@@ -886,7 +879,7 @@
         }
 
         // ==========================================
-        // 6. LOGIKA MUTABAAH
+        // 7. LOGIKA MUTABAAH
         // ==========================================
         async function fetchMutabaahData() {
             const dateKey = formatDateKey(currentDate);
@@ -971,203 +964,6 @@
         function onDateChange() {
             const val = document.getElementById('datePicker').value;
             if (val) { currentDate = new Date(val); renderMutabaah(); }
-        }
-
-        // ==========================================
-        // 7. LOGIKA HALAQOH
-        // ==========================================
-        async function renderHalaqoh() {
-            if (!currentProfile) return;
-
-            const selector = document.getElementById('groupSelector');
-            if (userGroups.length === 0) {
-                selector.innerHTML = `<option>Tidak ada grup</option>`;
-                selector.disabled = true;
-            } else {
-                selector.disabled = false;
-                selector.innerHTML = userGroups.map(g => `<option value="${g.id}" ${currentGroup && currentGroup.id === g.id ? 'selected' : ''}>${g.name}</option>`).join('');
-            }
-
-            if (!currentGroup) {
-                document.getElementById('noGroupState').classList.remove('hidden');
-                document.getElementById('groupDetailState').classList.add('hidden');
-            } else {
-                document.getElementById('noGroupState').classList.add('hidden');
-                document.getElementById('groupDetailState').classList.remove('hidden');
-                document.getElementById('groupNameDisplay').textContent = currentGroup.name;
-                
-                const isAdmin = currentGroup.admin_id === currentUser.id;
-                document.getElementById('groupRoleDisplay').textContent = isAdmin ? 'Admin' : 'Anggota';
-                const btnAdd = document.getElementById('btnAddMember');
-                const btnDelete = document.getElementById('btnDeleteGroup');
-                if (btnAdd && btnDelete) {
-                    if (isAdmin) {
-                        btnAdd.classList.remove('hidden');
-                        btnDelete.classList.remove('hidden');
-                    } else {
-                        btnAdd.classList.add('hidden');
-                        btnDelete.classList.add('hidden');
-                    }
-                }
-
-                const { data: membersData, error: membersError } = await supabaseClient
-                    .from('group_members')
-                    .select('user_id')
-                    .eq('group_id', currentGroup.id);
-
-                if (membersError) {
-                    console.error("Error fetching members:", membersError);
-                    return;
-                }
-
-                if (membersData && membersData.length > 0) {
-                    const userIds = membersData.map(m => m.user_id);
-                    
-                    const { data: profilesData } = await supabaseClient
-                        .from('profiles')
-                        .select('id, full_name')
-                        .in('id', userIds);
-
-                    if (profilesData) {
-                        document.getElementById('memberList').innerHTML = profilesData.map(m => {
-                            const isSelected = m.id === targetUserId;
-                            const isAdminMember = m.id === currentGroup.admin_id;
-                            return `
-                            <div class="flex items-center justify-between p-3 rounded-xl border-2 transition ${isSelected ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'}">
-                                <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="selectMember('${m.id}', '${m.full_name.replace(/'/g, "\\'")}')">
-                                    <div class="w-10 h-10 rounded-full ${isSelected ? 'bg-brand-600 text-white' : 'bg-brand-100 text-brand-600'} flex items-center justify-center font-bold">${m.full_name ? m.full_name.charAt(0).toUpperCase() : '?'}</div>
-                                    <div>
-                                        <div class="font-bold text-sm text-slate-800 dark:text-slate-200">${m.full_name || 'User'} ${m.id === currentUser.id ? '(Anda)' : ''}</div>
-                                        <div class="text-[10px] ${isAdminMember ? 'text-brand-600 font-bold' : 'text-slate-500'}">${isAdminMember ? 'Admin' : 'Anggota'}</div>
-                                    </div>
-                                </div>
-                                ${isSelected ? '<svg class="w-5 h-5 text-brand-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' : ''}
-                                ${isAdmin && !isAdminMember ? `<button onclick="handleRemoveMember('${m.id}')" class="text-rose-500 hover:text-rose-700 p-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>` : ''}
-                            </div>
-                        `}).join('');
-                    }
-                } else {
-                    document.getElementById('memberList').innerHTML = '<p class="text-center text-slate-400 py-4 col-span-2">Belum ada anggota di grup ini.</p>';
-                }
-            }
-        }
-
-        function switchGroup(groupId) {
-            const group = userGroups.find(g => g.id === groupId);
-            if (group) {
-                currentGroup = group;
-                renderHalaqoh();
-            }
-        }
-
-        function selectMember(id, name) {
-            targetUserId = id;
-            targetUserName = name;
-            updateUIBasedOnTarget();
-            switchTab('mutabaah');
-            showToast(`Beralih ke data: ${name}`, 'success');
-        }
-
-        function openCreateGroupModal() {
-            document.getElementById('createGroupModal').classList.remove('hidden');
-            document.getElementById('createGroupModal').classList.add('flex');
-        }
-
-        function closeCreateGroupModal() {
-            document.getElementById('createGroupModal').classList.add('hidden');
-            document.getElementById('createGroupModal').classList.remove('flex');
-        }
-
-        async function handleCreateGroup() {
-            const name = document.getElementById('newGroupName').value;
-            if (!name) return;
-
-            const { data: newGroup, error: groupError } = await supabaseClient
-                .from('groups').insert([{ name: name, admin_id: currentUser.id }]).select().single();
-
-            if (groupError) { showToast('Gagal membuat grup', 'error'); return; }
-
-            const { error: memberError } = await supabaseClient
-                .from('group_members').insert([{ group_id: newGroup.id, user_id: currentUser.id }]);
-
-            if (memberError) { showToast('Gagal update profil', 'error'); } 
-            else {
-                showToast('Grup berhasil dibuat!', 'success');
-                closeCreateGroupModal();
-                await fetchProfile(); 
-                currentGroup = newGroup; 
-                renderHalaqoh();
-            }
-        }
-
-        async function handleDeleteGroup() {
-            if (!confirm('Yakin ingin menghapus grup ini? Semua anggota akan dikeluarkan.')) return;
-
-            const { error } = await supabaseClient.rpc('delete_group', { target_group_id: currentGroup.id });
-            
-            if (error) {
-                showToast('Gagal menghapus grup: ' + error.message, 'error');
-            } else {
-                showToast('Grup berhasil dihapus', 'success');
-                await fetchProfile();
-                renderHalaqoh();
-            }
-        }
-
-        function openAddMemberModal() {
-            document.getElementById('addMemberModal').classList.remove('hidden');
-            document.getElementById('addMemberModal').classList.add('flex');
-            document.getElementById('newMemberName').value = '';
-            document.getElementById('newMemberEmail').value = '';
-            document.getElementById('newMemberPassword').value = '123456';
-        }
-
-        function closeAddMemberModal() {
-            document.getElementById('addMemberModal').classList.add('hidden');
-            document.getElementById('addMemberModal').classList.remove('flex');
-        }
-
-        async function handleAddMember() {
-            const name = document.getElementById('newMemberName').value;
-            const email = document.getElementById('newMemberEmail').value;
-            const password = document.getElementById('newMemberPassword').value;
-
-            if (!name || !email || !password) {
-                showToast('Semua kolom harus diisi', 'warning');
-                return;
-            }
-
-            const { error } = await supabaseClient.rpc('create_new_member', {
-                member_email: email,
-                member_password: password,
-                member_name: name,
-                target_group_id: currentGroup.id
-            });
-
-            if (error) {
-                showToast('Gagal menambah anggota: ' + error.message, 'error');
-            } else {
-                showToast('Anggota berhasil ditambahkan!', 'success');
-                closeAddMemberModal();
-                renderHalaqoh();
-            }
-        }
-
-        async function handleRemoveMember(memberId) {
-            if (!confirm('Yakin ingin mengeluarkan anggota ini dari grup?')) return;
-
-            const { error } = await supabaseClient
-                .from('group_members')
-                .delete()
-                .eq('group_id', currentGroup.id)
-                .eq('user_id', memberId);
-
-            if (error) {
-                showToast('Gagal mengeluarkan anggota: ' + error.message, 'error');
-            } else {
-                showToast('Anggota berhasil dikeluarkan', 'success');
-                renderHalaqoh();
-            }
         }
 
         // ==========================================
@@ -1325,9 +1121,9 @@
         // 10. NAVIGATION & UTILITIES
         // ==========================================
         function switchTab(tab) {
-            const views = ['tilawah', 'mutabaah', 'halaqoh', 'rekap'];
-            const dMenus = ['menu-desktop-tilawah', 'menu-desktop-mutabaah', 'menu-desktop-halaqoh', 'menu-desktop-rekap'];
-            const mMenus = ['menu-mobile-tilawah', 'menu-mobile-mutabaah', 'menu-mobile-halaqoh', 'menu-mobile-rekap'];
+            const views = ['tilawah', 'mutabaah', 'rekap'];
+            const dMenus = ['menu-desktop-tilawah', 'menu-desktop-mutabaah', 'menu-desktop-rekap'];
+            const mMenus = ['menu-mobile-tilawah', 'menu-mobile-mutabaah', 'menu-mobile-rekap'];
 
             views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
             document.getElementById('view-' + tab).classList.remove('hidden');
@@ -1352,7 +1148,6 @@
                 });
             }
 
-            if (tab === 'halaqoh') renderHalaqoh();
             if (tab === 'mutabaah') renderMutabaah();
             if (tab === 'tilawah') renderTilawah();
             if (tab === 'rekap') {
@@ -1392,14 +1187,6 @@
         window.handleLogout = handleLogout;
         window.switchTab = switchTab;
         window.toggleDarkMode = toggleDarkMode;
-        window.openCreateGroupModal = openCreateGroupModal;
-        window.closeCreateGroupModal = closeCreateGroupModal;
-        window.handleCreateGroup = handleCreateGroup;
-        window.handleDeleteGroup = handleDeleteGroup;
-        window.openAddMemberModal = openAddMemberModal;
-        window.closeAddMemberModal = closeAddMemberModal;
-        window.handleAddMember = handleAddMember;
-        window.handleRemoveMember = handleRemoveMember;
         window.openTilawahSheet = openTilawahSheet;
         window.closeTilawahSheet = closeTilawahSheet;
         window.pickTilawahStatus = pickTilawahStatus;
@@ -1410,12 +1197,13 @@
         window.navigateTilawahPeriod = navigateTilawahPeriod;
         window.goToTodayTilawah = goToTodayTilawah;
         window.renderRekap = renderRekap;
-        window.selectMember = selectMember;
         window.clearTarget = clearTarget;
         window.openChangePasswordModal = openChangePasswordModal;
         window.closeChangePasswordModal = closeChangePasswordModal;
         window.handleChangePassword = handleChangePassword;
-        window.switchGroup = switchGroup;
+        
+        window.toggleMemberDropdown = toggleMemberDropdown;
+        window.switchMember = switchMember;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('theme') === 'dark') {
